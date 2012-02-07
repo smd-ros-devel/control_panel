@@ -33,7 +33,7 @@ const std::string DEFAULT_CONTROL_TOPIC = "cmd_vel";
 const std::string DEFAULT_DIAGNOSTIC_TOPIC = "diagnostics";
 const std::string DEFAULT_GPS_TOPIC = "gps";
 const std::string DEFAULT_IMU_TOPIC = "imu/data";
-const std::string DEFAULT_JOINT_TOPIC = "joint_state";
+const std::string DEFAULT_JOINT_TOPIC = "joint_states";
 const std::string DEFAULT_JOYSTICK_TOPIC = "joy";
 const std::string DEFAULT_LASER_TOPIC = "scan";
 const std::string DEFAULT_MAP_TOPIC = "map";
@@ -49,6 +49,13 @@ enum ConnectionStatus
 	Connected
 };
 
+
+enum RCMode
+{
+    Disabled,
+    Keyboard,
+    Joystick
+};
 
 // Status of a component received from the diagnostic node
 enum DiagnosticStatus

@@ -44,8 +44,6 @@ MainWindow::MainWindow(int argc, char **argv)
 	robot_connected_icon.addFile(":/images/status_lights/status_light_green.png");
 
 
-    joystick_node = new JoystickNode();
-
 	// Create the menu
     createMenuActions();
     createMenus();
@@ -67,11 +65,6 @@ MainWindow::MainWindow(int argc, char **argv)
 		this, SLOT(tabChanged(int)));
 	connect(tab_widget, SIGNAL(tabCloseRequested(int)),
 		this, SLOT(closeTab(int)));
-	connect(joystick_node, SIGNAL(axis_event(int, double)),
-		this, SLOT(updateJoystickAxis(int, double)));
-	connect(joystick_node, SIGNAL(button_event(int, bool)),
-		this, SLOT(updateJoystickButton(int, bool)));
-
 
 	// Main window settings
     readSettings();
@@ -537,7 +530,7 @@ void MainWindow::about()
 	QMessageBox::about(this, tr("About SRS Control Panel"),
 		tr("<h1>Shared Robotics Systems<br/>") +
 		tr("Control Panel</h1>") +
-        tr("<b>Version 4.0</b>") +
+        tr("<b>Version 4.1</b>") +
         tr("<p>TODO: Add Control Panel information here.</p>"));
 }
 
@@ -768,6 +761,7 @@ void MainWindow::newRobotConfigFile()
  * Returns:     void
  * Description:
  *****************************************************************************/
+/*
 void MainWindow::updateJoystickAxis(int axis, double value)
 {
 	RobotTab *tab;
@@ -792,6 +786,7 @@ void MainWindow::updateJoystickAxis(int axis, double value)
 		}
 	}
 }
+*/
 
 /******************************************************************************
  * Function:    updateJoystickButton
@@ -801,6 +796,7 @@ void MainWindow::updateJoystickAxis(int axis, double value)
  * Returns:     void
  * Description:
  *****************************************************************************/
+/*
 void MainWindow::updateJoystickButton(int button, bool state)
 {
 	RobotTab *tab;
@@ -862,6 +858,7 @@ void MainWindow::updateJoystickButton(int button, bool state)
 		}
 	}
 }
+*/
 
 /******************************************************************************
  * Function:    tabChanged
@@ -918,30 +915,11 @@ void MainWindow::toggleRC(QAction *action)
 		tab = (RobotTab *)tab_widget->currentWidget();
 
         if(action == disable_rc_action)
-        {
-            // Disable joystick and keyboard control
-            joystick_node->stopJoystick();
-            tab->disableKeyboard();
-
-            tab->setRCMode("Disabled");
-        }
-		// Make sure the selected RC is not already enabled
+            tab->setRCMode(Globals::Disabled);
 		else if(action == keyboard_rc_action)
-        {
-            // Enable keyboard and disable joystick control
-            tab->enableKeyboard();
-            joystick_node->stopJoystick();
-
-            tab->setRCMode("Keyboard");
-        }
+            tab->setRCMode(Globals::Keyboard);
 	    else if(action == joystick_rc_action)
-		{
-			// Disable keyboard and enable joystick control
-			tab->disableKeyboard();
-			joystick_node->enableJoystick();
-
-            tab->setRCMode("Joystick");
-		}
+            tab->setRCMode(Globals::Joystick);
         else
             printf("ERROR -- Unknown RC action\n");
     }

@@ -1,23 +1,12 @@
-/******************************************************************************
- * robot_tab.cpp
- *
- * Author:      Matt Richard, Scott Logan
- * Date:        Aug 6, 2011
- * Description: Tab widget for a single robot. This displays the GUI and
- *              handles the ROS communication for a specified robot.
- *****************************************************************************/
-
+/**
+ * \file   robot_tab.cpp
+ * \date   Aug 6, 2011
+ * \author Matt Richard, Scott K Logan
+ */
 #include <QtGui>
 #include "control_panel/robot_tab.h"
+#include <stdio.h>
 
-/******************************************************************************
- * Function:    RobotTab
- * Author:      Matt Richard, Scott Logan
- * Parameters:  RobotConfig *new_robot_config -
- *              QWidget *parent - the parent widget
- * Returns:     None
- * Description: Constructor.
- *****************************************************************************/
 RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
 	QWidget(parent), raw_data_display(NULL), processed_data_display(NULL)
 {
@@ -327,19 +316,34 @@ void RobotTab::keyReleaseEvent(QKeyEvent *event)
 	event->accept();
 }
 
-void RobotTab::disableKeyboard()
+void RobotTab::setRCMode(int rc_mode)
 {
-    use_keyboard = false;
-}
+    if(rc_mode == Globals::Disabled)
+    {
+        use_keyboard = false;
+        if(robot_config->controls.used)
+            node_manager->joystick_node->unsubscribe();
 
-void RobotTab::enableKeyboard()
-{
-    use_keyboard = true;
-}
+        data_pane->setRCModeText("Disabled");
+    }
+    else if(rc_mode == Globals::Keyboard)
+    {
+        use_keyboard = true;
+        if(robot_config->controls.used)
+            node_manager->joystick_node->unsubscribe();
 
-void RobotTab::setRCMode(const QString &mode)
-{
-    data_pane->setRCModeText(mode);
+        data_pane->setRCModeText("Keyboard");
+    }
+    else if(rc_mode == Globals::Joystick)
+    {
+        use_keyboard = false;
+        if(robot_config->controls.used)
+            node_manager->joystick_node->subscribe();
+
+        data_pane->setRCModeText("Joystick");
+    }
+    else
+        printf("Unknown RC mode: %d\n", rc_mode);
 }
 
 /******************************************************************************

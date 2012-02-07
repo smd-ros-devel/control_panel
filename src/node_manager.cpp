@@ -1,20 +1,13 @@
-/******************************************************************************
- * node_manager.cpp
- *
- * Author:      Matt Richard, Scott Logan
- * Date:        Aug 4, 2011
- * Description: Handles all ROS nodes for a single robot.
- *****************************************************************************/
+/* @todo Add license here */
 
+/**
+ * \file   node_manager.cpp
+ * \date   Aug 4, 2011
+ * \author Matt Richard, Scott K Logan
+ */
 #include "control_panel/node_manager.h"
+#include <stdio.h>
 
-/******************************************************************************
- * Function:    NodeManager
- * Author:      Matt Richard, Scott Logan
- * Parameters:  struct RobotConfig *new_robot_config - 
- * Returns:     None
- * Description: Constructor.
- *****************************************************************************/
 NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	camera_node(NULL), control_node(NULL), command_node(NULL),
 	diagnostic_node(NULL), gps_node(NULL), imu_node(NULL), joint_node(NULL),
@@ -27,6 +20,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
     imu_node_list = new QList<ImuNode *>;
     odom_node_list = new QList<OdometryNode *>;
 
+    // Create the node handle and set the local callback queue
 	nh_ptr = new ros::NodeHandle(robot_config->nameSpace.toStdString());
 	nh_ptr->setCallbackQueue(&robot_callback_queue);
 
@@ -37,40 +31,28 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
     {
 		control_node = new ControlNode(nh_ptr);
         control_node->setTopic(robot_config->controls.drive->topicName.toStdString());
+
         pub_timer = new QTimer(this);
         connect(pub_timer, SIGNAL(timeout()), control_node, SLOT(publish()));
+
+        joystick_node = new JoystickNode(nh_ptr);
+        connect(joystick_node, SIGNAL(axis_event(int, double)),
+            this, SLOT(joystickAxisChanged(int, double)));
+        connect(joystick_node, SIGNAL(button_event(int, bool)),
+            this, SLOT(joystickButtonChanged(int, bool)));
     }
     if(robot_config->commands.used)
 		command_node = new CommandNode(nh_ptr);
 	if(robot_config->diagnostics.used)
 		diagnostic_node = new DiagnosticNode(nh_ptr);
-	//if(robot_config->sensors.gps)
-	//	gps_node = new GpsNode(nh_ptr);
-	//if(robot_config->sensors.imu)
-	//	imu_node = new ImuNode(nh_ptr);
 	if(false)
 		joint_node = new JointNode(nh_ptr);
 	if(robot_config->sensors.lasers)
 		laser_node = new LaserNode(nh_ptr);
 	if(robot_config->sensors.maps)
 		map_node = new MapNode(nh_ptr);
-	//if(false)
-	//	odometry_node = new OdometryNode(nh_ptr);
     if(robot_config->sensors.range)
         range_node = new RangeNode(nh_ptr);
-}
-
-/******************************************************************************
- * Function:    ~NodeManager
- * Author:      Matt Richard
- * Parameters:  None
- * Returns:     None
- * Description: Deconstructor
- *****************************************************************************/
-NodeManager::~NodeManager()
-{
-	if(connected)
-		stop();
 }
 
 /******************************************************************************
@@ -261,3 +243,72 @@ RangeNode *NodeManager::addRangeNode()
     return range_node;
 }
 */
+
+
+void NodeManager::joystickAxisChanged(int axis, double value)
+{
+	if(connected)
+	{
+		// Joystick mapping here
+		if(axis == 0 && control_node)
+			control_node->setLinearY(value);
+		else if(axis == 1 && control_node)
+			control_node->setLinearX(value);
+		else if(axis == 2 && control_node)
+			control_node->setAngularZ(value);
+		else if(axis == 3 && control_node)
+			control_node->setLinearZ(value);
+	}
+}
+
+void NodeManager::joystickButtonChanged(int button, bool state)
+{
+	if(connected && state)
+	{
+		// Joystick mapping here
+		if(button == 14)
+		{
+			// Takeoff Message
+			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
+			while(custom_temp != NULL)
+			{
+				if(custom_temp->name == "takeoff")
+				    command_node->callEmpty(custom_temp->topicName);
+				custom_temp = custom_temp->next;
+			}
+		}
+		if(button == 13)
+		{
+			// Land Message
+			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
+			while(custom_temp != NULL)
+			{
+				if(custom_temp->name == "land")
+					command_node->callEmpty(custom_temp->topicName);
+				custom_temp = custom_temp->next;
+			}
+		}
+		if(button == 12)
+		{
+			// Reset Message
+			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
+			while(custom_temp != NULL)
+			{
+				if(custom_temp->name == "Reset")
+					command_node->callEmpty(custom_temp->topicName);
+				custom_temp = custom_temp->next;
+			}
+		}
+		if(button == 15)
+		{
+			// Land Message
+			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
+			while(custom_temp != NULL)
+			{
+				if(custom_temp->name == "Camera Toggle")
+					command_node->callEmpty(custom_temp->topicName);
+				custom_temp = custom_temp->next;
+			}
+		}
+	}
+}

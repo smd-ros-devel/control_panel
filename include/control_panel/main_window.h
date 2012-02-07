@@ -58,8 +58,8 @@ QT_END_NAMESPACE
 #include "robot_tab.h"
 #include "robot_config_file_dialog.h"
 #include "master_settings_dialog.h"
-#include "nodes/joystick_node.h"
-#include "nodes/qt_node.h"
+//#include "nodes/joystick_node.h"
+//#include "nodes/qt_node.h"
 #include "globals.h"
 
 
@@ -94,8 +94,8 @@ class MainWindow : public QMainWindow
 		void newRobotConfigFile();
 		void openTabInWindow();
 		//void openWidgetInWindow();
-		void updateJoystickAxis(int axis, double value);
-		void updateJoystickButton(int axis, bool state);
+		//void updateJoystickAxis(int axis, double value);
+		//void updateJoystickButton(int axis, bool state);
 		void startConnection();
         void stopConnection();
 		void tabChanged(int index);
@@ -150,9 +150,9 @@ class MainWindow : public QMainWindow
 		QActionGroup *robot_mode_actiongroup;
 		QActionGroup *robot_rc_actiongroup;
 
-		JoystickNode *joystick_node;
+//		JoystickNode *joystick_node;
 
-        QtNode *qt_node;
+//        QtNode *qt_node;
 };
 
 #endif // CONTROL_PANEL_MAIN_WINDOW_H
