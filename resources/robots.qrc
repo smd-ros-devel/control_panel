@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>robots/ardrone1.xml</file>
+        <file>robots/ardrone2.xml</file>
+        <file>robots/ardrone3.xml</file>
+        <file>robots/asctec1.xml</file>
+        <file>robots/erratic.xml</file>
+        <file>robots/fsm1.xml</file>
+        <file>robots/ghetto_bot1.xml</file>
+        <file>robots/nao.xml</file>
+        <file>robots/penumbra.xml</file>
+        <file>robots/pr2.xml</file>
+        <file>robots/smp1.xml</file>
+        <file>robots/test_robot.xml</file>
+        <file>robots/turtlebot.xml</file>
+    </qresource>
+</RCC>

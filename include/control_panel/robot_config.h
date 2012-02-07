@@ -1,0 +1,516 @@
+/******************************************************************************
+** robot_config.h
+**
+** Author:      Scott K Logan
+** Date:        Dec 5, 2011
+** Description: RobotConfig is the set of data that defines a robot's physical
+**              and sensory configuration.
+******************************************************************************/
+
+#ifndef CONTROL_PANEL_ROBOT_CONFIG_H
+#define CONTROL_PANEL_ROBOT_CONFIG_H
+
+#include <QObject>
+#include <QFile>
+#include <QDomDocument>
+#include <QImage>
+#include <iostream>
+
+//QT_BEGIN_NAMESPACE
+//class QImage;
+//class QFile;
+//class QDomDocument;
+//QT_END_NAMESPACE
+
+struct RobotCamera
+{
+	public:
+		/* linked list */
+		struct RobotCamera *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+
+		/* constructor */
+		RobotCamera() : next(NULL), name("Unknown Camera"), topicName("unknown_camera")
+		{
+		}
+};
+
+struct RobotLaser
+{
+	public:
+		/* linked list */
+		struct RobotLaser *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+
+		/* constructor */
+		RobotLaser() : next(NULL), name("Unknown Laser"), topicName("unknown_laser")
+		{
+		}
+};
+
+struct RobotMap
+{
+    public:
+        /* linked list */
+        struct RobotMap *next;
+
+        /* stored data */
+        QString name;
+        QString topicName;
+
+        /*constructor */
+        RobotMap() : next(NULL), name("Unknown Map"), topicName("unknown_map") {}
+};
+
+struct RobotGPS
+{
+	public:
+		/* linked list */
+		struct RobotGPS *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+		bool longitude;
+		bool latitude;
+		bool altitude;
+		bool covariance;
+
+		/* constructor */
+		RobotGPS() : next(NULL), name("Unknown GPS"), topicName("unknown_gps"), longitude(false), latitude(false), altitude(false), covariance(false)
+		{
+		}
+};
+
+struct RobotCompass
+{
+	public:
+		/* linked list */
+		struct RobotCompass *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+
+		/* constructor */
+		RobotCompass() : next(NULL), name("Unknown Compass"), topicName("unknown_compass")
+		{
+		}
+};
+
+struct RobotIMU
+{
+	public:
+		/* linked list */
+		struct RobotIMU *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+        bool roll;
+        bool pitch;
+        bool yaw;
+		bool angularVelocity;
+		bool linearAcceleration;
+		bool hideAttitude;
+		bool hideHeading;
+		bool hideLabels;
+
+		/* constructor */
+		RobotIMU() : next(NULL), name("Unknown IMU"), topicName("unknown_imu/data"), roll(false), pitch(false), yaw(false), angularVelocity(false), linearAcceleration(false), hideAttitude(false), hideHeading(false), hideLabels(false)
+		{
+		}
+};
+
+struct RobotOdometry
+{
+    public:
+        /* linked list */
+        struct RobotOdometry *next;
+
+        /* stored data */
+        QString name;
+        QString topicName;
+        bool position;
+        bool orientation;
+        bool linearVelocity;
+        bool angularVelocity;
+        bool hideAttitude;
+        bool hideHeading;
+        bool hideLabels;
+
+        /* constructor*/
+        RobotOdometry() : next(NULL), name("Unknown Odometry"), topicName("unknown_odometry"), position(false), orientation(false), linearVelocity(false), angularVelocity(false), hideAttitude(false), hideHeading(false), hideLabels(false) { }
+};
+
+struct RobotRange
+{
+	public:
+		/* linked list */
+		struct RobotRange *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+
+		/* constructor */
+		RobotRange() : next(NULL), name("Unknown Range"), topicName("unknown_range")
+		{
+		}
+};
+
+struct RobotSensors
+{
+	public:
+		/* sensor list */
+		struct RobotCamera *cameras;
+		struct RobotLaser *lasers;
+		struct RobotMap *maps;
+		struct RobotGPS *gps;
+		struct RobotCompass *compass;
+		struct RobotIMU *imu;
+        struct RobotOdometry *odometry;
+		struct RobotRange *range;
+
+		/* constructor */
+		RobotSensors() : cameras(NULL), lasers(NULL), maps(NULL), gps(NULL), compass(NULL), imu(NULL), odometry(NULL), range(NULL)
+		{
+		}
+
+		/* destructor */
+		~RobotSensors()
+		{
+			defaults();
+		}
+
+		/* set all to defaults */
+		void defaults()
+		{
+			struct RobotCamera *tmp_camera;
+			while(cameras != NULL)
+			{
+				tmp_camera = cameras;
+				cameras = cameras->next;
+				delete tmp_camera;
+			}
+			struct RobotLaser *tmp_laser;
+			while(lasers != NULL)
+			{
+				tmp_laser = lasers;
+				lasers = lasers->next;
+				delete tmp_laser;
+			}
+			struct RobotMap *tmp_map;
+			while(maps != NULL)
+			{
+				tmp_map = maps;
+				maps = maps->next;
+				delete tmp_map;
+			}
+			struct RobotGPS *tmp_gps;
+			while(gps != NULL)
+			{
+				tmp_gps = gps;
+				gps = gps->next;
+				delete tmp_gps;
+			}
+			struct RobotCompass *tmp_compass;
+			while(compass != NULL)
+			{
+				tmp_compass = compass;
+				compass = compass->next;
+				delete tmp_compass;
+			}
+			struct RobotIMU *tmp_imu;
+			while(imu != NULL)
+			{
+				tmp_imu = imu;
+				imu = imu->next;
+				delete tmp_imu;
+			}
+            struct RobotOdometry *tmp_odometry;
+            while(odometry != NULL)
+            {
+                tmp_odometry = odometry;
+                odometry = odometry->next;
+                delete tmp_odometry;
+            }
+			struct RobotRange *tmp_range;
+			while(range != NULL)
+			{
+				tmp_range = range;
+				range = range->next;
+				delete tmp_range;
+			}
+		}
+};
+
+struct RobotTemperature
+{
+	public:
+		/* linked list */
+		struct RobotTemperature *next;
+
+		/* stored data */
+		QString name;
+		float minRange;
+		float maxRange;
+		QString units;
+
+		/* constructor */
+		RobotTemperature() : next(NULL), name("Unknown Temperature"), minRange(0), maxRange(0), units("Celcius")
+		{
+		}
+};
+
+struct RobotVoltage
+{
+	public:
+		/* linked list */
+		struct RobotVoltage *next;
+
+		/* stored data */
+		QString name;
+		float minRange;
+		float maxRange;
+		float operatingVoltage;
+
+		/* constructor */
+		RobotVoltage() : next(NULL), name("Unknown Temperature"), minRange(0), maxRange(0), operatingVoltage(0)
+		{
+		}
+};
+
+struct RobotBatteryLevel
+{
+	public:
+		/* linked list */
+		struct RobotBatteryLevel *next;
+
+		/* stored data */
+		QString name;
+		float max;
+
+		/* constructor */
+		RobotBatteryLevel() : next(NULL), name("Unknown Battery Level"), max(0)
+		{
+		}
+};
+
+struct RobotDiagnostics
+{
+	public:
+		/* stored data */
+		QString topicName;
+		bool used;
+
+		/* diagnostics list */
+		struct RobotTemperature *temperature;
+		struct RobotVoltage *voltage;
+		struct RobotBatteryLevel *batteryLevel;
+
+		/* constructor */
+		RobotDiagnostics() : topicName("diagnostics"), used(false), temperature(NULL), voltage(NULL), batteryLevel(NULL)
+		{
+		}
+
+		/* destructor */
+		~RobotDiagnostics()
+		{
+			defaults();
+		}
+
+		/* set all to defaults */
+		void defaults()
+		{
+			topicName = "diagnostics";
+			used = false;
+			struct RobotTemperature *tmp_temperature;
+			while(temperature != NULL)
+			{
+				tmp_temperature = temperature;
+				temperature = temperature->next;
+				delete tmp_temperature;
+			}
+			struct RobotVoltage *tmp_voltage;
+			while(voltage != NULL)
+			{
+				tmp_voltage = voltage;
+				voltage = voltage->next;
+				delete tmp_voltage;
+			}
+			struct RobotBatteryLevel *tmp_batteryLevel;
+			while(batteryLevel != NULL)
+			{
+				tmp_batteryLevel = batteryLevel;
+				batteryLevel = batteryLevel->next;
+				delete tmp_batteryLevel;
+			}
+		}
+};
+
+struct RobotCommandCustom
+{
+	public:
+		/* linked list */
+		struct RobotCommandCustom *next;
+
+		/* stored data */
+		QString name;
+		QString topicName;
+
+		/* constructor */
+		RobotCommandCustom() : next(NULL), name("Unknown Temperature"), topicName("unknown_custom_command")
+		{
+		}
+};
+
+struct RobotCommands
+{
+	public:
+		/* stored data */
+		bool used;
+
+		/* commands list */
+		struct RobotCommandCustom *custom;
+
+		/* constructor */
+		RobotCommands() : used(false), custom(NULL)
+		{
+		}
+
+		/* destructor */
+		~RobotCommands()
+		{
+			defaults();
+		}
+
+		/* set all to defaults */
+		void defaults()
+		{
+			used = false;
+			struct RobotCommandCustom *tmp_custom;
+			while(custom != NULL)
+			{
+				tmp_custom = custom;
+				custom = custom->next;
+				delete tmp_custom;
+			}
+		}
+};
+
+struct RobotDrive
+{
+	public:
+		/* linked list */
+		struct RobotDrive *next;
+
+		/* stored data */
+		QString topicName;
+
+		/* constructor */
+		RobotDrive() : next(NULL), topicName("unknown_drive")
+		{
+		}
+};
+
+struct RobotControls
+{
+	public:
+		/* stored data */
+		bool used;
+
+		/* controls list */
+		struct RobotDrive *drive;
+
+		/* constructor */
+		RobotControls() : used(false), drive(NULL)
+		{
+		}
+
+		/* destructor */
+		~RobotControls()
+		{
+			defaults();
+		}
+
+		/* set all to defaults */
+		void defaults()
+		{
+			used = false;
+			struct RobotDrive *tmp_drive;
+			while(drive != NULL)
+			{
+				tmp_drive = drive;
+				drive = drive->next;
+				delete tmp_drive;
+			}
+		}
+};
+
+struct RobotConfig : public QObject
+{
+	Q_OBJECT
+
+	public:
+		/* background data */
+		QString configFilePath;
+
+		/* general data */
+		QString robotName;
+		QString system;
+		QString driveSystem;
+		QString imageFilePath;
+		QImage image;
+        QString nameSpace;
+
+		/* data */
+		struct RobotSensors sensors;
+		struct RobotDiagnostics diagnostics;
+		struct RobotCommands commands;
+		struct RobotControls controls;
+
+		/* constructor */
+		RobotConfig();
+
+		/* set all to defaults */
+		void defaults();
+
+		/* load from QFile */
+		int loadFrom(QFile *, bool = false);
+
+		/* proper name */
+		QString getRobotName();
+
+	private:
+		/* process a core configuration element */
+		void processElement(QDomElement, bool);
+
+		/* process data */
+		void processSensors(QDomElement);
+		void processDiagnostics(QDomElement);
+		void processCommands(QDomElement);
+		void processControls(QDomElement);
+
+		void addCamera(QDomElement);
+		void addLaser(QDomElement);
+		void addMap(QDomElement);
+		void addGPS(QDomElement);
+		void addCompass(QDomElement);
+		void addIMU(QDomElement);
+        void addOdometry(QDomElement);
+		void addRange(QDomElement);
+		void addTemperature(QDomElement);
+		void addVoltage(QDomElement);
+		void addBatteryLevel(QDomElement);
+		void addCommandCustom(QDomElement);
+		void addDrive(QDomElement);
+};
+
+#endif // CONTROL_PANEL_ROBOT_CONFIG_H

@@ -1,0 +1,8 @@
+<robot>
+  <robotName>smp1</robotName>
+  <system>UGV</system>
+  <driveSystem>4 Wheel Skid-steer</driveSystem>
+  <imageFile>smp.jpg</imageFile>
+  <nameSpace>smp1</nameSpace>
+
+</robot>

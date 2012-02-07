@@ -1,0 +1,30 @@
+<robot>
+  <robotName>ghetto_bot1</robotName>
+  <system>Cadillac</system>
+  <driveSystem>Hydraulics and 24s</driveSystem>
+  <imageFile>ghetto_bot.jpg</imageFile>
+  <nameSpace>ghetto_bot1</nameSpace>
+
+  <sensors>
+    <camera>
+      <name>Color Webcam</name>
+      <topicName>usb_cam/image_raw</topicName>
+    </camera>
+    <imu>
+     <topicName>imu/data</topicName>
+    </imu>
+  </sensors>
+
+  <diagnostics>
+    <topicName>diagnostics</topicName>
+  </diagnostics>
+
+  <commands>
+  </commands>
+
+  <controls>
+    <drive>
+      <topicName>cmd_vel</topicName>
+    </drive>
+  </controls>
+</robot>

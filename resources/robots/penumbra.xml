@@ -1,0 +1,144 @@
+<robot>
+  <robotName>penumbra</robotName>
+  <system>UGV</system>
+  <driveSystem>Four wheeled two casters</driveSystem>
+  <imageFile></imageFile>
+  <nameSpace>penumbra</nameSpace>
+
+  <sensors>
+    <camera>
+      <name>Color Video</name>
+      <topicName>camera/image_raw</topicName>
+    </camera>
+
+    <laser>
+      <name>Laser Scan</name>
+      <topicName>base_scan</topicName>
+    </laser>
+
+    <gps>
+      <name>DGPS</name>
+      <topicName>gps</topicName>
+      <latitude />
+      <longitude />
+    </gps>
+
+    <imu>
+      <name>Heading</name>
+      <topicName>imu/data</topicName>
+    </imu>
+  </sensors>
+
+  <diagnostics>
+    <topicName>diagnostics</topicName>
+
+    <voltage>
+      <name>Battery Voltage</name>
+      <operatingVoltage>24.0</operatingVoltage>
+      <minRange>0.0</minRange>
+      <maxRange>30.0</maxRange>
+    </voltage>
+
+    <voltage>
+      <name>12V Regulator 1</name>
+      <operatingVoltage>12.0</operatingVoltage>
+      <minRange>0.0</minRange>
+      <maxRange>15.0</maxRange>
+    </voltage>
+
+    <temperature>
+      <name>12V Regulator 1 Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <voltage>
+      <name>12V Regulator 2</name>
+      <operatingVoltage>12.0</operatingVoltage>
+      <minRange>0.0</minRange>
+      <maxRange>15.0</maxRange>
+    </voltage>
+
+    <temperature>
+      <name>12V Regulator 2 Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <voltage>
+      <name>5V Regulator</name>
+      <operatingVoltage>5.0</operatingVoltage>
+      <minRange>0.0</minRange>
+      <maxRange>6.0</maxRange>
+    </voltage>
+
+    <temperature>
+      <name>5V Regulator Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <temperature>
+      <name>Processor Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </tempurature>
+
+    <temperature>
+      <name>Ambient Case Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <computer>
+      <name>Main Computer</name>
+      <cores>4</cores>
+      <clock>3.0</clock>
+      <memory>8.0</memory>
+    </computer>
+
+    <!--fan>
+      <name>Fan State</name>
+      <states>OFF LOW HIGH</states>
+    </fan-->
+
+    <temperature>
+      <name>Motor Controller Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <temperature>
+      <name>Outside Temp</name>
+      <minRange></minRange>
+      <maxRange></maxRange>
+      <units>Fahrenheit</units>
+    </temperature>
+
+    <temperature>
+      <name>Left Wheel Motor Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <temperature>
+      <name>Right Wheel Motor Temp</name>
+      <minRange>0.0</minRange>
+      <maxRange>175.0</maxRange>
+      <units>Celcius</units>
+    </temperature>
+
+    <velocity>
+      <name>Average Forward Velocity</name>
+      <minRange>-10.0</minRange>
+      <maxRange>10.0</maxRange>
+    </velocity>
+  </diagnostics>
+</robot>

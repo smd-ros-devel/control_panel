@@ -1,0 +1,188 @@
+<robot>
+  <robotName>PR2</robotName>
+  <system>UGV</system>
+  <driveSystem>Differential drive with holonomic wheels</driveSystem>
+  <imageFile>pr2.png</imageFile>
+  <nameSpace></nameSpace>
+
+  <sensors>
+    <laser>
+      <name>Base Scan</name>
+      <topicName>base_scan</topicName>
+    </laser>
+
+    <laser>
+      <name>Tilt Scan</name>
+      <topicName>tilt_scan</topicName>
+    </laser>
+
+    <camera>
+      <name>Prosilica Camera</name>
+      <topicName>prosilica/image_raw</topicName>
+    </camera>
+
+    <camera>
+      <name>Left Forearm Color</name>
+      <topicName>l_forearm_cam/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Left Forearm Monochrome</name>
+      <topicName>l_forearm_cam/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Left Forearm Rectified</name>
+      <topicName>l_forearm_cam/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Left Forearm Rectified Color</name>
+      <topicName>l_forearm_cam/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Right Forearm Color</name>
+      <topicName>r_forearm_cam/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Right Forearm Monochrome</name>
+      <topicName>r_forearm_cam/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Right Forearm Rectified</name>
+      <topicName>r_forearm_cam/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Right Forearm Rectified Color</name>
+      <topicName>r_forearm_cam/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Narrow Stereo Left Color</name>
+      <topicName>narrow_stereo/left/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Left Monochrome</name>
+      <topicName>narrow_stereo/left/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Left Rectified</name>
+      <topicName>narrow_stereo/left/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Left Rect Color</name>
+      <topicName>narrow_stereo/left/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Narrow Stereo Right Color</name>
+      <topicName>narrow_stereo/right/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Right Monochrome</name>
+      <topicName>narrow_stereo/right/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Right Rectified</name>
+      <topicName>narrow_stereo/right/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Right Rect Color</name>
+      <topicName>narrow_stereo/right/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Narrow Stereo Textured Left Color</name>
+      <topicName>narrow_stereo_textured/left/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Textured Left Monochrome</name>
+      <topicName>narrow_stereo_textured/left/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Textured Left Rectified</name>
+      <topicName>narrow_stereo_textured/left/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Textured Left Rect Color</name>
+      <topicName>narrow_stereo_textured/left/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Narrow Stereo Textured Right Color</name>
+      <topicName>narrow_stereo_textured/right/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Textured Right Monochrome</name>
+      <topicName>narrow_stereo_textured/right/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Textured Right Rectified</name>
+      <topicName>narrow_stereo_textured/right/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Narrow Stereo Textured Right Rect Color</name>
+      <topicName>narrow_stereo_textured/right/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Wide Stereo Left Color</name>
+      <topicName>wide_stereo/left/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Wide Stereo Left Monochrome</name>
+      <topicName>wide_stereo/left/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Wide Stereo Left Rectified</name>
+      <topicName>wide_stereo/left/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Wide Stereo Left Rect Color</name>
+      <topicName>wide_stereo/left/image_rect_color</topicName>
+    </camera>
+
+    <camera>
+      <name>Wide Stereo Right Color</name>
+      <topicName>wide_stereo/right/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Wide Stereo Right Monochrome</name>
+      <topicName>wide_stereo/right/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Wide Stereo Right Rectified</name>
+      <topicName>wide_stereo/right/image_rect</topicName>
+    </camera>
+    <camera>
+      <name>Wide Stereo Right Rect Color</name>
+      <topicName>wide_stereo/right/image_rect_color</topicName>
+    </camera>
+
+    <odometry>
+      <name>Base Odometry</name>
+      <topicName>base_odometry/odom</topicName>
+      <position />
+      <orientation />
+      <linearVelocity />
+      <angularVelocity />
+    </odometry>
+
+    <imu>
+      <name>Torso Lift IMU</name>
+      <topicName>torso_lift_imu/data</topicName>
+      <roll />
+      <pitch />
+      <yaw />
+      <angularVelocity />
+      <linearAcceleration />
+      <hideAttitude />
+      <hideHeading />
+    </imu>
+
+  </sensors>
+
+  <controls>
+    <drive>
+      <topicName>base_controller/command</topicName>
+    </drive>
+  </controls>
+</robot>

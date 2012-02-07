@@ -1,0 +1,31 @@
+<package>
+  <description brief="control panel">
+
+     Control Panel
+
+  </description>
+  <author>Matt Richard, Scott K Logan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/control_panel</url>
+
+
+  <!-- depend package="tf"/ -->
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="diagnostic_msgs"/>
+  <depend package="stereo_msgs"/>
+  <!-- depend package="laser_geometry"/ -->
+  <depend package="image_transport"/>
+  <depend package="cv_bridge"/>
+  <!-- depend package="pcl_ros"/ -->
+  <!-- depend package="pcl"/ -->
+  <depend package="mav_msgs"/>
+
+  <rosdep name="qt4"/>
+  
+</package>
