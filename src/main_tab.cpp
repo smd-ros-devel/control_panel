@@ -41,6 +41,7 @@
  */
 #include <QtGui>
 #include "control_panel/main_tab.h"
+#include <iostream>
 #include <stdio.h>
 
 

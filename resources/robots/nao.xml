@@ -1,5 +1,5 @@
 <robot>
-  <robotName>nao</robotName>
+  <robotName>NAO</robotName>
   <system>Humanoid</system>
   <driveSystem>Bipedal</driveSystem>
   <imageFile>nao.jpg</imageFile>

@@ -10,7 +10,9 @@
       <name>Base Scan</name>
       <topicName>base_scan/scan</topicName>
     </laser>
+  </sensors>
 
+  <processedData>
     <odometry>
       <name>Odometry</name>
       <topicName>odom</topicName>
@@ -19,7 +21,7 @@
       <linearVelocity />
       <angularVelocity />
     </odometry>
-  </sensors>
+  </processedData>
 
   <joints>
     <topicName>joint_states</topicName>

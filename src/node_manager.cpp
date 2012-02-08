@@ -49,7 +49,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		joint_node = new JointNode(nh_ptr);
 	if(robot_config->sensors.lasers)
 		laser_node = new LaserNode(nh_ptr);
-	if(robot_config->sensors.maps)
+	if(robot_config->processedData.maps)
 		map_node = new MapNode(nh_ptr);
     if(robot_config->sensors.range)
         range_node = new RangeNode(nh_ptr);

@@ -1,12 +1,11 @@
-/******************************************************************************
-** robot_config.h
-**
-** Author:      Scott K Logan
-** Date:        Dec 5, 2011
-** Description: RobotConfig is the set of data that defines a robot's physical
-**              and sensory configuration.
-******************************************************************************/
+/* @todo Add license here */
 
+/**
+ * \file   robot_config.h
+ * \date   Dec 5, 2011
+ * \author Scott K Logan, Matt Richard
+ * \brief  RobotConfig is the set of data that defines a robot's physical and sensory configuration.
+ */
 #ifndef CONTROL_PANEL_ROBOT_CONFIG_H
 #define CONTROL_PANEL_ROBOT_CONFIG_H
 
@@ -14,13 +13,9 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QImage>
-#include <iostream>
 
-//QT_BEGIN_NAMESPACE
-//class QImage;
-//class QFile;
-//class QDomDocument;
-//QT_END_NAMESPACE
+
+///////////////////////////// Sensors //////////////////////////////
 
 struct RobotCamera
 {
@@ -52,20 +47,6 @@ struct RobotLaser
 		RobotLaser() : next(NULL), name("Unknown Laser"), topicName("unknown_laser")
 		{
 		}
-};
-
-struct RobotMap
-{
-    public:
-        /* linked list */
-        struct RobotMap *next;
-
-        /* stored data */
-        QString name;
-        QString topicName;
-
-        /*constructor */
-        RobotMap() : next(NULL), name("Unknown Map"), topicName("unknown_map") {}
 };
 
 struct RobotGPS
@@ -128,27 +109,6 @@ struct RobotIMU
 		}
 };
 
-struct RobotOdometry
-{
-    public:
-        /* linked list */
-        struct RobotOdometry *next;
-
-        /* stored data */
-        QString name;
-        QString topicName;
-        bool position;
-        bool orientation;
-        bool linearVelocity;
-        bool angularVelocity;
-        bool hideAttitude;
-        bool hideHeading;
-        bool hideLabels;
-
-        /* constructor*/
-        RobotOdometry() : next(NULL), name("Unknown Odometry"), topicName("unknown_odometry"), position(false), orientation(false), linearVelocity(false), angularVelocity(false), hideAttitude(false), hideHeading(false), hideLabels(false) { }
-};
-
 struct RobotRange
 {
 	public:
@@ -171,15 +131,13 @@ struct RobotSensors
 		/* sensor list */
 		struct RobotCamera *cameras;
 		struct RobotLaser *lasers;
-		struct RobotMap *maps;
 		struct RobotGPS *gps;
 		struct RobotCompass *compass;
 		struct RobotIMU *imu;
-        struct RobotOdometry *odometry;
 		struct RobotRange *range;
 
 		/* constructor */
-		RobotSensors() : cameras(NULL), lasers(NULL), maps(NULL), gps(NULL), compass(NULL), imu(NULL), odometry(NULL), range(NULL)
+		RobotSensors() : cameras(NULL), lasers(NULL), gps(NULL), compass(NULL), imu(NULL), range(NULL)
 		{
 		}
 
@@ -206,13 +164,6 @@ struct RobotSensors
 				lasers = lasers->next;
 				delete tmp_laser;
 			}
-			struct RobotMap *tmp_map;
-			while(maps != NULL)
-			{
-				tmp_map = maps;
-				maps = maps->next;
-				delete tmp_map;
-			}
 			struct RobotGPS *tmp_gps;
 			while(gps != NULL)
 			{
@@ -234,13 +185,6 @@ struct RobotSensors
 				imu = imu->next;
 				delete tmp_imu;
 			}
-            struct RobotOdometry *tmp_odometry;
-            while(odometry != NULL)
-            {
-                tmp_odometry = odometry;
-                odometry = odometry->next;
-                delete tmp_odometry;
-            }
 			struct RobotRange *tmp_range;
 			while(range != NULL)
 			{
@@ -250,6 +194,125 @@ struct RobotSensors
 			}
 		}
 };
+
+////////////////////// End Sensors //////////////////////////
+
+
+//////////////////// Processed Data /////////////////////////
+
+/**
+ * \struct RobotMap
+ * \brief  @todo Fill this out
+ */
+struct RobotMap
+{
+    public:
+        /* linked list */
+        struct RobotMap *next;
+
+        /* stored data */
+        QString name;
+        QString topicName;
+
+        /**
+         * \brief Constructor. Sets member values to default values.
+         */
+        RobotMap()
+            : next(NULL),
+              name("Unknown Map"),
+              topicName("unknown_map") { }
+};
+
+/**
+ * \struct RobotOdometry
+ * \brief  @todo Fill this out
+ */
+struct RobotOdometry
+{
+    public:
+        /* linked list */
+        struct RobotOdometry *next;
+
+        /* stored data */
+        QString name;
+        QString topicName;
+        bool position;
+        bool orientation;
+        bool linearVelocity;
+        bool angularVelocity;
+        bool hideAttitude;
+        bool hideHeading;
+        bool hideLabels;
+
+        /**
+         * Constructor. Initializes structure members
+         */
+        RobotOdometry()
+            : next(NULL),
+              name("Unknown Odometry"),
+              topicName("unknown_odometry"),
+              position(false),
+              orientation(false),
+              linearVelocity(false),
+              angularVelocity(false),
+              hideAttitude(false),
+              hideHeading(false),
+              hideLabels(false) 
+        {
+        }
+};
+
+/**
+ * \struct RobotProcessedData
+ * \brief  @todo Fill this out.
+ */
+struct RobotProcessedData
+{
+    public:
+        /* Processed data lists */
+        struct RobotMap *maps;
+        struct RobotOdometry *odometry;
+
+        /**
+         * \brief Constructor
+         */
+        RobotProcessedData()
+            : maps(NULL),
+              odometry(NULL)
+        {
+        }
+
+        /**
+         * \brief Deconstructor. Calls default function.
+         */
+        ~RobotProcessedData() { defaults(); }
+
+        /**
+         * \brief Sets all struct members to their defaults
+         */
+        void defaults()
+        {
+            struct RobotMap *tmp_map;
+            while(maps != NULL)
+            {
+                tmp_map = maps;
+                maps = maps->next;
+                delete tmp_map;
+            }
+            struct RobotOdometry *tmp_odometry;
+            while(odometry != NULL)
+            {
+                tmp_odometry = odometry;
+                odometry = odometry->next;
+                delete tmp_odometry;
+            }
+        }
+};
+
+///////////////////////// End Processed Data //////////////////////////
+
+
+//////////////////////////// Diagnostics ////////////////////////////
 
 struct RobotTemperature
 {
@@ -355,6 +418,11 @@ struct RobotDiagnostics
 		}
 };
 
+///////////////////////////// End Diagnostics /////////////////////////////
+
+
+/////////////////////////// Commands //////////////////////////////////
+
 struct RobotCommandCustom
 {
 	public:
@@ -405,6 +473,11 @@ struct RobotCommands
 		}
 };
 
+////////////////////////// End Commands ///////////////////////////////
+
+
+//////////////////////////// Controls ////////////////////////////////
+
 struct RobotDrive
 {
 	public:
@@ -454,6 +527,10 @@ struct RobotControls
 		}
 };
 
+////////////////////////// End Controls /////////////////////////////
+
+
+
 struct RobotConfig : public QObject
 {
 	Q_OBJECT
@@ -472,6 +549,7 @@ struct RobotConfig : public QObject
 
 		/* data */
 		struct RobotSensors sensors;
+        struct RobotProcessedData processedData;
 		struct RobotDiagnostics diagnostics;
 		struct RobotCommands commands;
 		struct RobotControls controls;
@@ -494,18 +572,19 @@ struct RobotConfig : public QObject
 
 		/* process data */
 		void processSensors(QDomElement);
+        void processProcessedData(QDomElement);
 		void processDiagnostics(QDomElement);
 		void processCommands(QDomElement);
 		void processControls(QDomElement);
 
 		void addCamera(QDomElement);
 		void addLaser(QDomElement);
-		void addMap(QDomElement);
 		void addGPS(QDomElement);
 		void addCompass(QDomElement);
 		void addIMU(QDomElement);
-        void addOdometry(QDomElement);
 		void addRange(QDomElement);
+        void addMap(QDomElement);
+        void addOdometry(QDomElement);
 		void addTemperature(QDomElement);
 		void addVoltage(QDomElement);
 		void addBatteryLevel(QDomElement);

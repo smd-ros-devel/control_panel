@@ -31,12 +31,12 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
     }
 
     // Create processed display pane if the config file has maps
-    if(robot_config->sensors.maps)
+    if(robot_config->processedData.maps)
     {
         processed_data_display = new DisplayPane;
         processed_data_display->setTitle("Processed Data");
 
-        RobotMap *map = robot_config->sensors.maps;
+        RobotMap *map = robot_config->processedData.maps;
         while(map != NULL)
         {
             processed_data_display->addSource(map->name);
@@ -391,7 +391,7 @@ void RobotTab::setupDataPane()
 {
     data_pane = new DataPane;
 
-    RobotOdometry *odom = robot_config->sensors.odometry;
+    RobotOdometry *odom = robot_config->processedData.odometry;
     while(odom != NULL)
     {
         connect(node_manager->addOdometryNode(odom->topicName.toStdString()),

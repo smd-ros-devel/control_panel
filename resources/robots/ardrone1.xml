@@ -1,5 +1,5 @@
 <robot>
-  <robotName>ardrone1</robotName>
+  <robotName>AR.Drone 1</robotName>
   <system>UAV</system>
   <driveSystem>Quadrotor</driveSystem>
   <imageFile>ardrone.jpg</imageFile>

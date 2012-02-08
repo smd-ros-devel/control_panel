@@ -1,5 +1,5 @@
 <robot>
-  <robotName>asctec1</robotName>
+  <robotName>Asctec 1</robotName>
   <system>UAV</system>
   <driveSystem>Quadrotor</driveSystem>
   <imageFile>asctec.jpg</imageFile>

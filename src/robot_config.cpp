@@ -1,13 +1,10 @@
-/******************************************************************************
-** robot_config.cpp
-**
-** Author:      Scott K Logan
-** Date:        Dec 5, 2011
-** Description: RobotConfig is the set of data that defines a robot's physical
-**              and sensory configuration.
-******************************************************************************/
-
+/**
+ * \file   robot_config.cpp
+ * \date   Dec 5, 2011
+ * \author Scott K Logan
+ */
 #include "control_panel/robot_config.h"
+#include <iostream>
 
 RobotConfig::RobotConfig()
 {
@@ -24,6 +21,7 @@ void RobotConfig::defaults()
 	image.load(imageFilePath);
     nameSpace = "unknown_namespace";
 	sensors.defaults();
+    processedData.defaults();
 	diagnostics.defaults();
 	commands.defaults();
 	controls.defaults();
@@ -89,6 +87,11 @@ void RobotConfig::processElement(QDomElement e, bool getComponents)
 		if(!e.isNull() && !e.text().isEmpty() && getComponents)
 			processSensors(e);
 	}
+    else if(e.tagName() == "processedData")
+    {
+        if(!e.isNull() && !e.text().isEmpty() && getComponents)
+            processProcessedData(e);
+    }
 	else if(e.tagName() == "diagnostics")
 	{
 		if(!e.isNull() && !e.text().isEmpty() && getComponents)
@@ -118,16 +121,12 @@ void RobotConfig::processSensors(QDomElement e)
 			addCamera(e);
 		else if(e.tagName() == "laser")
 			addLaser(e);
-		else if(e.tagName() == "map")
-			addMap(e);
 		else if(e.tagName() == "gps")
 			addGPS(e);
 		else if(e.tagName() == "compass")
 			addCompass(e);
 		else if(e.tagName() == "imu")
 			addIMU(e);
-        else if(e.tagName() == "odometry")
-            addOdometry(e);
 		else if(e.tagName() == "range")
 			addRange(e);
 		else
@@ -172,25 +171,6 @@ void RobotConfig::addLaser(QDomElement e)
 	}
 	new_laser->next = sensors.lasers;
 	sensors.lasers = new_laser;
-}
-
-void RobotConfig::addMap(QDomElement e)
-{
-    struct RobotMap *new_map = new struct RobotMap;
-    QDomNode n = e.firstChild();
-    while(!n.isNull())
-    {
-        e = n.toElement();
-        if(e.tagName() == "name")
-            new_map->name = e.text();
-        else if(e.tagName() == "topicName")
-            new_map->topicName = e.text();
-        else
-            std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
-        n = n.nextSibling();
-    }
-    new_map->next = sensors.maps;
-    sensors.maps = new_map;
 }
 
 void RobotConfig::addGPS(QDomElement e)
@@ -274,6 +254,61 @@ void RobotConfig::addIMU(QDomElement e)
 	sensors.imu = new_imu;
 }
 
+void RobotConfig::addRange(QDomElement e)
+{
+	struct RobotRange *new_range = new struct RobotRange;
+	QDomNode n = e.firstChild();
+	while(!n.isNull())
+	{
+		e = n.toElement();
+		if(e.tagName() == "name")
+			new_range->name = e.text();
+		else if(e.tagName() == "topicName")
+			new_range->topicName = e.text();
+		else
+			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
+		n = n.nextSibling();
+	}
+	new_range->next = sensors.range;
+	sensors.range = new_range;
+}
+
+/////////////////////////// Processed Data ///////////////////////////
+void RobotConfig::processProcessedData(QDomElement e)
+{
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "map")
+            addMap(e);
+        else if(e.tagName() == "odometry")
+            addOdometry(e);
+        else
+            std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+}
+
+void RobotConfig::addMap(QDomElement e)
+{
+    struct RobotMap *new_map = new struct RobotMap;
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "name")
+            new_map->name = e.text();
+        else if(e.tagName() == "topicName")
+            new_map->topicName = e.text();
+        else
+            std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+    new_map->next = processedData.maps;
+    processedData.maps = new_map;
+}
+
 void RobotConfig::addOdometry(QDomElement e)
 {
     struct RobotOdometry *new_odometry = new struct RobotOdometry;
@@ -300,31 +335,13 @@ void RobotConfig::addOdometry(QDomElement e)
         else if(e.tagName() == "hideLabels")
             new_odometry->hideLabels = true;
         else
-            std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
+            std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    new_odometry->next = sensors.odometry;
-    sensors.odometry = new_odometry;
+    new_odometry->next = processedData.odometry;
+    processedData.odometry = new_odometry;
 }
-
-void RobotConfig::addRange(QDomElement e)
-{
-	struct RobotRange *new_range = new struct RobotRange;
-	QDomNode n = e.firstChild();
-	while(!n.isNull())
-	{
-		e = n.toElement();
-		if(e.tagName() == "name")
-			new_range->name = e.text();
-		else if(e.tagName() == "topicName")
-			new_range->topicName = e.text();
-		else
-			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
-		n = n.nextSibling();
-	}
-	new_range->next = sensors.range;
-	sensors.range = new_range;
-}
+/////////////////////// End Processed Data //////////////////////
 
 void RobotConfig::processDiagnostics(QDomElement e)
 {

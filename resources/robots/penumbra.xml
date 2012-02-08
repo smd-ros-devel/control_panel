@@ -1,5 +1,5 @@
 <robot>
-  <robotName>penumbra</robotName>
+  <robotName>Penumbra</robotName>
   <system>UGV</system>
   <driveSystem>Four wheeled two casters</driveSystem>
   <imageFile></imageFile>

@@ -41,15 +41,6 @@
       <topicName>map</topicName>
     </map>
 
-    <odometry>
-      <name>Odometry</name>
-      <topicName>odom</topicName>
-      <position />
-      <orientation />
-      <linearVelocity />
-      <angularVelocity />
-    </odometry>
-
     <imu>
       <name>IMU</name>
       <topicName>imu/data</topicName>
@@ -62,6 +53,17 @@
       <hideHeading />
     </imu>
   </sensors>
+
+  <processedData>
+    <odometry>
+      <name>Odometry</name>
+      <topicName>odom</topicName>
+      <position />
+      <orientation />
+      <linearVelocity />
+      <angularVelocity />
+    </odometry>
+  </processedData>
 
   <commands>
   </commands>

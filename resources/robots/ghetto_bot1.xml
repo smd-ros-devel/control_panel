@@ -1,5 +1,5 @@
 <robot>
-  <robotName>ghetto_bot1</robotName>
+  <robotName>Ghetto Bot 1</robotName>
   <system>Cadillac</system>
   <driveSystem>Hydraulics and 24s</driveSystem>
   <imageFile>ghetto_bot.jpg</imageFile>

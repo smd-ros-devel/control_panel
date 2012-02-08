@@ -180,6 +180,17 @@
 
   </sensors>
 
+  <processedData>
+    <odometry>
+      <name>Base Odometry</name>
+      <topicName>base_odometry/odom</topicName>
+      <position />
+      <orientation />
+      <linearVelocity />
+      <angularVelocity />
+    </odometry>
+  </processedData>
+
   <controls>
     <drive>
       <topicName>base_controller/command</topicName>

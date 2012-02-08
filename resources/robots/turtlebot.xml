@@ -25,7 +25,9 @@
       <name>Color Video</name>
       <topicName>camera/image_raw</topicName>
     </camera>
+  </sensors>
 
+  <processedData>
     <odometry>
       <name>Odometry</name>
       <topicName>odom</topicName>
@@ -34,7 +36,7 @@
       <linearVelocity />
       <angularVelocity />
     </odometry>
-  </sensors>
+  </processedData>
 
   <joints>
     <topicName>joint_states</topicName>
