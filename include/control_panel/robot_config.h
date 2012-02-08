@@ -270,6 +270,7 @@ struct RobotProcessedData
 {
     public:
         /* Processed data lists */
+        struct RobotCamera *images;
         struct RobotMap *maps;
         struct RobotOdometry *odometry;
 
@@ -277,7 +278,8 @@ struct RobotProcessedData
          * \brief Constructor
          */
         RobotProcessedData()
-            : maps(NULL),
+            : images(NULL),
+              maps(NULL),
               odometry(NULL)
         {
         }
@@ -292,6 +294,13 @@ struct RobotProcessedData
          */
         void defaults()
         {
+            struct RobotCamera *tmp_image;
+            while(images != NULL)
+            {
+                tmp_image = images;
+                images = images->next;
+                delete tmp_image;
+            }
             struct RobotMap *tmp_map;
             while(maps != NULL)
             {
@@ -583,6 +592,7 @@ struct RobotConfig : public QObject
 		void addCompass(QDomElement);
 		void addIMU(QDomElement);
 		void addRange(QDomElement);
+        void addImage(QDomElement);
         void addMap(QDomElement);
         void addOdometry(QDomElement);
 		void addTemperature(QDomElement);

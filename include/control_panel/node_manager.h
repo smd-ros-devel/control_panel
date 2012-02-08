@@ -50,6 +50,7 @@ class NodeManager : public QThread
 
 		// ROS Nodes
 		ImageNode *camera_node;
+        ImageNode *image_node; // For processed images (e.g., rectified images)
 		ControlNode *control_node;
 		CommandNode *command_node;
 		DiagnosticNode *diagnostic_node;
@@ -64,7 +65,7 @@ class NodeManager : public QThread
 
 	public slots:
 		void changeRawDataSource(const std::string &source);
-        //void changeProcessedDataSource(const std::string &source);
+        void changeProcessedDataSource(const std::string &source);
         void joystickAxisChanged(int axis, double value);
         void joystickButtonChanged(int button, bool state);
 

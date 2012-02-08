@@ -13,6 +13,10 @@
   </sensors>
 
   <processedData>
+    <map>
+      <name>Map</name>
+      <topicName>map</topicName>
+    </map>
     <odometry>
       <name>Odometry</name>
       <topicName>odom</topicName>

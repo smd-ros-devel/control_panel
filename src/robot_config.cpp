@@ -1,7 +1,7 @@
 /**
  * \file   robot_config.cpp
  * \date   Dec 5, 2011
- * \author Scott K Logan
+ * \author Scott K Logan, Matt Richard
  */
 #include "control_panel/robot_config.h"
 #include <iostream>
@@ -280,7 +280,9 @@ void RobotConfig::processProcessedData(QDomElement e)
     while(!n.isNull())
     {
         e = n.toElement();
-        if(e.tagName() == "map")
+        if(e.tagName() == "image")
+            addImage(e);
+        else if(e.tagName() == "map")
             addMap(e);
         else if(e.tagName() == "odometry")
             addOdometry(e);
@@ -288,6 +290,25 @@ void RobotConfig::processProcessedData(QDomElement e)
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
+}
+
+void RobotConfig::addImage(QDomElement e)
+{
+    struct RobotCamera *new_image = new struct RobotCamera;
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "name")
+            new_image->name = e.text();
+        else if(e.tagName() == "topicName")
+            new_image->topicName = e.text();
+        else
+            std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+    new_image->next = processedData.images;
+    processedData.images = new_image;
 }
 
 void RobotConfig::addMap(QDomElement e)

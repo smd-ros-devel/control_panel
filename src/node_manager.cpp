@@ -27,6 +27,10 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	// Inititalize ROS nodes
 	if(robot_config->sensors.cameras)
 		camera_node = new ImageNode(nh_ptr);
+    if(robot_config->processedData.maps)
+        map_node = new MapNode(nh_ptr);
+    if(robot_config->processedData.images)
+        image_node = new ImageNode(nh_ptr);
 	if(robot_config->controls.used)
     {
 		control_node = new ControlNode(nh_ptr);
@@ -49,8 +53,6 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		joint_node = new JointNode(nh_ptr);
 	if(robot_config->sensors.lasers)
 		laser_node = new LaserNode(nh_ptr);
-	if(robot_config->processedData.maps)
-		map_node = new MapNode(nh_ptr);
     if(robot_config->sensors.range)
         range_node = new RangeNode(nh_ptr);
 }
@@ -79,18 +81,14 @@ void NodeManager::run()
 		diagnostic_node->setTopic(robot_config->diagnostics.topicName.toStdString());
 		diagnostic_node->subscribe();
 	}
-	//if(gps_node)
     for(i = 0; i < gps_node_list->count(); i++)
 		((GpsNode *)gps_node_list->at(i))->subscribe();
-	//if(imu_node)
     for(i = 0; i < imu_node_list->count(); i++)
 		((ImuNode *)imu_node_list->at(i))->subscribe();
     for(i = 0; i < odom_node_list->count(); i++)
         ((OdometryNode *)odom_node_list->at(i))->subscribe();
 	if(joint_node)
 		joint_node->subscribe();
-	if(map_node)
-		map_node->subscribe();
 	if(odometry_node)
 		odometry_node->subscribe();
     if(range_node)
@@ -130,6 +128,8 @@ void NodeManager::stop()
 		// Why do we need to unsubscribe camera_node here?
 		if(camera_node)
 			camera_node->unsubscribe();
+        if(image_node)
+            image_node->unsubscribe();
 		nh_ptr->shutdown();
 
 		// Kill thread
@@ -199,7 +199,39 @@ void NodeManager::changeRawDataSource(const std::string &source)
 	}
 }
 
+void NodeManager::changeProcessedDataSource(const std::string &source)
+{
+    if(map_node)
+        map_node->unsubscribe();
+    if(image_node)
+        image_node->unsubscribe();
 
+    RobotCamera *image = robot_config->processedData.images;
+    while(image != NULL)
+    {
+        if(source == image->name.toStdString())
+        {
+            image_node->setTopic(image->topicName.toStdString());
+            image_node->subscribe();
+            return;
+        }
+        else
+            image = image->next;
+    }
+
+    RobotMap *map = robot_config->processedData.maps;
+    while(map != NULL)
+    {
+        if(source == map->name.toStdString())
+        {
+            map_node->setTopic(map->topicName.toStdString());
+            map_node->subscribe();
+            return;
+        }
+        else
+            map = map->next;
+    }
+}
 
 GpsNode *NodeManager::addGpsNode(const std::string &topic)
 {
