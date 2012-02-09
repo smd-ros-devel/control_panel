@@ -84,25 +84,25 @@
       <hideAttitude />
       <hideHeading />
     </imu>
-
   </sensors>
 
   <processedData>
     <image>
-      <name>Wide Stereo Right Rectified</name>
-      <topicName>wide_stereo/right/image_rect</topicName>
+      <name>Left Forearm Rectified</name>
+      <topicName>l_forearm_cam/image_rect</topicName>
     </image>
     <image>
-      <name>Wide Stereo Right Rect Color</name>
-      <topicName>wide_stereo/right/image_rect_color</topicName>
+      <name>Left Forearm Rectified Color</name>
+      <topicName>l_forearm_cam/image_rect_color</topicName>
+    </image>
+
+    <image>
+      <name>Right Forearm Rectified</name>
+      <topicName>r_forearm_cam/image_rect</topicName>
     </image>
     <image>
-      <name>Wide Stereo Left Rectified</name>
-      <topicName>wide_stereo/left/image_rect</topicName>
-    </image>
-    <image>
-      <name>Wide Stereo Left Rect Color</name>
-      <topicName>wide_stereo/left/image_rect_color</topicName>
+      <name>Right Forearm Rectified Color</name>
+      <topicName>r_forearm_cam/image_rect_color</topicName>
     </image>
 
     <image>
@@ -124,20 +124,20 @@
     </image>
 
     <image>
-      <name>Right Forearm Rectified</name>
-      <topicName>r_forearm_cam/image_rect</topicName>
+      <name>Wide Stereo Right Rectified</name>
+      <topicName>wide_stereo/right/image_rect</topicName>
     </image>
     <image>
-      <name>Right Forearm Rectified Color</name>
-      <topicName>r_forearm_cam/image_rect_color</topicName>
+      <name>Wide Stereo Right Rect Color</name>
+      <topicName>wide_stereo/right/image_rect_color</topicName>
     </image>
     <image>
-      <name>Left Forearm Rectified</name>
-      <topicName>l_forearm_cam/image_rect</topicName>
+      <name>Wide Stereo Left Rectified</name>
+      <topicName>wide_stereo/left/image_rect</topicName>
     </image>
     <image>
-      <name>Left Forearm Rectified Color</name>
-      <topicName>l_forearm_cam/image_rect_color</topicName>
+      <name>Wide Stereo Left Rect Color</name>
+      <topicName>wide_stereo/left/image_rect_color</topicName>
     </image>
 
     <map>
@@ -154,6 +154,193 @@
       <angularVelocity />
     </odometry>
   </processedData>
+
+  <joints>
+    <topicName>joint_states</topicName>
+    <position />
+    <velocity />
+    <effort />
+    <joint>
+      <name>fl_caster_rotation_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>fl_caster_l_wheel_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>fl_caster_r_wheel_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>fr_caster_rotation_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>fr_caster_l_wheel_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>fr_caster_r_wheel_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>bl_caster_rotation_joint</name>
+      <displayName> </displayName>
+    </joint>
+    <joint>
+      <name>bl_caster_l_wheel_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>bl_caster_r_wheel_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>br_caster_rotation_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>br_caster_l_wheel_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>br_caster_r_wheel_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>torso_lift_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>torso_lift_motor_screw_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>head_pan_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>head_tilt_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>laser_tilt_mount_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_upper_arm_roll_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_shoulder_pan_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_shoulder_lift_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_forearm_roll_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_elbow_flex_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_wrist_flex_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_wrist_roll_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_l_finger_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_r_finger_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_r_finger_tip_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_l_finger_tip_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_motor_screw_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>r_gripper_motor_slider_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_upper_arm_roll_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_shoulder_pan_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_shoulder_lift_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_forearm_roll_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_elbow_flex_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_wrist_flex_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_wrist_roll_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_l_finger_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_r_finger_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_r_finger_tip_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_l_finger_tip_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_motor_screw_joint</name>
+      <displayName></displayName>
+    </joint>
+    <joint>
+      <name>l_gripper_motor_slider_joint</name>
+      <displayName></displayName>
+    </joint>
+  </joints>
 
   <controls>
     <drive>
