@@ -4,6 +4,7 @@
  * \author Matt Richard, Scott K Logan
  */
 #include <QtGui>
+#include <QMetaType>
 #include "control_panel/robot_tab.h"
 #include <stdio.h>
 
@@ -400,14 +401,17 @@ void RobotTab::setupDataPane()
     RobotOdometry *odom = robot_config->processedData.odometry;
     while(odom != NULL)
     {
-        connect(node_manager->addOdometryNode(odom->topicName.toStdString()),
+        connect(
+            node_manager->addOdometryNode(odom->topicName.toStdString()),
             SIGNAL(odometryDataReceived(const QVector3D &, const QQuaternion &,
-                const QVector3D &, const QVector3D &)),
+                                        const QVector3D &, const QVector3D &)),
             data_pane->addOdometryDisplay(odom->name, odom->position,
-                odom->orientation, odom->linearVelocity, odom->angularVelocity,
-                !odom->hideAttitude, !odom->hideHeading),
+                                          odom->orientation, odom->linearVelocity,
+                                          odom->angularVelocity, !odom->hideAttitude,
+                                          !odom->hideHeading),
             SLOT(updateOdometryDisplay(const QVector3D &, const QQuaternion &,
-                const QVector3D &, const QVector3D &)));
+                                       const QVector3D &, const QVector3D &))
+            );
         odom = odom->next;
     }
 
@@ -415,15 +419,48 @@ void RobotTab::setupDataPane()
     RobotIMU *imu = robot_config->sensors.imu;
     while(imu != NULL)
     {
-        connect(node_manager->addImuNode(imu->topicName.toStdString()),
-                SIGNAL(imuDataReceived(const QQuaternion &, const QVector3D &,
-                    const QVector3D &)),
-                data_pane->addImuDisplay(imu->name, imu->roll, imu->pitch,
-                    imu->yaw, imu->angularVelocity, imu->linearAcceleration,
-                    !imu->hideAttitude, !imu->hideHeading),
-                SLOT(updateImuDisplay(const QQuaternion &, const QVector3D &,
-                    const QVector3D &)));
+        connect(
+            node_manager->addImuNode(imu->topicName.toStdString()),
+            SIGNAL(imuDataReceived(const QQuaternion &, const QVector3D &,
+                                   const QVector3D &)),
+            data_pane->addImuDisplay(imu->name, imu->roll, imu->pitch,
+                                     imu->yaw, imu->angularVelocity, imu->linearAcceleration,
+                                     !imu->hideAttitude, !imu->hideHeading),
+            SLOT(updateImuDisplay(const QQuaternion &, const QVector3D &,
+                                  const QVector3D &))
+            );
         imu = imu->next;
+    }
+
+
+    qRegisterMetaType< std::vector<double> >("std::vector<double>");
+    RobotJoint *joint = robot_config->joint_states.joints;
+    if(robot_config->joint_states.used)
+    {
+        // Group all joints and their display names in string lists
+        QStringList name_list;
+        QStringList disp_name_list;
+        while(joint != NULL)
+        {
+            name_list << joint->name;
+            disp_name_list << joint->displayName;
+            joint = joint->next;
+        }
+
+        printf("Connecting joint display\n");
+
+        node_manager->joint_node->setTopic(robot_config->joint_states.topicName.toStdString());
+        connect(
+            node_manager->joint_node,
+            SIGNAL(jointDataReceived(const QStringList &, const std::vector<double> &,
+                                     const std::vector<double> &, const std::vector<double> &)),
+            data_pane->addJointStateDisplay("Joints", name_list, disp_name_list,
+                                            robot_config->joint_states.position,
+                                            robot_config->joint_states.velocity,
+                                            robot_config->joint_states.effort),
+            SLOT(updateJointStateDisplay(const QStringList &, const std::vector<double> &,
+                                         const std::vector<double> &, const std::vector<double> &))
+            );
     }
 
     // Create nodes and widgets for all gps sensors

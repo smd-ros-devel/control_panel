@@ -23,6 +23,7 @@ DataPane::DataPane(QWidget *parent)
 {
     gps_list = new QList<GpsDisplay *>;
     imu_list = new QList<ImuDisplay *>;
+    joint_state_list = new QList<JointStateDisplay *>;
     odom_list = new QList<OdometryDisplay *>;
 
     use_range = false;
@@ -465,6 +466,19 @@ ImuDisplay *DataPane::addImuDisplay(const QString &name, bool roll,
     return imu_display;
 }
 
+JointStateDisplay *DataPane::addJointStateDisplay(const QString &widget_name,
+    const QStringList &names, const QStringList &display_names, bool show_pos,
+    bool show_vel, bool show_eff)
+{
+    joint_state_display = new JointStateDisplay(widget_name, names,
+        display_names, show_pos, show_vel, show_eff);
+
+    data_pane_layout->addWidget(joint_state_display);
+
+    joint_state_list->append(joint_state_display);
+
+    return joint_state_display;
+}
 
 OdometryDisplay *DataPane::addOdometryDisplay(const QString &name, bool pos,
     bool rpy, bool lin_vel, bool ang_vel, bool heading_graphic,

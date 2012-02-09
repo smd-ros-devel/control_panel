@@ -21,6 +21,7 @@ void RobotConfig::defaults()
 	image.load(imageFilePath);
     nameSpace = "unknown_namespace";
 	sensors.defaults();
+    joint_states.defaults();
     processedData.defaults();
 	diagnostics.defaults();
 	commands.defaults();
@@ -87,6 +88,11 @@ void RobotConfig::processElement(QDomElement e, bool getComponents)
 		if(!e.isNull() && !e.text().isEmpty() && getComponents)
 			processSensors(e);
 	}
+    else if(e.tagName() == "joints")
+    {
+        if(!e.isNull() && !e.text().isEmpty() && getComponents)
+            processJoints(e);
+    }
     else if(e.tagName() == "processedData")
     {
         if(!e.isNull() && !e.text().isEmpty() && getComponents)
@@ -272,6 +278,54 @@ void RobotConfig::addRange(QDomElement e)
 	new_range->next = sensors.range;
 	sensors.range = new_range;
 }
+/////////////////////////// End Sensors /////////////////////////////
+
+
+
+////////////////////////// Joints //////////////////////////
+void RobotConfig::processJoints(QDomElement e)
+{
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "joint")
+            addJoint(e);
+        else if(e.tagName() == "topicName")
+            joint_states.topicName = e.text();
+        else if(e.tagName() == "position")
+            joint_states.position = true;
+        else if(e.tagName() == "velocity")
+            joint_states.velocity = true;
+        else if(e.tagName() == "effort")
+            joint_states.effort = true;
+        else
+            std::cerr << "WARNING: Unknown joints tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+}
+
+void RobotConfig::addJoint(QDomElement e)
+{
+    struct RobotJoint *new_joint = new struct RobotJoint;
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "name")
+            new_joint->name = e.text();
+        else if(e.tagName() == "displayName")
+            new_joint->displayName = e.text();
+        else
+            std::cerr << "WARNING: Unknown joint tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+    new_joint->next = joint_states.joints;
+    joint_states.joints = new_joint;
+    joint_states.used = true;
+}
+////////////////////////// End Joints //////////////////////////////
+
 
 /////////////////////////// Processed Data ///////////////////////////
 void RobotConfig::processProcessedData(QDomElement e)
@@ -364,6 +418,8 @@ void RobotConfig::addOdometry(QDomElement e)
 }
 /////////////////////// End Processed Data //////////////////////
 
+
+//////////////////////// Diagnostics /////////////////////////
 void RobotConfig::processDiagnostics(QDomElement e)
 {
 	QDomNode n = e.firstChild();
@@ -451,6 +507,7 @@ void RobotConfig::addBatteryLevel(QDomElement e)
 	diagnostics.batteryLevel = new_batteryLevel;
 	diagnostics.used = true;
 }
+////////////////////////// End Diagnostics //////////////////////////
 
 void RobotConfig::processCommands(QDomElement e)
 {

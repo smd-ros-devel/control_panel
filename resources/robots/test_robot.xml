@@ -36,11 +36,6 @@
       <topicName>base_scan</topicName>
     </laser>
 
-    <map>
-      <name>GMapping Map</name>
-      <topicName>map</topicName>
-    </map>
-
     <imu>
       <name>IMU</name>
       <topicName>imu/data</topicName>
@@ -55,6 +50,10 @@
   </sensors>
 
   <processedData>
+    <map>
+      <name>GMapping Map</name>
+      <topicName>map</topicName>
+    </map>
     <odometry>
       <name>Odometry</name>
       <topicName>odom</topicName>

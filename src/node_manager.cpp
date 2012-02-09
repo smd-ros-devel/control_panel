@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
-	camera_node(NULL), control_node(NULL), command_node(NULL),
+	camera_node(NULL), image_node(NULL), control_node(NULL), command_node(NULL),
 	diagnostic_node(NULL), gps_node(NULL), imu_node(NULL), joint_node(NULL),
 	laser_node(NULL), map_node(NULL), odometry_node(NULL), range_node(NULL)
 {
@@ -49,7 +49,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		command_node = new CommandNode(nh_ptr);
 	if(robot_config->diagnostics.used)
 		diagnostic_node = new DiagnosticNode(nh_ptr);
-	if(false)
+	if(robot_config->joint_states.used)
 		joint_node = new JointNode(nh_ptr);
 	if(robot_config->sensors.lasers)
 		laser_node = new LaserNode(nh_ptr);

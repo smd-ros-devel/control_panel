@@ -7,6 +7,7 @@
         <file>robots/erratic.xml</file>
         <file>robots/fsm1.xml</file>
         <file>robots/ghetto_bot1.xml</file>
+        <file>robots/little_boy.xml</file>
         <file>robots/nao.xml</file>
         <file>robots/penumbra.xml</file>
         <file>robots/pr2.xml</file>

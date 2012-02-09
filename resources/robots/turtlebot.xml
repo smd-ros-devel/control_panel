@@ -42,7 +42,6 @@
     <topicName>joint_states</topicName>
     <position />
     <velocity />
-    <effort />
     <joint>
       <name>left_wheel_joint</name>
       <displayName>Left Wheel</displayName>

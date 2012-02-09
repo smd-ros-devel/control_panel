@@ -31,7 +31,6 @@
     <topicName>joint_states</topicName>
     <position />
     <velocity />
-    <effort />
     <joint>
       <name>base_caster_support_joint</name>
       <displayName>Caster Supporter</displayName>

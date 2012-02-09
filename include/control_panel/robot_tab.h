@@ -35,8 +35,6 @@ class RobotTab : public QWidget
 		struct RobotConfig * getConfig();
 		bool isKeyboardEnabled() const;
 		bool robotConnected();
-        //void enableKeyboard();
-        //void disableKeyboard();
         void setRCMode(int rc_mode);
 
 		NodeManager *node_manager;

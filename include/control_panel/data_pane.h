@@ -31,6 +31,7 @@ QT_END_NAMESPACE
 #include "widgets/imu_display.h"
 #include "widgets/gps_display.h"
 #include "widgets/odometry_display.h"
+#include "widgets/joint_state_display.h"
 #include "globals.h"
 
 
@@ -46,6 +47,9 @@ class DataPane : public QWidget
             bool pitch = true, bool yaw = true, bool ang_vel = false,
             bool lin_accel = false, bool heading_graphic = true,
             bool attitude_graphic = true);
+        JointStateDisplay *addJointStateDisplay(const QString &widget_name,
+            const QStringList &names, const QStringList &display_names,
+            bool show_pos = true, bool show_vel = true, bool show_eff = false);
         OdometryDisplay *addOdometryDisplay(const QString &name, bool pos = true,
             bool rpy = true, bool lin_vel = true, bool ang_vel = true,
             bool heading_graphic = true, bool attitude_graphic = true);
@@ -82,9 +86,11 @@ class DataPane : public QWidget
 
         GpsDisplay *gps_display;
         ImuDisplay *imu_display;
+        JointStateDisplay *joint_state_display;
         OdometryDisplay *odom_display;
         QList<ImuDisplay *> *imu_list;
         QList<GpsDisplay *> *gps_list;
+        QList<JointStateDisplay *> *joint_state_list;
         QList<OdometryDisplay *> *odom_list;
         //QList<QLabel *> *label_list;
         //QList<QLabel *> *gps_list;

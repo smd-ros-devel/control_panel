@@ -198,6 +198,88 @@ struct RobotSensors
 ////////////////////// End Sensors //////////////////////////
 
 
+
+//////////////////////// Joints ///////////////////////////////
+
+/**
+ * \struct RobotJoint
+ * \brief  @todo Fill this out
+ */
+struct RobotJoint
+{
+    public:
+        /* linked list */
+        struct RobotJoint *next;
+
+        /* stored data */
+        QString name;
+        QString displayName;
+
+        /**
+         * \brief Contstructor. Initializes linked list and data
+         */
+        RobotJoint()
+            : next(NULL),
+              name("unknown_joint"),
+              displayName("Unknown Joint") { }
+};
+
+/**
+ * \struct RobotJoints
+ * \brief  @todo Fill this out
+ */
+struct RobotJoints
+{
+    public:
+        /* stored data */
+        QString topicName;
+        bool position;
+        bool velocity;
+        bool effort;
+        bool used;
+
+        /* Joints list */
+        struct RobotJoint *joints;
+
+        /**
+         * \brief Constructor. Initializes public members
+         */
+        RobotJoints()
+            : topicName("joint_states"),
+              position(false),
+              velocity(false),
+              effort(false),
+              used(false),
+              joints(NULL) { }
+
+        /**
+         * \brief Deconstructor. Calls the defaults function
+         */
+         ~RobotJoints() { defaults(); }
+
+        /**
+         * \brief Destroys linked list
+         */
+        void defaults()
+        {
+            topicName = "joint_states";
+            position = false;
+            velocity = false;
+            effort = false;
+            struct RobotJoint *tmp_joint;
+            while(joints != NULL)
+            {
+                tmp_joint = joints;
+                joints = joints->next;
+                delete tmp_joint;
+            }
+        }
+};
+
+///////////////////// End Joints ////////////////////////////
+
+
+
 //////////////////// Processed Data /////////////////////////
 
 /**
@@ -558,6 +640,7 @@ struct RobotConfig : public QObject
 
 		/* data */
 		struct RobotSensors sensors;
+        struct RobotJoints joint_states;
         struct RobotProcessedData processedData;
 		struct RobotDiagnostics diagnostics;
 		struct RobotCommands commands;
@@ -581,6 +664,7 @@ struct RobotConfig : public QObject
 
 		/* process data */
 		void processSensors(QDomElement);
+        void processJoints(QDomElement);
         void processProcessedData(QDomElement);
 		void processDiagnostics(QDomElement);
 		void processCommands(QDomElement);
@@ -592,6 +676,7 @@ struct RobotConfig : public QObject
 		void addCompass(QDomElement);
 		void addIMU(QDomElement);
 		void addRange(QDomElement);
+        void addJoint(QDomElement);
         void addImage(QDomElement);
         void addMap(QDomElement);
         void addOdometry(QDomElement);

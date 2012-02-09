@@ -28,5 +28,6 @@
         <file>images/pr2.png</file>
         <file>images/turtlebot.png</file>
         <file>images/erratic.png</file>
+        <file>images/little_boy.jpg</file>
     </qresource>
 </RCC>

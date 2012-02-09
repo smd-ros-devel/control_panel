@@ -1,20 +1,12 @@
-/******************************************************************************
-** joint_node.cpp
-**
-** Author:      Matt Richard
-** Date:        Dec 7, 2011
-** Description:
-******************************************************************************/
+/* @todo Add license here */
 
+/**
+ * \file   joint_node.cpp
+ * \date   Dec 7, 2011
+ * \author Matt Richard
+ */
 #include "control_panel/nodes/joint_node.h"
 
-/******************************************************************************
-** Function:    JointNode
-** Author:      Matt Richard
-** Parameters:  ros::NodeHandle *nh_ptr - 
-** Returns:     None
-** Description: Constructor.
-******************************************************************************/
 JointNode::JointNode(ros::NodeHandle *nh_ptr)
 {
 	topic_name = Globals::DEFAULT_JOINT_TOPIC;
@@ -22,61 +14,25 @@ JointNode::JointNode(ros::NodeHandle *nh_ptr)
 	nh = nh_ptr;
 }
 
-/******************************************************************************
-** Function:    subscribe
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     void
-** Description: 
-******************************************************************************/
 void JointNode::subscribe()
 {
 	joint_sub = nh->subscribe(topic_name, 1, &JointNode::jointCallback, this);
 }
 
-/******************************************************************************
-** Function:    unsubscribe
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     void
-** Description:
-******************************************************************************/
 void JointNode::unsubscribe()
 {
 	joint_sub.shutdown();
 }
 
-/******************************************************************************
-** Function:    jointCallback
-** Author:      Matt Richard
-** Parameters:  const sensor_msgs::JointStateConstPtr &msg - 
-** Returns:     void
-** Description:
-******************************************************************************/
 void JointNode::jointCallback(const sensor_msgs::JointStateConstPtr &msg)
 {
-}
+    /* @todo Finish this function */
+    QStringList name_list;
 
-/******************************************************************************
-** Function:    setTopic
-** Author:      Matt Richard
-** Parameters:  std::string topic - 
-** Returns:     void
-** Description:
-******************************************************************************/
-void JointNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
+    for(unsigned int i = 0; i < msg->name.size(); i++)
+    {
+        name_list << msg->name[i].c_str();
+    }
 
-/******************************************************************************
-** Function:    getTopic
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     std::string - 
-** Description:
-******************************************************************************/
-std::string JointNode::getTopic() const
-{
-	return topic_name;
+    emit jointDataReceived(name_list, msg->position, msg->velocity, msg->effort);
 }
