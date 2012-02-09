@@ -1,7 +1,7 @@
 <robot>
   <robotName>TurtleBot</robotName>
   <system>UGV</system>
-  <driveSystem>Differential drive with holonomic wheels</driveSystem>
+  <driveSystem>Differential drive</driveSystem>
   <imageFile>turtlebot.png</imageFile>
   <nameSpace></nameSpace>
 

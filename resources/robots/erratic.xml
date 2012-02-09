@@ -44,7 +44,7 @@
       <displayName>Left Wheel</displayName>
     </joint>
     <joint>
-      <name>base_line_right_wheel_joint</name>
+      <name>base_link_right_wheel_joint</name>
       <displayName>Right Wheel</displayName>
     </joint>
   </joints>
