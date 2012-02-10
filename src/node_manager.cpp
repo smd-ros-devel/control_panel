@@ -10,8 +10,9 @@
 
 NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	camera_node(NULL), image_node(NULL), control_node(NULL), command_node(NULL),
-	diagnostic_node(NULL), gps_node(NULL), imu_node(NULL), joint_node(NULL),
-	laser_node(NULL), map_node(NULL), odometry_node(NULL), range_node(NULL)
+	diagnostic_node(NULL), disparity_image_node(NULL), gps_node(NULL), imu_node(NULL),
+    joint_state_node(NULL), laser_node(NULL), map_node(NULL), odometry_node(NULL),
+    range_node(NULL)
 {
 	connected = false;
 	robot_config = new_robot_config;
@@ -50,7 +51,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	if(robot_config->diagnostics.used)
 		diagnostic_node = new DiagnosticNode(nh_ptr);
 	if(robot_config->joint_states.used)
-		joint_node = new JointNode(nh_ptr);
+		joint_state_node = new JointStateNode(nh_ptr);
 	if(robot_config->sensors.lasers)
 		laser_node = new LaserNode(nh_ptr);
     if(robot_config->sensors.range)
@@ -87,8 +88,8 @@ void NodeManager::run()
 		((ImuNode *)imu_node_list->at(i))->subscribe();
     for(i = 0; i < odom_node_list->count(); i++)
         ((OdometryNode *)odom_node_list->at(i))->subscribe();
-	if(joint_node)
-		joint_node->subscribe();
+	if(joint_state_node)
+		joint_state_node->subscribe();
 	if(odometry_node)
 		odometry_node->subscribe();
     if(range_node)

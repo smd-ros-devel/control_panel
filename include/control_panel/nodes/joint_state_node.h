@@ -2,12 +2,12 @@
 
 
 /**
- * \file   joint_node.h
+ * \file   joint_state_node.h
  * \date   Dec 7, 2011
  * \author Matt Richard
  */
-#ifndef CONTROL_PANEL_JOINT_NODE_H
-#define CONTROL_PANEL_JOINT_NODE_H
+#ifndef CONTROL_PANEL_JOINT_STATE_NODE_H
+#define CONTROL_PANEL_JOINT_STATE_NODE_H
 
 #include <QObject>
 #include <QStringList>
@@ -18,18 +18,18 @@
 #include "control_panel/globals.h"
 
 /**
- * \class JointNode
+ * \class JointStateNode
  * \brief ROS node to receive a sensor_msgs::JointState message from a robot
  */
-class JointNode : public QObject
+class JointStateNode : public QObject
 {
 	Q_OBJECT
 
 	public:
         /**
-         * \brief Constructor
+         * \brief Constructor. Initializes the topic name and copys the node handle pointer
          */
-		JointNode(ros::NodeHandle *nh_ptr);
+		JointStateNode(ros::NodeHandle *nh_ptr);
 
         /**
          * \brief Returns the subscriber's topic
@@ -76,4 +76,4 @@ class JointNode : public QObject
 		ros::Subscriber joint_sub;
 };
 
-#endif // CONTROL_PANEL_JOINT_NODE_H
+#endif // CONTROL_PANEL_JOINT_STATE_NODE_H

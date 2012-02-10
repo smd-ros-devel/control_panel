@@ -447,9 +447,9 @@ void RobotTab::setupDataPane()
             joint = joint->next;
         }
 
-        node_manager->joint_node->setTopic(robot_config->joint_states.topicName.toStdString());
+        node_manager->joint_state_node->setTopic(robot_config->joint_states.topicName.toStdString());
         connect(
-            node_manager->joint_node,
+            node_manager->joint_state_node,
             SIGNAL(jointDataReceived(const QStringList &, const std::vector<double> &,
                                      const std::vector<double> &, const std::vector<double> &)),
             data_pane->addJointStateDisplay("Joints", name_list, disp_name_list,

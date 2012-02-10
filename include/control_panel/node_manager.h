@@ -4,7 +4,6 @@
  * \file   node_manager.h
  * \date   Aug. 4, 2011
  * \author Matt Richard, Scott K Logan
- * \brief  Handles all ROS nodes for a single robot.
  */
 #ifndef CONTROL_PANEL_NODE_MANAGER_H
 #define CONTROL_PANEL_NODE_MANAGER_H
@@ -18,10 +17,11 @@
 #include "nodes/control_node.h"
 #include "nodes/command_node.h"
 #include "nodes/diagnostic_node.h"
+#include "nodes/disparity_image_node.h"
 #include "nodes/gps_node.h"
 #include "nodes/image_node.h"
 #include "nodes/imu_node.h"
-#include "nodes/joint_node.h"
+#include "nodes/joint_state_node.h"
 #include "nodes/joystick_node.h"
 #include "nodes/laser_node.h"
 #include "nodes/map_node.h"
@@ -31,6 +31,10 @@
 #include "robot_config.h"
 
 
+/**
+ * \class NodeManager
+ * \brief Manages all ROS nodes for communicating with a robot
+ */
 class NodeManager : public QThread
 {
 	Q_OBJECT
@@ -40,23 +44,20 @@ class NodeManager : public QThread
 		void run();
 		void stop();
 		bool isConnected() const;
-        //DiagnosticNode *addDiagnosticNode();
         GpsNode *addGpsNode(const std::string &topic = Globals::DEFAULT_GPS_TOPIC);
         ImuNode *addImuNode(const std::string &topic = Globals::DEFAULT_IMU_TOPIC);
         OdometryNode *addOdometryNode(const std::string &topic = Globals::DEFAULT_ODOMETRY_TOPIC);
-        //JointNode *addJointNode();
-        //OdometryNode *addOdometryNode();
-        //RangeNode *addRangeNode();
 
 		// ROS Nodes
-		ImageNode *camera_node;
-        ImageNode *image_node; // For processed images (e.g., rectified images)
+		ImageNode *camera_node; // For raw images (e.g., camera/depth image feeds)
+        ImageNode *image_node;  // For processed images (e.g., rectified images)
 		ControlNode *control_node;
 		CommandNode *command_node;
 		DiagnosticNode *diagnostic_node;
+        DisparityImageNode *disparity_image_node;
 		GpsNode *gps_node;
 		ImuNode *imu_node;
-		JointNode *joint_node;
+		JointStateNode *joint_state_node;
         JoystickNode *joystick_node;
 		LaserNode *laser_node;
 		MapNode *map_node;
