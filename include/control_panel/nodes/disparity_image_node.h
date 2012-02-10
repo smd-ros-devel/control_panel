@@ -1,13 +1,13 @@
-
+/* @todo Add license here. */
 
 /**
- * \file   disparity_node.h
+ * \file   disparity_image_node.h
  * \date   Feb 5, 2012
  * \author Matt Richard
  */
 
-#ifndef CONTROL_PANEL_DISPARITY_NODE_H
-#define CONTROL_PANEL_DISPARITY_NODE_H
+#ifndef CONTROL_PANEL_DISPARITY_IMAGE_NODE_H
+#define CONTROL_PANEL_DISPARITY_IMAGE_NODE_H
 
 #include <QObject>
 #include <QImage>
@@ -19,15 +19,15 @@
 namespace enc = sensor_msgs::image_encodings;
 
 /**
- * \class DisparityNode
+ * \class DisparityImageNode
  * \brief Receives a disparity image and converts it to a QImage
  */
-class DisparityNode : public QObject
+class DisparityImageNode : public QObject
 {
     Q_OBJECT
 
     public:
-        DisparityNode(ros::NodeHandle *nh_ptr);
+        DisparityImageNode(ros::NodeHandle *nh_ptr);
 
         /**
          * \brief Converts the received disparity image into a QImage
@@ -67,4 +67,4 @@ class DisparityNode : public QObject
         ros::Subscriber disparity_sub;
 };
 
-#endif // CONTROL_PANEL_DISPARITY_NODE_H
+#endif // CONTROL_PANEL_DISPARITY_IMAGE_NODE_H
