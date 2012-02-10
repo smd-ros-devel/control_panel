@@ -162,183 +162,183 @@
     <effort />
     <joint>
       <name>fl_caster_rotation_joint</name>
-      <displayName> </displayName>
+      <displayName>FL Caster Rotation</displayName>
     </joint>
     <joint>
       <name>fl_caster_l_wheel_joint</name>
-      <displayName> </displayName>
+      <displayName>FL Caster L Wheel</displayName>
     </joint>
     <joint>
       <name>fl_caster_r_wheel_joint</name>
-      <displayName> </displayName>
+      <displayName>FL Caster R Wheel</displayName>
     </joint>
     <joint>
       <name>fr_caster_rotation_joint</name>
-      <displayName> </displayName>
+      <displayName>FR Caster Rotation</displayName>
     </joint>
     <joint>
       <name>fr_caster_l_wheel_joint</name>
-      <displayName> </displayName>
+      <displayName>FR Caster L Wheel</displayName>
     </joint>
     <joint>
       <name>fr_caster_r_wheel_joint</name>
-      <displayName> </displayName>
+      <displayName>FR Caster R Wheel</displayName>
     </joint>
     <joint>
       <name>bl_caster_rotation_joint</name>
-      <displayName> </displayName>
+      <displayName>BL Caster Rotation</displayName>
     </joint>
     <joint>
       <name>bl_caster_l_wheel_joint</name>
-      <displayName></displayName>
+      <displayName>BL Caster L Wheel</displayName>
     </joint>
     <joint>
       <name>bl_caster_r_wheel_joint</name>
-      <displayName></displayName>
+      <displayName>BL Caster R Wheel</displayName>
     </joint>
     <joint>
       <name>br_caster_rotation_joint</name>
-      <displayName></displayName>
+      <displayName>BR Caster Rotation</displayName>
     </joint>
     <joint>
       <name>br_caster_l_wheel_joint</name>
-      <displayName></displayName>
+      <displayName>BR Caster L Wheel</displayName>
     </joint>
     <joint>
       <name>br_caster_r_wheel_joint</name>
-      <displayName></displayName>
+      <displayName>BR Caster R Wheel</displayName>
     </joint>
     <joint>
       <name>torso_lift_joint</name>
-      <displayName></displayName>
+      <displayName>Torso Lift</displayName>
     </joint>
     <joint>
       <name>torso_lift_motor_screw_joint</name>
-      <displayName></displayName>
+      <displayName>Torso Lift Motor Screw</displayName>
     </joint>
     <joint>
       <name>head_pan_joint</name>
-      <displayName></displayName>
+      <displayName>Head Pan</displayName>
     </joint>
     <joint>
       <name>head_tilt_joint</name>
-      <displayName></displayName>
+      <displayName>Head Tilt</displayName>
     </joint>
     <joint>
       <name>laser_tilt_mount_joint</name>
-      <displayName></displayName>
+      <displayName>Laser Tilt Mount</displayName>
     </joint>
     <joint>
       <name>r_upper_arm_roll_joint</name>
-      <displayName></displayName>
+      <displayName>R Upper Arm Roll</displayName>
     </joint>
     <joint>
       <name>r_shoulder_pan_joint</name>
-      <displayName></displayName>
+      <displayName>R Shoulder Pan</displayName>
     </joint>
     <joint>
       <name>r_shoulder_lift_joint</name>
-      <displayName></displayName>
+      <displayName>R Shoulder Lift</displayName>
     </joint>
     <joint>
       <name>r_forearm_roll_joint</name>
-      <displayName></displayName>
+      <displayName>R Forearm Roll</displayName>
     </joint>
     <joint>
       <name>r_elbow_flex_joint</name>
-      <displayName></displayName>
+      <displayName>R Elbow Flex</displayName>
     </joint>
     <joint>
       <name>r_wrist_flex_joint</name>
-      <displayName></displayName>
+      <displayName>R Wrist Flex</displayName>
     </joint>
     <joint>
       <name>r_wrist_roll_joint</name>
-      <displayName></displayName>
+      <displayName>R Wrist Roll</displayName>
     </joint>
     <joint>
       <name>r_gripper_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper</displayName>
     </joint>
     <joint>
       <name>r_gripper_l_finger_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper L Finger</displayName>
     </joint>
     <joint>
       <name>r_gripper_r_finger_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper R Finger</displayName>
     </joint>
     <joint>
       <name>r_gripper_r_finger_tip_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper R Fingertip</displayName>
     </joint>
     <joint>
       <name>r_gripper_l_finger_tip_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper L Fingertip</displayName>
     </joint>
     <joint>
       <name>r_gripper_motor_screw_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper Motor Screw</displayName>
     </joint>
     <joint>
       <name>r_gripper_motor_slider_joint</name>
-      <displayName></displayName>
+      <displayName>R Gripper Motor Slider</displayName>
     </joint>
     <joint>
       <name>l_upper_arm_roll_joint</name>
-      <displayName></displayName>
+      <displayName>L Upper Arm Roll</displayName>
     </joint>
     <joint>
       <name>l_shoulder_pan_joint</name>
-      <displayName></displayName>
+      <displayName>L Shoulder Pan</displayName>
     </joint>
     <joint>
       <name>l_shoulder_lift_joint</name>
-      <displayName></displayName>
+      <displayName>L Shoulder Lift</displayName>
     </joint>
     <joint>
       <name>l_forearm_roll_joint</name>
-      <displayName></displayName>
+      <displayName>L Forearm Roll</displayName>
     </joint>
     <joint>
       <name>l_elbow_flex_joint</name>
-      <displayName></displayName>
+      <displayName>L Elbow Flex</displayName>
     </joint>
     <joint>
       <name>l_wrist_flex_joint</name>
-      <displayName></displayName>
+      <displayName>L Wrist Flex</displayName>
     </joint>
     <joint>
       <name>l_wrist_roll_joint</name>
-      <displayName></displayName>
+      <displayName>L Wrist Roll</displayName>
     </joint>
     <joint>
       <name>l_gripper_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper</displayName>
     </joint>
     <joint>
       <name>l_gripper_l_finger_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper L Finger</displayName>
     </joint>
     <joint>
       <name>l_gripper_r_finger_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper R Finger</displayName>
     </joint>
     <joint>
       <name>l_gripper_r_finger_tip_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper R Fingertip</displayName>
     </joint>
     <joint>
       <name>l_gripper_l_finger_tip_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper L Fingertip</displayName>
     </joint>
     <joint>
       <name>l_gripper_motor_screw_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper Motor Screw</displayName>
     </joint>
     <joint>
       <name>l_gripper_motor_slider_joint</name>
-      <displayName></displayName>
+      <displayName>L Gripper Motor Slider</displayName>
     </joint>
   </joints>
 

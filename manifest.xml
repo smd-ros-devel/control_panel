@@ -19,6 +19,7 @@
   <depend package="nav_msgs"/>
   <depend package="diagnostic_msgs"/>
   <depend package="stereo_msgs"/>
+  <depend package="trajectory_msgs"/>
   <!-- depend package="laser_geometry"/ -->
   <depend package="image_transport"/>
   <depend package="cv_bridge"/>

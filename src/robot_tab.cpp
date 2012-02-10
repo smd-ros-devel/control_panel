@@ -447,8 +447,6 @@ void RobotTab::setupDataPane()
             joint = joint->next;
         }
 
-        printf("Connecting joint display\n");
-
         node_manager->joint_node->setTopic(robot_config->joint_states.topicName.toStdString());
         connect(
             node_manager->joint_node,

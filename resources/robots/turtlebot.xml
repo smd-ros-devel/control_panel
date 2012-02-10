@@ -23,7 +23,7 @@
 
     <camera>
       <name>Color Video</name>
-      <topicName>camera/image_raw</topicName>
+      <topicName>usb_cam/image_raw</topicName>
     </camera>
   </sensors>
 
@@ -55,7 +55,7 @@
       <displayName>Front Castor</displayName>
     </joint>
     <joint>
-      <name>rear_castor_joint</name>
+      <name>back_castor_joint</name>
       <displayName>Rear Castor</displayName>
     </joint>
   </joints>
@@ -65,4 +65,13 @@
       <topicName>cmd_vel</topicName>
     </drive>
   </controls>
+
+  <diagnostics>
+    <topicName>diagnostics</topicName>
+
+    <batteryLevel>
+      <name>Laptop Battery</name>
+      <max>100.0</max>
+    </batteryLevel>
+  </diagnostics>
 </robot>
