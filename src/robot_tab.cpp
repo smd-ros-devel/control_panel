@@ -31,8 +31,9 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
         laser = laser->next;
     }
 
-    // Create processed display pane if the config file has maps
-    if(robot_config->processedData.maps || robot_config->processedData.images)
+    // Create processed display pane if the config file has processed data
+    if(robot_config->processedData.maps || robot_config->processedData.images ||
+       robot_config->processedData.disparity_images)
     {
         processed_data_display = new DisplayPane;
         processed_data_display->setTitle("Processed Data");
@@ -49,6 +50,13 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
         {
             processed_data_display->addSource(image->name);
             image = image->next;
+        }
+
+        RobotDisparityImage *disparity = robot_config->processedData.disparity_images;
+        while(disparity != NULL)
+        {
+            processed_data_display->addSource(disparity->name);
+            disparity = disparity->next;
         }
     }
 
@@ -70,13 +78,16 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
 	if(node_manager->camera_node)
 		connect(node_manager->camera_node, SIGNAL(frameReceived(const QImage &)),
 			raw_data_display, SLOT(setImage(const QImage &)));
+    if(node_manager->laser_node)
+        connect(node_manager->laser_node, SIGNAL(laserScanReceived(const QImage &, int)),
+            raw_data_display, SLOT(setImage(const QImage &, int)));
     if(node_manager->image_node)
         connect(node_manager->image_node, SIGNAL(frameReceived(const QImage &)),
             processed_data_display, SLOT(setImage(const QImage &)));
-	if(node_manager->laser_node)
-		connect(node_manager->laser_node, SIGNAL(laserScanReceived(const QImage &, int)),
-			raw_data_display, SLOT(setImage(const QImage &, int)));
-	if(node_manager->map_node)
+	if(node_manager->disparity_image_node)
+        connect(node_manager->disparity_image_node, SIGNAL(disparityImageReceived(const QImage &)),
+            processed_data_display, SLOT(setImage(const QImage &)));
+    if(node_manager->map_node)
         connect(node_manager->map_node, SIGNAL(mapReceived(const QImage &)),
             processed_data_display, SLOT(setImage(const QImage &)));
     if(node_manager->diagnostic_node && robot_config->diagnostics.batteryLevel)

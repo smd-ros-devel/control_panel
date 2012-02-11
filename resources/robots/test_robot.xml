@@ -26,6 +26,11 @@
       <topicName>camera/depth/image</topicName>
     </camera>
 
+    <camera>
+      <name>Kinect IR Stream</name>
+      <topicName>camera/ir/image_rect</topicName>
+    </camera>
+
     <laser>
       <name>Laser Scan</name>
       <topicName>scan</topicName>
@@ -50,6 +55,10 @@
   </sensors>
 
   <processedData>
+    <disparityImage>
+      <name>Kinect Depth Disparity</name>
+      <topicName>camera/depth/disparity</topicName>
+    </disparityImage>
     <map>
       <name>GMapping Map</name>
       <topicName>map</topicName>

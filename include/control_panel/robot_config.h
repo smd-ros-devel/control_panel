@@ -283,6 +283,29 @@ struct RobotJoints
 //////////////////// Processed Data /////////////////////////
 
 /**
+ * \struct RobotDisparityImage
+ * \brief  @todo Fill this out
+ */
+struct RobotDisparityImage
+{
+    public:
+        /* linked list */
+        struct RobotDisparityImage *next;
+
+        /* stored data */
+        QString name;
+        QString topicName;
+
+        /**
+         * \brief Constructor. Initilizes data.
+         */
+        RobotDisparityImage()
+            : next(NULL),
+              name("Unknown Disparity Image"),
+              topicName("unknown_disparity_image") { }
+};
+
+/**
  * \struct RobotMap
  * \brief  @todo Fill this out
  */
@@ -353,6 +376,7 @@ struct RobotProcessedData
     public:
         /* Processed data lists */
         struct RobotCamera *images;
+        struct RobotDisparityImage *disparity_images;
         struct RobotMap *maps;
         struct RobotOdometry *odometry;
 
@@ -361,6 +385,7 @@ struct RobotProcessedData
          */
         RobotProcessedData()
             : images(NULL),
+              disparity_images(NULL),
               maps(NULL),
               odometry(NULL)
         {
@@ -382,6 +407,13 @@ struct RobotProcessedData
                 tmp_image = images;
                 images = images->next;
                 delete tmp_image;
+            }
+            struct RobotDisparityImage *tmp_disparity;
+            while(disparity_images != NULL)
+            {
+                tmp_disparity = disparity_images;
+                disparity_images = disparity_images->next;
+                delete tmp_disparity;
             }
             struct RobotMap *tmp_map;
             while(maps != NULL)
@@ -678,6 +710,7 @@ struct RobotConfig : public QObject
 		void addRange(QDomElement);
         void addJoint(QDomElement);
         void addImage(QDomElement);
+        void addDisparityImage(QDomElement);
         void addMap(QDomElement);
         void addOdometry(QDomElement);
 		void addTemperature(QDomElement);

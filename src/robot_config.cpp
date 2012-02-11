@@ -117,6 +117,8 @@ void RobotConfig::processElement(QDomElement e, bool getComponents)
 		std::cerr << "WARNING: Unknown tag " << e.tagName().toStdString() << std::endl;
 }
 
+////////////////////////// Sensors /////////////////////////////
+
 void RobotConfig::processSensors(QDomElement e)
 {
 	QDomNode n = e.firstChild();
@@ -336,6 +338,8 @@ void RobotConfig::processProcessedData(QDomElement e)
         e = n.toElement();
         if(e.tagName() == "image")
             addImage(e);
+        else if(e.tagName() == "disparityImage")
+            addDisparityImage(e);
         else if(e.tagName() == "map")
             addMap(e);
         else if(e.tagName() == "odometry")
@@ -363,6 +367,25 @@ void RobotConfig::addImage(QDomElement e)
     }
     new_image->next = processedData.images;
     processedData.images = new_image;
+}
+
+void RobotConfig::addDisparityImage(QDomElement e)
+{
+    struct RobotDisparityImage *new_disparity = new struct RobotDisparityImage;
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "name")
+            new_disparity->name = e.text();
+        else if(e.tagName() == "topicName")
+            new_disparity->topicName = e.text();
+        else
+            std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+    new_disparity->next = processedData.disparity_images;
+    processedData.disparity_images = new_disparity;
 }
 
 void RobotConfig::addMap(QDomElement e)

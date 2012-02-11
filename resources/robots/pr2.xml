@@ -113,6 +113,10 @@
       <name>Narrow Stereo Textured Left Rectified</name>
       <topicName>narrow_stereo_textured/left/image_rect</topicName>
     </image>
+    <disparityImage>
+      <name>Narrow Stereo Textured Disparity</name>
+      <topicName>narrow_stereo_textured/disparity</topicName>
+    </disparityImage>
 
     <image>
       <name>Narrow Stereo Right Rectified</name>
@@ -122,6 +126,11 @@
       <name>Narrow Stereo Left Rectified</name>
       <topicName>narrow_stereo/left/image_rect</topicName>
     </image>
+    <disparityImage>
+      <name>Narrow Stereo Disparity</name>
+      <topicName>narrow_stereo/disparity</topicName>
+    </disparityImage>
+
 
     <image>
       <name>Wide Stereo Right Rectified</name>
@@ -139,6 +148,10 @@
       <name>Wide Stereo Left Rect Color</name>
       <topicName>wide_stereo/left/image_rect_color</topicName>
     </image>
+    <disparityImage>
+      <name>Wide Stereo Disparity</name>
+      <topicName>wide_stereo/disparity</topicName>
+    </disparityImage>
 
     <map>
       <name>GMapping</name>

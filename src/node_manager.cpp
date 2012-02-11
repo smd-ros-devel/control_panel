@@ -32,6 +32,8 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
         map_node = new MapNode(nh_ptr);
     if(robot_config->processedData.images)
         image_node = new ImageNode(nh_ptr);
+    if(robot_config->processedData.disparity_images)
+        disparity_image_node = new DisparityImageNode(nh_ptr);
 	if(robot_config->controls.used)
     {
 		control_node = new ControlNode(nh_ptr);
@@ -206,6 +208,8 @@ void NodeManager::changeProcessedDataSource(const std::string &source)
         map_node->unsubscribe();
     if(image_node)
         image_node->unsubscribe();
+    if(disparity_image_node)
+        disparity_image_node->unsubscribe();
 
     RobotCamera *image = robot_config->processedData.images;
     while(image != NULL)
@@ -231,6 +235,19 @@ void NodeManager::changeProcessedDataSource(const std::string &source)
         }
         else
             map = map->next;
+    }
+
+    RobotDisparityImage *disparity = robot_config->processedData.disparity_images;
+    while(disparity != NULL)
+    {
+        if(source == disparity->name.toStdString())
+        {
+            disparity_image_node->setTopic(disparity->topicName.toStdString());
+            disparity_image_node->subscribe();
+            return;
+        }
+        else
+            disparity = disparity->next;
     }
 }
 

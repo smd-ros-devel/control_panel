@@ -14,6 +14,8 @@
 #include "ros/ros.h"
 #include "sensor_msgs/image_encodings.h"
 #include "stereo_msgs/DisparityImage.h"
+#include "cv_bridge/cv_bridge.h"
+#include <cv.h>
 #include <string>
 
 namespace enc = sensor_msgs::image_encodings;
@@ -27,6 +29,9 @@ class DisparityImageNode : public QObject
     Q_OBJECT
 
     public:
+        /**
+         * \brief Initializes the topic name and copys the node handle pointer
+         */
         DisparityImageNode(ros::NodeHandle *nh_ptr);
 
         /**
