@@ -145,140 +145,134 @@ void RobotConfig::processSensors(QDomElement e)
 
 void RobotConfig::addCamera(QDomElement e)
 {
-	struct RobotCamera *new_cam = new struct RobotCamera;
+	struct RobotCamera new_cam;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_cam->name = e.text();
+			new_cam.name = e.text();
 		else if(e.tagName() == "topicName")
-			new_cam->topicName = e.text();
+			new_cam.topicName = e.text();
 		else
 			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_cam->next = sensors.cameras;
-	sensors.cameras = new_cam;
+	sensors.cameras.insert(sensors.cameras.begin(), new_cam);
 }
 
 void RobotConfig::addLaser(QDomElement e)
 {
-	struct RobotLaser *new_laser = new struct RobotLaser;
+	struct RobotLaser new_laser;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_laser->name = e.text();
+			new_laser.name = e.text();
 		else if(e.tagName() == "topicName")
-			new_laser->topicName = e.text();
+			new_laser.topicName = e.text();
 		else
 			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_laser->next = sensors.lasers;
-	sensors.lasers = new_laser;
+	sensors.lasers.insert(sensors.lasers.begin(), new_laser);
 }
 
 void RobotConfig::addGPS(QDomElement e)
 {
-	struct RobotGPS *new_gps = new struct RobotGPS;
+	struct RobotGPS new_gps;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_gps->name = e.text();
+			new_gps.name = e.text();
 		else if(e.tagName() == "topicName")
-			new_gps->topicName = e.text();
+			new_gps.topicName = e.text();
 		else if(e.tagName() == "longitude")
-			new_gps->longitude = true;
+			new_gps.longitude = true;
 		else if(e.tagName() == "latitude")
-			new_gps->latitude = true;
+			new_gps.latitude = true;
 		else if(e.tagName() == "altitude")
-			new_gps->altitude = true;
+			new_gps.altitude = true;
 		else if(e.tagName() == "positionCovariance")
-			new_gps->covariance = true;
+			new_gps.covariance = true;
 		else
 			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_gps->next = sensors.gps;
-	sensors.gps = new_gps;
+	sensors.gps.insert(sensors.gps.begin(), new_gps);
 }
 
 void RobotConfig::addCompass(QDomElement e)
 {
-	struct RobotCompass *new_compass = new struct RobotCompass;
+	struct RobotCompass new_compass;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_compass->name = e.text();
+			new_compass.name = e.text();
 		else if(e.tagName() == "topicName")
-			new_compass->topicName = e.text();
+			new_compass.topicName = e.text();
 		else
 			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_compass->next = sensors.compass;
-	sensors.compass = new_compass;
+	sensors.compass.insert(sensors.compass.begin(), new_compass);
 }
 
 void RobotConfig::addIMU(QDomElement e)
 {
-	struct RobotIMU *new_imu = new struct RobotIMU;
+	struct RobotIMU new_imu;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_imu->name = e.text();
+			new_imu.name = e.text();
 		else if(e.tagName() == "topicName")
-			new_imu->topicName = e.text();
+			new_imu.topicName = e.text();
         else if(e.tagName() == "roll")
-            new_imu->roll = true;
+            new_imu.roll = true;
         else if(e.tagName() == "pitch")
-            new_imu->pitch = true;
+            new_imu.pitch = true;
         else if(e.tagName() == "yaw")
-            new_imu->yaw = true;
+            new_imu.yaw = true;
 		else if(e.tagName() == "angularVelocity")
-			new_imu->angularVelocity = true;
+			new_imu.angularVelocity = true;
 		else if(e.tagName() == "linearAcceleration")
-			new_imu->linearAcceleration = true;
+			new_imu.linearAcceleration = true;
 		else if(e.tagName() == "hideAttitude")
-			new_imu->hideAttitude = true;
+			new_imu.hideAttitude = true;
 		else if(e.tagName() == "hideHeading")
-			new_imu->hideHeading = true;
+			new_imu.hideHeading = true;
 		else if(e.tagName() == "hideLabels")
-			new_imu->hideLabels = true;
+			new_imu.hideLabels = true;
 		else
 			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_imu->next = sensors.imu;
-	sensors.imu = new_imu;
+	sensors.imu.insert(sensors.imu.begin(), new_imu);
 }
 
 void RobotConfig::addRange(QDomElement e)
 {
-	struct RobotRange *new_range = new struct RobotRange;
+	struct RobotRange new_range;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_range->name = e.text();
+			new_range.name = e.text();
 		else if(e.tagName() == "topicName")
-			new_range->topicName = e.text();
+			new_range.topicName = e.text();
 		else
 			std::cerr << "WARNING: Unknown sensor tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_range->next = sensors.range;
-	sensors.range = new_range;
+	sensors.range.insert(sensors.range.begin(), new_range);
 }
 /////////////////////////// End Sensors /////////////////////////////
 
@@ -309,21 +303,20 @@ void RobotConfig::processJoints(QDomElement e)
 
 void RobotConfig::addJoint(QDomElement e)
 {
-    struct RobotJoint *new_joint = new struct RobotJoint;
+    struct RobotJoint new_joint;
     QDomNode n = e.firstChild();
     while(!n.isNull())
     {
         e = n.toElement();
         if(e.tagName() == "name")
-            new_joint->name = e.text();
+            new_joint.name = e.text();
         else if(e.tagName() == "displayName")
-            new_joint->displayName = e.text();
+            new_joint.displayName = e.text();
         else
             std::cerr << "WARNING: Unknown joint tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    new_joint->next = joint_states.joints;
-    joint_states.joints = new_joint;
+    joint_states.joints.insert(joint_states.joints.begin(), new_joint);
     joint_states.used = true;
 }
 ////////////////////////// End Joints //////////////////////////////
@@ -352,92 +345,88 @@ void RobotConfig::processProcessedData(QDomElement e)
 
 void RobotConfig::addImage(QDomElement e)
 {
-    struct RobotCamera *new_image = new struct RobotCamera;
+    struct RobotCamera new_image;
     QDomNode n = e.firstChild();
     while(!n.isNull())
     {
         e = n.toElement();
         if(e.tagName() == "name")
-            new_image->name = e.text();
+            new_image.name = e.text();
         else if(e.tagName() == "topicName")
-            new_image->topicName = e.text();
+            new_image.topicName = e.text();
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    new_image->next = processedData.images;
-    processedData.images = new_image;
+    processedData.images.insert(processedData.images.begin(), new_image);
 }
 
 void RobotConfig::addDisparityImage(QDomElement e)
 {
-    struct RobotDisparityImage *new_disparity = new struct RobotDisparityImage;
+    struct RobotDisparityImage new_disparity;
     QDomNode n = e.firstChild();
     while(!n.isNull())
     {
         e = n.toElement();
         if(e.tagName() == "name")
-            new_disparity->name = e.text();
+            new_disparity.name = e.text();
         else if(e.tagName() == "topicName")
-            new_disparity->topicName = e.text();
+            new_disparity.topicName = e.text();
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    new_disparity->next = processedData.disparity_images;
-    processedData.disparity_images = new_disparity;
+    processedData.disparity_images.insert(processedData.disparity_images.begin(), new_disparity);
 }
 
 void RobotConfig::addMap(QDomElement e)
 {
-    struct RobotMap *new_map = new struct RobotMap;
+    struct RobotMap new_map;
     QDomNode n = e.firstChild();
     while(!n.isNull())
     {
         e = n.toElement();
         if(e.tagName() == "name")
-            new_map->name = e.text();
+            new_map.name = e.text();
         else if(e.tagName() == "topicName")
-            new_map->topicName = e.text();
+            new_map.topicName = e.text();
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    new_map->next = processedData.maps;
-    processedData.maps = new_map;
+    processedData.maps.insert(processedData.maps.begin(), new_map);
 }
 
 void RobotConfig::addOdometry(QDomElement e)
 {
-    struct RobotOdometry *new_odometry = new struct RobotOdometry;
+    struct RobotOdometry new_odometry;
     QDomNode n = e.firstChild();
     while(!n.isNull())
     {
         e = n.toElement();
         if(e.tagName() == "name")
-            new_odometry->name = e.text();
+            new_odometry.name = e.text();
         else if(e.tagName() == "topicName")
-            new_odometry->topicName = e.text();
+            new_odometry.topicName = e.text();
         else if(e.tagName() == "position")
-            new_odometry->position = true;
+            new_odometry.position = true;
         else if(e.tagName() == "orientation")
-            new_odometry->orientation = true;
+            new_odometry.orientation = true;
         else if(e.tagName() == "linearVelocity")
-            new_odometry->linearVelocity = true;
+            new_odometry.linearVelocity = true;
         else if(e.tagName() == "angularVelocity")
-            new_odometry->angularVelocity = true;
+            new_odometry.angularVelocity = true;
         else if(e.tagName() == "hideAttitude")
-            new_odometry->hideAttitude = true;
+            new_odometry.hideAttitude = true;
         else if(e.tagName() == "hideHeading")
-            new_odometry->hideHeading = true;
+            new_odometry.hideHeading = true;
         else if(e.tagName() == "hideLabels")
-            new_odometry->hideLabels = true;
+            new_odometry.hideLabels = true;
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    new_odometry->next = processedData.odometry;
-    processedData.odometry = new_odometry;
+    processedData.odometry.insert(processedData.odometry.begin(), new_odometry);
 }
 /////////////////////// End Processed Data //////////////////////
 
@@ -465,69 +454,66 @@ void RobotConfig::processDiagnostics(QDomElement e)
 
 void RobotConfig::addTemperature(QDomElement e)
 {
-	struct RobotTemperature *new_temperature = new struct RobotTemperature;
+	struct RobotTemperature new_temperature;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_temperature->name = e.text();
+			new_temperature.name = e.text();
 		else if(e.tagName() == "minRange")
-			new_temperature->minRange = e.text().toFloat();
+			new_temperature.minRange = e.text().toFloat();
 		else if(e.tagName() == "maxRange")
-			new_temperature->maxRange = e.text().toFloat();
+			new_temperature.maxRange = e.text().toFloat();
 		else if(e.tagName() == "units")
-			new_temperature->units = e.text();
+			new_temperature.units = e.text();
 		else
 			std::cerr << "WARNING: Unknown diagnostic tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_temperature->next = diagnostics.temperature;
-	diagnostics.temperature = new_temperature;
+	diagnostics.temperature.insert(diagnostics.temperature.begin(), new_temperature);
 	diagnostics.used = true;
 }
 
 void RobotConfig::addVoltage(QDomElement e)
 {
-	struct RobotVoltage *new_voltage = new struct RobotVoltage;
+	struct RobotVoltage new_voltage;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_voltage->name = e.text();
+			new_voltage.name = e.text();
 		else if(e.tagName() == "minRange")
-			new_voltage->minRange = e.text().toFloat();
+			new_voltage.minRange = e.text().toFloat();
 		else if(e.tagName() == "maxRange")
-			new_voltage->maxRange = e.text().toFloat();
+			new_voltage.maxRange = e.text().toFloat();
 		else if(e.tagName() == "operatingVoltage")
-			new_voltage->operatingVoltage = e.text().toFloat();
+			new_voltage.operatingVoltage = e.text().toFloat();
 		else
 			std::cerr << "WARNING: Unknown diagnostic tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_voltage->next = diagnostics.voltage;
-	diagnostics.voltage = new_voltage;
+	diagnostics.voltage.insert(diagnostics.voltage.begin(), new_voltage);
 	diagnostics.used = true;
 }
 
 void RobotConfig::addBatteryLevel(QDomElement e)
 {
-	struct RobotBatteryLevel *new_batteryLevel = new struct RobotBatteryLevel;
+	struct RobotBatteryLevel new_batteryLevel;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "name")
-			new_batteryLevel->name = e.text();
+			new_batteryLevel.name = e.text();
 		else if(e.tagName() == "max")
-			new_batteryLevel->max = e.text().toFloat();
+			new_batteryLevel.max = e.text().toFloat();
 		else
 			std::cerr << "WARNING: Unknown diagnostic tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_batteryLevel->next = diagnostics.batteryLevel;
-	diagnostics.batteryLevel = new_batteryLevel;
+	diagnostics.batteryLevel.insert(diagnostics.batteryLevel.begin(), new_batteryLevel);
 	diagnostics.used = true;
 }
 ////////////////////////// End Diagnostics //////////////////////////
@@ -552,23 +538,22 @@ void RobotConfig::processCommands(QDomElement e)
 
 void RobotConfig::addCommandCustom(QDomElement e)
 {
-	struct RobotCommandCustom *new_custom = new struct RobotCommandCustom;
+	struct RobotCommandCustom new_custom;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		QDomElement ee = n.toElement();
 		if(ee.tagName() == "name" && e.tagName() == "custom")
-			new_custom->name = ee.text();
+			new_custom.name = ee.text();
 		else if(ee.tagName() == "topicName")
-			new_custom->topicName = ee.text();
+			new_custom.topicName = ee.text();
 		else
 			std::cerr << "WARNING: Unknown command tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
 	if(e.tagName() == "takeoff" || e.tagName() == "land")
-		new_custom->name = e.text();
-	new_custom->next = commands.custom;
-	commands.custom = new_custom;
+		new_custom.name = e.text();
+	commands.custom.insert(commands.custom.begin(), new_custom);
 	commands.used = true;
 }
 
@@ -588,19 +573,18 @@ void RobotConfig::processControls(QDomElement e)
 
 void RobotConfig::addDrive(QDomElement e)
 {
-	struct RobotDrive *new_drive = new struct RobotDrive;
+	struct RobotDrive new_drive;
 	QDomNode n = e.firstChild();
 	while(!n.isNull())
 	{
 		e = n.toElement();
 		if(e.tagName() == "topicName")
-			new_drive->topicName = e.text();
+			new_drive.topicName = e.text();
 		else
 			std::cerr << "WARNING: Unknown control tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
-	new_drive->next = controls.drive;
-	controls.drive = new_drive;
+	controls.drive.insert(controls.drive.begin(), new_drive);
 	controls.used = true;
 }
 

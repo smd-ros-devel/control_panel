@@ -17,47 +17,27 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
     raw_data_display = new DisplayPane;
     raw_data_display->setTitle("Raw Data");
 
-    RobotCamera *cam = robot_config->sensors.cameras;
-    while(cam != NULL)
-    {
-        raw_data_display->addSource(cam->name);
-        cam = cam->next;
-    }
+    for(unsigned int i = 0; i < robot_config->sensors.cameras.size(); i++)
+        raw_data_display->addSource(robot_config->sensors.cameras[i].name);
 
-    RobotLaser *laser = robot_config->sensors.lasers;
-    while(laser != NULL)
-    {
-        raw_data_display->addSource(laser->name);
-        laser = laser->next;
-    }
+    for(unsigned int i = 0; i < robot_config->sensors.lasers.size(); i++)
+        raw_data_display->addSource(robot_config->sensors.lasers[i].name);
 
     // Create processed display pane if the config file has processed data
-    if(robot_config->processedData.maps || robot_config->processedData.images ||
-       robot_config->processedData.disparity_images)
+    if(!robot_config->processedData.maps.empty() || !robot_config->processedData.images.empty() ||
+       !robot_config->processedData.disparity_images.empty())
     {
         processed_data_display = new DisplayPane;
         processed_data_display->setTitle("Processed Data");
 
-        RobotMap *map = robot_config->processedData.maps;
-        while(map != NULL)
-        {
-            processed_data_display->addSource(map->name);
-            map = map->next;
-        }
+        for(unsigned int i = 0; i < robot_config->processedData.maps.size(); i++)
+            processed_data_display->addSource(robot_config->processedData.maps[i].name);
 
-        RobotCamera *image = robot_config->processedData.images;
-        while(image != NULL)
-        {
-            processed_data_display->addSource(image->name);
-            image = image->next;
-        }
+        for(unsigned int i = 0; i < robot_config->processedData.images.size(); i++)
+            processed_data_display->addSource(robot_config->processedData.images[i].name);
 
-        RobotDisparityImage *disparity = robot_config->processedData.disparity_images;
-        while(disparity != NULL)
-        {
-            processed_data_display->addSource(disparity->name);
-            disparity = disparity->next;
-        }
+        for(unsigned int i = 0; i < robot_config->processedData.disparity_images.size(); i++)
+            processed_data_display->addSource(robot_config->processedData.disparity_images[i].name);
     }
 
 
@@ -90,7 +70,7 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
     if(node_manager->map_node)
         connect(node_manager->map_node, SIGNAL(mapReceived(const QImage &)),
             processed_data_display, SLOT(setImage(const QImage &)));
-    if(node_manager->diagnostic_node && robot_config->diagnostics.batteryLevel)
+    if(node_manager->diagnostic_node && !robot_config->diagnostics.batteryLevel.empty())
 		connect(node_manager->diagnostic_node, SIGNAL(diagnosticDataReceived(const QString &, const QString &)),
 			this, SLOT(processDiagnostic(const QString &, const QString &)));
     if(node_manager->range_node)
@@ -372,22 +352,15 @@ bool RobotTab::isKeyboardEnabled() const
  *****************************************************************************/
 void RobotTab::processDiagnostic(const QString &key, const QString &val)
 {
-	RobotBatteryLevel *temp_batteryLevel = robot_config->diagnostics.batteryLevel;
-	while(temp_batteryLevel != NULL)
-	{
-		if(temp_batteryLevel->name == key)
+	for(unsigned int i = 0; i < robot_config->diagnostics.batteryLevel.size(); i++)
+		if(robot_config->diagnostics.batteryLevel[i].name == key)
 			data_pane->updateBatteryData(val.toFloat());
-		temp_batteryLevel = temp_batteryLevel->next;
-	}
-	RobotVoltage *temp_voltage = robot_config->diagnostics.voltage;
-	while(temp_voltage != NULL)
-	{
-		if(temp_voltage->name == key)
+
+	for(unsigned int i = 0; i < robot_config->diagnostics.voltage.size(); i++)
+		if(robot_config->diagnostics.voltage[i].name == key)
 		{
 			// Do Something
 		}
-		temp_voltage = temp_voltage->next;
-	}
 }
 
 
@@ -395,53 +368,47 @@ void RobotTab::setupDataPane()
 {
     data_pane = new DataPane;
 
-    RobotOdometry *odom = robot_config->processedData.odometry;
-    while(odom != NULL)
+    for(unsigned int i = 0; i < robot_config->processedData.odometry.size(); i++)
     {
         connect(
-            node_manager->addOdometryNode(odom->topicName.toStdString()),
+            node_manager->addOdometryNode(robot_config->processedData.odometry[i].topicName.toStdString()),
             SIGNAL(odometryDataReceived(const QVector3D &, const QQuaternion &,
                                         const QVector3D &, const QVector3D &)),
-            data_pane->addOdometryDisplay(odom->name, odom->position,
-                                          odom->orientation, odom->linearVelocity,
-                                          odom->angularVelocity, !odom->hideAttitude,
-                                          !odom->hideHeading),
+            data_pane->addOdometryDisplay(robot_config->processedData.odometry[i].name, robot_config->processedData.odometry[i].position,
+                                          robot_config->processedData.odometry[i].orientation, robot_config->processedData.odometry[i].linearVelocity,
+                                          robot_config->processedData.odometry[i].angularVelocity, !robot_config->processedData.odometry[i].hideAttitude,
+                                          !robot_config->processedData.odometry[i].hideHeading),
             SLOT(updateOdometryDisplay(const QVector3D &, const QQuaternion &,
                                        const QVector3D &, const QVector3D &))
             );
-        odom = odom->next;
     }
 
     // Create nodes and widgets for all imu sensors
-    RobotIMU *imu = robot_config->sensors.imu;
-    while(imu != NULL)
+    for(unsigned int i = 0; i < robot_config->sensors.imu.size(); i++)
     {
         connect(
-            node_manager->addImuNode(imu->topicName.toStdString()),
+            node_manager->addImuNode(robot_config->sensors.imu[i].topicName.toStdString()),
             SIGNAL(imuDataReceived(const QQuaternion &, const QVector3D &,
                                    const QVector3D &)),
-            data_pane->addImuDisplay(imu->name, imu->roll, imu->pitch,
-                                     imu->yaw, imu->angularVelocity, imu->linearAcceleration,
-                                     !imu->hideAttitude, !imu->hideHeading),
+            data_pane->addImuDisplay(robot_config->sensors.imu[i].name, robot_config->sensors.imu[i].roll, robot_config->sensors.imu[i].pitch,
+                                     robot_config->sensors.imu[i].yaw, robot_config->sensors.imu[i].angularVelocity, robot_config->sensors.imu[i].linearAcceleration,
+                                     !robot_config->sensors.imu[i].hideAttitude, !robot_config->sensors.imu[i].hideHeading),
             SLOT(updateImuDisplay(const QQuaternion &, const QVector3D &,
                                   const QVector3D &))
             );
-        imu = imu->next;
     }
 
 
     qRegisterMetaType< std::vector<double> >("std::vector<double>");
-    RobotJoint *joint = robot_config->joint_states.joints;
     if(robot_config->joint_states.used)
     {
         // Group all joints and their display names in string lists
         QStringList name_list;
         QStringList disp_name_list;
-        while(joint != NULL)
+        for(unsigned int i = 0; i < robot_config->joint_states.joints.size(); i++)
         {
-            name_list << joint->name;
-            disp_name_list << joint->displayName;
-            joint = joint->next;
+            name_list << robot_config->joint_states.joints[i].name;
+            disp_name_list << robot_config->joint_states.joints[i].displayName;
         }
 
         node_manager->joint_state_node->setTopic(robot_config->joint_states.topicName.toStdString());
@@ -459,14 +426,12 @@ void RobotTab::setupDataPane()
     }
 
     // Create nodes and widgets for all gps sensors
-    RobotGPS *gps = robot_config->sensors.gps;
-    while(gps != NULL)
+    for(unsigned int i = 0; i < robot_config->sensors.gps.size(); i++)
     {
-        connect(node_manager->addGpsNode(gps->topicName.toStdString()),
+        connect(node_manager->addGpsNode(robot_config->sensors.gps[i].topicName.toStdString()),
                 SIGNAL(gpsDataReceived(double, double, double)),
-                data_pane->addGpsDisplay(gps->name, gps->latitude,
-                    gps->longitude, gps->altitude),
+                data_pane->addGpsDisplay(robot_config->sensors.gps[i].name, robot_config->sensors.gps[i].latitude,
+                    robot_config->sensors.gps[i].longitude, robot_config->sensors.gps[i].altitude),
                 SLOT(updateGpsDisplay(double, double, double)));
-        gps = gps->next;
     }
 }

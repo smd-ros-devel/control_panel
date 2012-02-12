@@ -9,6 +9,7 @@
 #ifndef CONTROL_PANEL_ROBOT_CONFIG_H
 #define CONTROL_PANEL_ROBOT_CONFIG_H
 
+#include <vector>
 #include <QObject>
 #include <QFile>
 #include <QDomDocument>
@@ -20,15 +21,12 @@
 struct RobotCamera
 {
 	public:
-		/* linked list */
-		struct RobotCamera *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
 
 		/* constructor */
-		RobotCamera() : next(NULL), name("Unknown Camera"), topicName("unknown_camera")
+		RobotCamera() : name("Unknown Camera"), topicName("unknown_camera")
 		{
 		}
 };
@@ -36,15 +34,12 @@ struct RobotCamera
 struct RobotLaser
 {
 	public:
-		/* linked list */
-		struct RobotLaser *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
 
 		/* constructor */
-		RobotLaser() : next(NULL), name("Unknown Laser"), topicName("unknown_laser")
+		RobotLaser() : name("Unknown Laser"), topicName("unknown_laser")
 		{
 		}
 };
@@ -52,9 +47,6 @@ struct RobotLaser
 struct RobotGPS
 {
 	public:
-		/* linked list */
-		struct RobotGPS *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
@@ -64,7 +56,7 @@ struct RobotGPS
 		bool covariance;
 
 		/* constructor */
-		RobotGPS() : next(NULL), name("Unknown GPS"), topicName("unknown_gps"), longitude(false), latitude(false), altitude(false), covariance(false)
+		RobotGPS() : name("Unknown GPS"), topicName("unknown_gps"), longitude(false), latitude(false), altitude(false), covariance(false)
 		{
 		}
 };
@@ -72,15 +64,12 @@ struct RobotGPS
 struct RobotCompass
 {
 	public:
-		/* linked list */
-		struct RobotCompass *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
 
 		/* constructor */
-		RobotCompass() : next(NULL), name("Unknown Compass"), topicName("unknown_compass")
+		RobotCompass() : name("Unknown Compass"), topicName("unknown_compass")
 		{
 		}
 };
@@ -88,15 +77,12 @@ struct RobotCompass
 struct RobotIMU
 {
 	public:
-		/* linked list */
-		struct RobotIMU *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
-        bool roll;
-        bool pitch;
-        bool yaw;
+		bool roll;
+		bool pitch;
+		bool yaw;
 		bool angularVelocity;
 		bool linearAcceleration;
 		bool hideAttitude;
@@ -104,7 +90,7 @@ struct RobotIMU
 		bool hideLabels;
 
 		/* constructor */
-		RobotIMU() : next(NULL), name("Unknown IMU"), topicName("unknown_imu/data"), roll(false), pitch(false), yaw(false), angularVelocity(false), linearAcceleration(false), hideAttitude(false), hideHeading(false), hideLabels(false)
+		RobotIMU() : name("Unknown IMU"), topicName("unknown_imu/data"), roll(false), pitch(false), yaw(false), angularVelocity(false), linearAcceleration(false), hideAttitude(false), hideHeading(false), hideLabels(false)
 		{
 		}
 };
@@ -112,15 +98,12 @@ struct RobotIMU
 struct RobotRange
 {
 	public:
-		/* linked list */
-		struct RobotRange *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
 
 		/* constructor */
-		RobotRange() : next(NULL), name("Unknown Range"), topicName("unknown_range")
+		RobotRange() : name("Unknown Range"), topicName("unknown_range")
 		{
 		}
 };
@@ -129,69 +112,22 @@ struct RobotSensors
 {
 	public:
 		/* sensor list */
-		struct RobotCamera *cameras;
-		struct RobotLaser *lasers;
-		struct RobotGPS *gps;
-		struct RobotCompass *compass;
-		struct RobotIMU *imu;
-		struct RobotRange *range;
-
-		/* constructor */
-		RobotSensors() : cameras(NULL), lasers(NULL), gps(NULL), compass(NULL), imu(NULL), range(NULL)
-		{
-		}
-
-		/* destructor */
-		~RobotSensors()
-		{
-			defaults();
-		}
+		std::vector<struct RobotCamera> cameras;
+		std::vector<struct RobotLaser> lasers;
+		std::vector<struct RobotGPS> gps;
+		std::vector<struct RobotCompass> compass;
+		std::vector<struct RobotIMU> imu;
+		std::vector<struct RobotRange> range;
 
 		/* set all to defaults */
 		void defaults()
 		{
-			struct RobotCamera *tmp_camera;
-			while(cameras != NULL)
-			{
-				tmp_camera = cameras;
-				cameras = cameras->next;
-				delete tmp_camera;
-			}
-			struct RobotLaser *tmp_laser;
-			while(lasers != NULL)
-			{
-				tmp_laser = lasers;
-				lasers = lasers->next;
-				delete tmp_laser;
-			}
-			struct RobotGPS *tmp_gps;
-			while(gps != NULL)
-			{
-				tmp_gps = gps;
-				gps = gps->next;
-				delete tmp_gps;
-			}
-			struct RobotCompass *tmp_compass;
-			while(compass != NULL)
-			{
-				tmp_compass = compass;
-				compass = compass->next;
-				delete tmp_compass;
-			}
-			struct RobotIMU *tmp_imu;
-			while(imu != NULL)
-			{
-				tmp_imu = imu;
-				imu = imu->next;
-				delete tmp_imu;
-			}
-			struct RobotRange *tmp_range;
-			while(range != NULL)
-			{
-				tmp_range = range;
-				range = range->next;
-				delete tmp_range;
-			}
+			cameras.clear();
+			lasers.clear();
+			gps.clear();
+			compass.clear();
+			imu.clear();
+			range.clear();
 		}
 };
 
@@ -208,9 +144,6 @@ struct RobotSensors
 struct RobotJoint
 {
     public:
-        /* linked list */
-        struct RobotJoint *next;
-
         /* stored data */
         QString name;
         QString displayName;
@@ -219,8 +152,7 @@ struct RobotJoint
          * \brief Contstructor. Initializes linked list and data
          */
         RobotJoint()
-            : next(NULL),
-              name("unknown_joint"),
+            : name("unknown_joint"),
               displayName("Unknown Joint") { }
 };
 
@@ -239,7 +171,7 @@ struct RobotJoints
         bool used;
 
         /* Joints list */
-        struct RobotJoint *joints;
+        std::vector<struct RobotJoint> joints;
 
         /**
          * \brief Constructor. Initializes public members
@@ -249,13 +181,7 @@ struct RobotJoints
               position(false),
               velocity(false),
               effort(false),
-              used(false),
-              joints(NULL) { }
-
-        /**
-         * \brief Deconstructor. Calls the defaults function
-         */
-         ~RobotJoints() { defaults(); }
+              used(false) { }
 
         /**
          * \brief Destroys linked list
@@ -266,13 +192,7 @@ struct RobotJoints
             position = false;
             velocity = false;
             effort = false;
-            struct RobotJoint *tmp_joint;
-            while(joints != NULL)
-            {
-                tmp_joint = joints;
-                joints = joints->next;
-                delete tmp_joint;
-            }
+            joints.clear();
         }
 };
 
@@ -289,9 +209,6 @@ struct RobotJoints
 struct RobotDisparityImage
 {
     public:
-        /* linked list */
-        struct RobotDisparityImage *next;
-
         /* stored data */
         QString name;
         QString topicName;
@@ -300,8 +217,7 @@ struct RobotDisparityImage
          * \brief Constructor. Initilizes data.
          */
         RobotDisparityImage()
-            : next(NULL),
-              name("Unknown Disparity Image"),
+            : name("Unknown Disparity Image"),
               topicName("unknown_disparity_image") { }
 };
 
@@ -312,9 +228,6 @@ struct RobotDisparityImage
 struct RobotMap
 {
     public:
-        /* linked list */
-        struct RobotMap *next;
-
         /* stored data */
         QString name;
         QString topicName;
@@ -323,8 +236,7 @@ struct RobotMap
          * \brief Constructor. Sets member values to default values.
          */
         RobotMap()
-            : next(NULL),
-              name("Unknown Map"),
+            : name("Unknown Map"),
               topicName("unknown_map") { }
 };
 
@@ -335,9 +247,6 @@ struct RobotMap
 struct RobotOdometry
 {
     public:
-        /* linked list */
-        struct RobotOdometry *next;
-
         /* stored data */
         QString name;
         QString topicName;
@@ -353,8 +262,7 @@ struct RobotOdometry
          * Constructor. Initializes structure members
          */
         RobotOdometry()
-            : next(NULL),
-              name("Unknown Odometry"),
+            : name("Unknown Odometry"),
               topicName("unknown_odometry"),
               position(false),
               orientation(false),
@@ -375,60 +283,20 @@ struct RobotProcessedData
 {
     public:
         /* Processed data lists */
-        struct RobotCamera *images;
-        struct RobotDisparityImage *disparity_images;
-        struct RobotMap *maps;
-        struct RobotOdometry *odometry;
-
-        /**
-         * \brief Constructor
-         */
-        RobotProcessedData()
-            : images(NULL),
-              disparity_images(NULL),
-              maps(NULL),
-              odometry(NULL)
-        {
-        }
-
-        /**
-         * \brief Deconstructor. Calls default function.
-         */
-        ~RobotProcessedData() { defaults(); }
+        std::vector <struct RobotCamera> images;
+        std::vector <struct RobotDisparityImage> disparity_images;
+        std::vector <struct RobotMap> maps;
+        std::vector <struct RobotOdometry> odometry;
 
         /**
          * \brief Sets all struct members to their defaults
          */
         void defaults()
         {
-            struct RobotCamera *tmp_image;
-            while(images != NULL)
-            {
-                tmp_image = images;
-                images = images->next;
-                delete tmp_image;
-            }
-            struct RobotDisparityImage *tmp_disparity;
-            while(disparity_images != NULL)
-            {
-                tmp_disparity = disparity_images;
-                disparity_images = disparity_images->next;
-                delete tmp_disparity;
-            }
-            struct RobotMap *tmp_map;
-            while(maps != NULL)
-            {
-                tmp_map = maps;
-                maps = maps->next;
-                delete tmp_map;
-            }
-            struct RobotOdometry *tmp_odometry;
-            while(odometry != NULL)
-            {
-                tmp_odometry = odometry;
-                odometry = odometry->next;
-                delete tmp_odometry;
-            }
+            images.clear();
+            disparity_images.clear();
+            maps.clear();
+            odometry.clear();
         }
 };
 
@@ -440,9 +308,6 @@ struct RobotProcessedData
 struct RobotTemperature
 {
 	public:
-		/* linked list */
-		struct RobotTemperature *next;
-
 		/* stored data */
 		QString name;
 		float minRange;
@@ -450,7 +315,7 @@ struct RobotTemperature
 		QString units;
 
 		/* constructor */
-		RobotTemperature() : next(NULL), name("Unknown Temperature"), minRange(0), maxRange(0), units("Celcius")
+		RobotTemperature() : name("Unknown Temperature"), minRange(0), maxRange(0), units("Celcius")
 		{
 		}
 };
@@ -458,9 +323,6 @@ struct RobotTemperature
 struct RobotVoltage
 {
 	public:
-		/* linked list */
-		struct RobotVoltage *next;
-
 		/* stored data */
 		QString name;
 		float minRange;
@@ -468,7 +330,7 @@ struct RobotVoltage
 		float operatingVoltage;
 
 		/* constructor */
-		RobotVoltage() : next(NULL), name("Unknown Temperature"), minRange(0), maxRange(0), operatingVoltage(0)
+		RobotVoltage() : name("Unknown Temperature"), minRange(0), maxRange(0), operatingVoltage(0)
 		{
 		}
 };
@@ -476,15 +338,12 @@ struct RobotVoltage
 struct RobotBatteryLevel
 {
 	public:
-		/* linked list */
-		struct RobotBatteryLevel *next;
-
 		/* stored data */
 		QString name;
 		float max;
 
 		/* constructor */
-		RobotBatteryLevel() : next(NULL), name("Unknown Battery Level"), max(0)
+		RobotBatteryLevel() : name("Unknown Battery Level"), max(0)
 		{
 		}
 };
@@ -497,19 +356,13 @@ struct RobotDiagnostics
 		bool used;
 
 		/* diagnostics list */
-		struct RobotTemperature *temperature;
-		struct RobotVoltage *voltage;
-		struct RobotBatteryLevel *batteryLevel;
+		std::vector<struct RobotTemperature> temperature;
+		std::vector<struct RobotVoltage> voltage;
+		std::vector<struct RobotBatteryLevel> batteryLevel;
 
 		/* constructor */
-		RobotDiagnostics() : topicName("diagnostics"), used(false), temperature(NULL), voltage(NULL), batteryLevel(NULL)
+		RobotDiagnostics() : topicName("diagnostics"), used(false)
 		{
-		}
-
-		/* destructor */
-		~RobotDiagnostics()
-		{
-			defaults();
 		}
 
 		/* set all to defaults */
@@ -517,27 +370,9 @@ struct RobotDiagnostics
 		{
 			topicName = "diagnostics";
 			used = false;
-			struct RobotTemperature *tmp_temperature;
-			while(temperature != NULL)
-			{
-				tmp_temperature = temperature;
-				temperature = temperature->next;
-				delete tmp_temperature;
-			}
-			struct RobotVoltage *tmp_voltage;
-			while(voltage != NULL)
-			{
-				tmp_voltage = voltage;
-				voltage = voltage->next;
-				delete tmp_voltage;
-			}
-			struct RobotBatteryLevel *tmp_batteryLevel;
-			while(batteryLevel != NULL)
-			{
-				tmp_batteryLevel = batteryLevel;
-				batteryLevel = batteryLevel->next;
-				delete tmp_batteryLevel;
-			}
+			temperature.clear();
+			voltage.clear();
+			batteryLevel.clear();
 		}
 };
 
@@ -549,15 +384,12 @@ struct RobotDiagnostics
 struct RobotCommandCustom
 {
 	public:
-		/* linked list */
-		struct RobotCommandCustom *next;
-
 		/* stored data */
 		QString name;
 		QString topicName;
 
 		/* constructor */
-		RobotCommandCustom() : next(NULL), name("Unknown Temperature"), topicName("unknown_custom_command")
+		RobotCommandCustom() : name("Unknown Temperature"), topicName("unknown_custom_command")
 		{
 		}
 };
@@ -569,30 +401,18 @@ struct RobotCommands
 		bool used;
 
 		/* commands list */
-		struct RobotCommandCustom *custom;
+		std::vector<struct RobotCommandCustom> custom;
 
 		/* constructor */
-		RobotCommands() : used(false), custom(NULL)
+		RobotCommands() : used(false)
 		{
-		}
-
-		/* destructor */
-		~RobotCommands()
-		{
-			defaults();
 		}
 
 		/* set all to defaults */
 		void defaults()
 		{
 			used = false;
-			struct RobotCommandCustom *tmp_custom;
-			while(custom != NULL)
-			{
-				tmp_custom = custom;
-				custom = custom->next;
-				delete tmp_custom;
-			}
+			custom.clear();
 		}
 };
 
@@ -604,14 +424,11 @@ struct RobotCommands
 struct RobotDrive
 {
 	public:
-		/* linked list */
-		struct RobotDrive *next;
-
 		/* stored data */
 		QString topicName;
 
 		/* constructor */
-		RobotDrive() : next(NULL), topicName("unknown_drive")
+		RobotDrive() : topicName("unknown_drive")
 		{
 		}
 };
@@ -623,30 +440,18 @@ struct RobotControls
 		bool used;
 
 		/* controls list */
-		struct RobotDrive *drive;
+		std::vector<struct RobotDrive> drive;
 
 		/* constructor */
-		RobotControls() : used(false), drive(NULL)
+		RobotControls() : used(false)
 		{
-		}
-
-		/* destructor */
-		~RobotControls()
-		{
-			defaults();
 		}
 
 		/* set all to defaults */
 		void defaults()
 		{
 			used = false;
-			struct RobotDrive *tmp_drive;
-			while(drive != NULL)
-			{
-				tmp_drive = drive;
-				drive = drive->next;
-				delete tmp_drive;
-			}
+			drive.clear();
 		}
 };
 

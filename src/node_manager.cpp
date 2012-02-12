@@ -26,18 +26,18 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	nh_ptr->setCallbackQueue(&robot_callback_queue);
 
 	// Inititalize ROS nodes
-	if(robot_config->sensors.cameras)
+	if(!robot_config->sensors.cameras.empty())
 		camera_node = new ImageNode(nh_ptr);
-    if(robot_config->processedData.maps)
+    if(!robot_config->processedData.maps.empty())
         map_node = new MapNode(nh_ptr);
-    if(robot_config->processedData.images)
+    if(!robot_config->processedData.images.empty())
         image_node = new ImageNode(nh_ptr);
-    if(robot_config->processedData.disparity_images)
+    if(!robot_config->processedData.disparity_images.empty())
         disparity_image_node = new DisparityImageNode(nh_ptr);
-	if(robot_config->controls.used)
+    if(robot_config->controls.used)
     {
 		control_node = new ControlNode(nh_ptr);
-        control_node->setTopic(robot_config->controls.drive->topicName.toStdString());
+        control_node->setTopic(robot_config->controls.drive[0].topicName.toStdString());
 
         pub_timer = new QTimer(this);
         connect(pub_timer, SIGNAL(timeout()), control_node, SLOT(publish()));
@@ -54,9 +54,9 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		diagnostic_node = new DiagnosticNode(nh_ptr);
 	if(robot_config->joint_states.used)
 		joint_state_node = new JointStateNode(nh_ptr);
-	if(robot_config->sensors.lasers)
+	if(!robot_config->sensors.lasers.empty())
 		laser_node = new LaserNode(nh_ptr);
-    if(robot_config->sensors.range)
+    if(!robot_config->sensors.range.empty())
         range_node = new RangeNode(nh_ptr);
 }
 
@@ -175,30 +175,24 @@ void NodeManager::changeRawDataSource(const std::string &source)
 	if(laser_node)
 		laser_node->unsubscribe();
 
-	RobotCamera *cam = robot_config->sensors.cameras;
-	while(cam != NULL)
+	for(unsigned int i = 0; i < robot_config->sensors.cameras.size(); i++)
 	{
-		if(source == cam->name.toStdString())
+		if(source == robot_config->sensors.cameras[i].name.toStdString())
 		{
-			camera_node->setTopic(cam->topicName.toStdString());
+			camera_node->setTopic(robot_config->sensors.cameras[i].topicName.toStdString());
 			camera_node->subscribe();
 			return;
 		}
-		else
-			cam = cam->next;
 	}
 
-	RobotLaser *laser = robot_config->sensors.lasers;
-	while(laser != NULL)
+	for(unsigned int i = 0; i < robot_config->sensors.lasers.size(); i++)
 	{
-		if(source == laser->name.toStdString())
+		if(source == robot_config->sensors.lasers[i].name.toStdString())
 		{
-			laser_node->setTopic(laser->topicName.toStdString());
+			laser_node->setTopic(robot_config->sensors.lasers[i].topicName.toStdString());
 			laser_node->subscribe();
 			return;
 		}
-		else
-			laser = laser->next;
 	}
 }
 
@@ -211,43 +205,34 @@ void NodeManager::changeProcessedDataSource(const std::string &source)
     if(disparity_image_node)
         disparity_image_node->unsubscribe();
 
-    RobotCamera *image = robot_config->processedData.images;
-    while(image != NULL)
+    for(unsigned int i = 0; i < robot_config->processedData.images.size(); i++)
     {
-        if(source == image->name.toStdString())
+        if(source == robot_config->processedData.images[i].name.toStdString())
         {
-            image_node->setTopic(image->topicName.toStdString());
+            image_node->setTopic(robot_config->processedData.images[i].topicName.toStdString());
             image_node->subscribe();
             return;
         }
-        else
-            image = image->next;
     }
 
-    RobotMap *map = robot_config->processedData.maps;
-    while(map != NULL)
+    for(unsigned int i = 0; i < robot_config->processedData.maps.size(); i++)
     {
-        if(source == map->name.toStdString())
+        if(source == robot_config->processedData.maps[i].name.toStdString())
         {
-            map_node->setTopic(map->topicName.toStdString());
+            map_node->setTopic(robot_config->processedData.maps[i].topicName.toStdString());
             map_node->subscribe();
             return;
         }
-        else
-            map = map->next;
     }
 
-    RobotDisparityImage *disparity = robot_config->processedData.disparity_images;
-    while(disparity != NULL)
+    for(unsigned int i = 0; i < robot_config->processedData.disparity_images.size(); i++)
     {
-        if(source == disparity->name.toStdString())
+        if(source == robot_config->processedData.disparity_images[i].name.toStdString())
         {
-            disparity_image_node->setTopic(disparity->topicName.toStdString());
+            disparity_image_node->setTopic(robot_config->processedData.disparity_images[i].topicName.toStdString());
             disparity_image_node->subscribe();
             return;
         }
-        else
-            disparity = disparity->next;
     }
 }
 
@@ -319,46 +304,30 @@ void NodeManager::joystickButtonChanged(int button, bool state)
 		if(button == 14)
 		{
 			// Takeoff Message
-			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
-			while(custom_temp != NULL)
-			{
-				if(custom_temp->name == "takeoff")
-				    command_node->callEmpty(custom_temp->topicName);
-				custom_temp = custom_temp->next;
-			}
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "takeoff")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
 		if(button == 13)
 		{
 			// Land Message
-			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
-			while(custom_temp != NULL)
-			{
-				if(custom_temp->name == "land")
-					command_node->callEmpty(custom_temp->topicName);
-				custom_temp = custom_temp->next;
-			}
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "land")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
 		if(button == 12)
 		{
 			// Reset Message
-			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
-			while(custom_temp != NULL)
-			{
-				if(custom_temp->name == "Reset")
-					command_node->callEmpty(custom_temp->topicName);
-				custom_temp = custom_temp->next;
-			}
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "reset")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
 		if(button == 15)
 		{
 			// Land Message
-			struct RobotCommandCustom *custom_temp = robot_config->commands.custom;
-			while(custom_temp != NULL)
-			{
-				if(custom_temp->name == "Camera Toggle")
-					command_node->callEmpty(custom_temp->topicName);
-				custom_temp = custom_temp->next;
-			}
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "Camera Toggle")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
 	}
 }
