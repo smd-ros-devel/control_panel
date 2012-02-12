@@ -6,7 +6,6 @@
  * \author Matt Richard
  */
 #include "control_panel/nodes/disparity_image_node.h"
-//#include "sensor_msgs/Image.h"
 
 DisparityImageNode::DisparityImageNode(ros::NodeHandle *nh_ptr)
 {
@@ -28,16 +27,39 @@ void DisparityImageNode::unsubscribe()
 
 void DisparityImageNode::disparityCallback(const stereo_msgs::DisparityImageConstPtr &msg)
 {
-    /* @todo Convert msg to a QImage and emit */
-    cv_bridge::CvImageConstPtr cv_ptr;
-
     if(msg->image.encoding != enc::TYPE_32FC1)
     {
         ROS_ERROR("Unusable disparity image encoding '%s'", msg->image.encoding.c_str());
         return;
     }
 
-    const cv::Mat_<float> dmat(msg->image.height, msg->image.width, (float *)&msg->image.data[0], msg->image.step);
-    // cv_ptr = cv_bridge::toCvCopy(msg->image, enc::BGR8);
-    /* @todo Finish conversion from disparity image to QImage */
+    float mult = 255.0 / (msg->max_disparity - msg->min_disparity);
+
+    const cv::Mat_<float> d_mat(msg->image.height, msg->image.width,
+        (float *)&msg->image.data[0], msg->image.step);
+
+    cv::Mat_<cv::Vec3b> disp_color;
+    disp_color.create(msg->image.height, msg->image.width);
+
+    // Create the disparity color image
+    for(int i = 0; i < disp_color.rows; i++)
+    {
+        const float *d = d_mat[i];
+
+        for(int j = 0; j < disp_color.cols; j++)
+        {
+            int index = (d[j] - msg->min_disparity) * mult + 0.5;
+            index = std::min(255, std::max(0, index));
+
+            disp_color(i, j)[2] = color_table[3 * index];
+            disp_color(i, j)[1] = color_table[1 + (3 * index)];
+            disp_color(i, j)[0] = color_table[2 + (3 * index)];
+        }
+    }
+
+    // Create the QImage from the disparity color image
+    QImage buffer((unsigned char *)disp_color.data, disp_color.cols,
+        disp_color.rows, QImage::Format_RGB888);
+
+    emit disparityImageReceived(buffer.rgbSwapped());
 }
