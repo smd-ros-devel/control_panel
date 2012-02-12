@@ -263,21 +263,12 @@ void RobotTab::keyPressEvent(QKeyEvent *event)
 			node_manager->control_node->setAngularZ(-1.0);
 			break;
 
-        case Qt::Key_Up:
-            node_manager->control_node->setLinearZ(1.0);
-            break;
-
-        case Qt::Key_Down:
-            node_manager->control_node->setLinearZ(-1.0);
-            break;
-
-        case Qt::Key_Right:
+        case Qt::Key_Q:
             node_manager->control_node->setLinearY(1.0);
             break;
 
-        case Qt::Key_Left:
+        case Qt::Key_E:
             node_manager->control_node->setLinearY(-1.0);
-            break;
 
 		default:
 			event->ignore();
@@ -316,13 +307,8 @@ void RobotTab::keyReleaseEvent(QKeyEvent *event)
 			node_manager->control_node->setAngularZ(0.0);
 			break;
 
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-            node_manager->control_node->setLinearX(0.0);
-            break;
-
-        case Qt::Key_Right:
-        case Qt::Key_Left:
+        case Qt::Key_Q:
+        case Qt::Key_E:
             node_manager->control_node->setLinearY(0.0);
             break;
 

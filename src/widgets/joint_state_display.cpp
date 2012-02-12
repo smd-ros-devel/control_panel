@@ -122,7 +122,7 @@ void JointStateDisplay::createWidget()
     {
         temp_label = new QLabel("Effort");
         grid_layout->addWidget(temp_label, 0, 3, Qt::AlignHCenter);
-        grid_layout->setColumnMinimumWidth(3, 100);
+        grid_layout->setColumnMinimumWidth(3, 80);
 
         effort_labels = new QList<QLabel *>;
         for(i = 1; i < rows; i++)
@@ -134,12 +134,28 @@ void JointStateDisplay::createWidget()
         cols++;
     }
 
-    widget_layout = new QHBoxLayout;
-    widget_layout->addStretch();
-    widget_layout->addLayout(grid_layout);
-    widget_layout->addStretch();
+    //widget_layout = new QHBoxLayout;
+    //widget_layout->addStretch();
+    if(rows > 7)
+    {
+        QWidget *alternate_widget = new QWidget;
+        alternate_widget->setLayout(grid_layout);
 
-    setLayout(widget_layout);
+        QScrollArea *scroll_widget = new QScrollArea;
+        scroll_widget->setWidget(alternate_widget);
+
+        QVBoxLayout *v_layout = new QVBoxLayout;
+        v_layout->addWidget(scroll_widget);
+
+        setLayout(v_layout);
+        setMaximumHeight(150);
+    }
+    else
+        setLayout(grid_layout);
+    //widget_layout->addLayout(grid_layout);
+    //widget_layout->addStretch();
+
+    //setLayout(widget_layout);
 }
 
 void JointStateDisplay::updateJointStateDisplay(const QStringList &names,
@@ -166,7 +182,7 @@ void JointStateDisplay::updateJointStateDisplay(const QStringList &names,
                 ((QLabel *)velocity_labels->at(index))->setText(QString("%1").arg(vel[index], 6, 'f', 1) + QString(" rad/s"));
 
             if(use_effort)
-                ((QLabel *)effort_labels->at(index))->setText(QString("%1").arg(eff[index], 6, 'f', 1) + QString(" rad/s^2"));
+                ((QLabel *)effort_labels->at(index))->setText(QString("%1").arg(eff[index], 6, 'f', 1) + QString(" N"));
         }
     }
 }
