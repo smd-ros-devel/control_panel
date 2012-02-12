@@ -1,20 +1,41 @@
-/******************************************************************************
-** diagnostic_node.cpp
-**
-** Author:      Matt Richard
-** Date:        Sept 8, 2011
-** Description: ROS node for received robot diagnostic data.
-******************************************************************************/
+/*
+ * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of Willow Garage, Inc. nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
+
+/**
+ * \file   diagnostic_node.cpp
+ * \date   Sept 8, 2011
+ * \author Matt Richard, Scott K Logan
+ * \brief  ROS node for received robot diagnostic data.
+ */
 #include "control_panel/nodes/diagnostic_node.h"
 
-/******************************************************************************
-** Function:    DiagnosticNode
-** Author:      Matt Richard
-** Parameters:  ros::NodeHandle *nh_ptr
-** Returns:     None
-** Description: Constructor.
-******************************************************************************/
+
 DiagnosticNode::DiagnosticNode(ros::NodeHandle *nh_ptr)
 {
 	topic_name = Globals::DEFAULT_DIAGNOSTIC_TOPIC;
@@ -24,13 +45,6 @@ DiagnosticNode::DiagnosticNode(ros::NodeHandle *nh_ptr)
 	strncpy(ns, &nh->getNamespace().c_str()[1], nh->getNamespace().length());
 }
 
-/******************************************************************************
-** Function:    subscribe
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     void
-** Description:
-******************************************************************************/
 void DiagnosticNode::subscribe()
 {
 	diagnostic_sub = nh->subscribe(topic_name, 1,
@@ -38,25 +52,11 @@ void DiagnosticNode::subscribe()
 	std::cout << "Diagnostics: Subscribed to " << topic_name << std::endl;
 }
 
-/******************************************************************************
-** Function:    unsubscribe
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     void
-** Description:
-******************************************************************************/
 void DiagnosticNode::unsubscribe()
 {
 	diagnostic_sub.shutdown();
 }
 
-/******************************************************************************
-** Function:    diagnosticCallback
-** Author:      Matt Richard
-** Parameters:  const diagnostic_msgs::DiagnosticArrayConstPtr &msg -
-** Returns:     void
-** Description:
-******************************************************************************/
 void DiagnosticNode::diagnosticCallback(
 	const diagnostic_msgs::DiagnosticArrayConstPtr &msg)
 {
@@ -77,25 +77,11 @@ void DiagnosticNode::diagnosticCallback(
 	}
 }
 
-/******************************************************************************
-** Function:    setTopic
-** Author:      Matt Richard
-** Parameters:  std::string topic -
-** Returns:     void
-** Description:
-******************************************************************************/
 void DiagnosticNode::setTopic(const std::string &topic)
 {
 	topic_name = topic;
 }
 
-/******************************************************************************
-** Function:    getTopic
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     std::string -
-** Description: 
-******************************************************************************/
 std::string DiagnosticNode::getTopic() const
 {
 	return topic_name;

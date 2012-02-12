@@ -1,20 +1,39 @@
-/******************************************************************************
-** imu_node.cpp
-**
-** Author:      Matt Richard
-** Date:        Sept 8, 2011
-** Description:
-******************************************************************************/
+/*
+ * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of Willow Garage, Inc. nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
+
+/**
+ * \file   imu_node.cpp
+ * \date   Sept 8, 2011
+ * \author Matt Richard
+ */
 #include "control_panel/nodes/imu_node.h"
 
-/******************************************************************************
-** Function:    ImuNode
-** Author:      Matt Richard
-** Parameters:  ros::NodeHandle *nh_ptr -
-** Returns:     None
-** Description: Constructor.
-******************************************************************************/
 ImuNode::ImuNode(ros::NodeHandle *nh_ptr)
 {
 	topic_name = Globals::DEFAULT_IMU_TOPIC;
@@ -22,37 +41,16 @@ ImuNode::ImuNode(ros::NodeHandle *nh_ptr)
 	nh = nh_ptr;
 }
 
-/******************************************************************************
-** Function:    subscribe
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     void
-** Description:
-******************************************************************************/
 void ImuNode::subscribe()
 {
 	imu_sub = nh->subscribe(topic_name, 1, &ImuNode::imuCallback, this);
 }
 
-/******************************************************************************
-** Function:    unsubscribe
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     void
-** Description:
-******************************************************************************/
 void ImuNode::unsubscribe()
 {
 	imu_sub.shutdown();
 }
 
-/******************************************************************************
-** Function:    imuCallback
-** Author:      Matt Richard
-** Parameters:  const sensor_msgs::ImuConstPtr &msg -
-** Returns:     void
-** Description:
-******************************************************************************/
 void ImuNode::imuCallback(const sensor_msgs::ImuConstPtr &msg)
 {
 	emit imuDataReceived(
@@ -68,25 +66,11 @@ void ImuNode::imuCallback(const sensor_msgs::ImuConstPtr &msg)
                   msg->linear_acceleration.z));
 }
 
-/******************************************************************************
-** Function:    setTopic
-** Author:      Matt Richard
-** Parameters:  std::string topic - 
-** Returns:     void
-** Description:
-******************************************************************************/
 void ImuNode::setTopic(const std::string &topic)
 {
 	topic_name = topic;
 }
 
-/******************************************************************************
-** Function:    getTopic
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     std::string
-** Description: 
-******************************************************************************/
 std::string ImuNode::getTopic() const
 {
 	return topic_name;
