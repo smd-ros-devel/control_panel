@@ -56,8 +56,8 @@ class OdometryNode : public QObject
 		void subscribe();
 		void unsubscribe();
 		void odometryCallback(const nav_msgs::OdometryConstPtr &msg);
-		void setTopic(const std::string &topic);
-		std::string getTopic() const;
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		std::string getTopic() const { return topic_name; }
 
 	signals:
 		void odometryDataReceived(const QVector3D &position,

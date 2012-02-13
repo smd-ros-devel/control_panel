@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 /**
  * \file   diagnostic_node.h
  * \date   Sept 8, 211
@@ -54,8 +55,8 @@ class DiagnosticNode : public QObject
 		void subscribe();
 		void unsubscribe();
 		void diagnosticCallback(const diagnostic_msgs::DiagnosticArrayConstPtr &msg);
-		void setTopic(const std::string &topic);
-		std::string getTopic() const;
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		std::string getTopic() const { return topic_name; }
 
 	signals:
 		void diagnosticDataReceived(const QString &key, const QString &val);

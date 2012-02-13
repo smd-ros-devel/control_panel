@@ -53,9 +53,9 @@ class RangeNode : public QObject
     public:
         RangeNode(ros::NodeHandle *nh_ptr);
         void subscribe();
-        std::string getTopic() const;
+        std::string getTopic() const { return topic_name; }
         void rangeCallback(const sensor_msgs::RangeConstPtr &msg);
-        void setTopic(const std::string &topic);
+        void setTopic(const std::string &topic) { topic_name = topic; }
         void unsubscribe();
 
     signals:

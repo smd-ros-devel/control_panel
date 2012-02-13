@@ -65,13 +65,3 @@ void ImuNode::imuCallback(const sensor_msgs::ImuConstPtr &msg)
                   msg->linear_acceleration.y,
                   msg->linear_acceleration.z));
 }
-
-void ImuNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
-
-std::string ImuNode::getTopic() const
-{
-	return topic_name;
-}

@@ -77,12 +77,12 @@ class LaserNode : public QObject
          *
          * \param topic The topic to subscribe to.
          */
-        void setTopic(const std::string &topic);
+        void setTopic(const std::string &topic) { topic_name = topic; }
 
         /**
          * \return Returns the set topic
          */
-		std::string getTopic() const;
+		std::string getTopic() const { return topic_name; }
 
 	signals:
         /**

@@ -53,8 +53,8 @@ class GpsNode : public QObject
 		void subscribe();
 		void unsubscribe();
 		void gpsCallback(const sensor_msgs::NavSatFixConstPtr &msg);
-		void setTopic(const std::string &topic);
-		std::string getTopic() const;
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		std::string getTopic() const { return topic_name; }
 
 	signals:
 		void gpsDataReceived(double lat, double lon, double alt);

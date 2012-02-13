@@ -80,13 +80,3 @@ void MapNode::mapCallback(const nav_msgs::OccupancyGridConstPtr &msg)
 
     emit mapReceived(buffer);
 }
-
-void MapNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
-
-std::string MapNode::getTopic() const
-{
-	return topic_name;
-}

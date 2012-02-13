@@ -76,13 +76,3 @@ void DiagnosticNode::diagnosticCallback(
 		}
 	}
 }
-
-void DiagnosticNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
-
-std::string DiagnosticNode::getTopic() const
-{
-	return topic_name;
-}

@@ -46,11 +46,6 @@ void RangeNode::subscribe()
     range_sub = nh->subscribe(topic_name, 1, &RangeNode::rangeCallback, this);
 }
 
-std::string RangeNode::getTopic() const
-{
-    return topic_name;
-}
-
 void RangeNode::rangeCallback(const sensor_msgs::RangeConstPtr &msg)
 {
     bool valid = true;
@@ -59,11 +54,6 @@ void RangeNode::rangeCallback(const sensor_msgs::RangeConstPtr &msg)
         valid = false;
 
     emit rangeReceived(msg->range, valid);
-}
-
-void RangeNode::setTopic(const std::string &topic)
-{
-    topic_name = topic;
 }
 
 void RangeNode::unsubscribe()

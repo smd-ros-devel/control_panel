@@ -69,13 +69,3 @@ void OdometryNode::odometryCallback(const nav_msgs::OdometryConstPtr &msg)
                   msg->twist.twist.angular.y,
                   msg->twist.twist.angular.z));
 }
-
-void OdometryNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
-
-std::string OdometryNode::getTopic() const
-{
-	return topic_name;
-}

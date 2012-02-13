@@ -91,13 +91,3 @@ void LaserNode::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
 
     emit laserScanReceived(buffer, scale);
 }
-
-void LaserNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
-
-std::string LaserNode::getTopic() const
-{
-	return topic_name;
-}

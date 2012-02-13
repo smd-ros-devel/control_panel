@@ -56,8 +56,8 @@ class MapNode : public QObject
 		void subscribe();
 		void unsubscribe();
 		void mapCallback(const nav_msgs::OccupancyGridConstPtr &msg);
-		void setTopic(const std::string &topic);
-		std::string getTopic() const;
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		std::string getTopic() const { return topic_name; }
 
 	signals:
         void mapReceived(const QImage &buffer);

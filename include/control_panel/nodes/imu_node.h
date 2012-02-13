@@ -56,8 +56,8 @@ class ImuNode : public QObject
 		void subscribe();
 		void unsubscribe();
 		void imuCallback(const sensor_msgs::ImuConstPtr &msg);
-		void setTopic(const std::string &topic);
-		std::string getTopic() const;
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		std::string getTopic() const { return topic_name; }
 
 	signals:
 		void imuDataReceived(const QQuaternion &ori, const QVector3D &ang_vel,

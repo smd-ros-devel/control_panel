@@ -56,13 +56,3 @@ void GpsNode::gpsCallback(const sensor_msgs::NavSatFixConstPtr &msg)
 {
 	emit gpsDataReceived(msg->latitude, msg->longitude, msg->altitude);
 }
-
-void GpsNode::setTopic(const std::string &topic)
-{
-	topic_name = topic;
-}
-
-std::string GpsNode::getTopic() const
-{
-	return topic_name;
-}
