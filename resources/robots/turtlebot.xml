@@ -7,17 +7,17 @@
 
   <sensors>
     <camera>
-      <name>Kinect Color</name>
+      <name>Kinect Color Video</name>
       <topicName>camera/rgb/image_color</topicName>
     </camera>
 
     <camera>
-      <name>Kinect Monochrome</name>
+      <name>Kinect Monochrome Video</name>
       <topicName>camera/rgb/image_mono</topicName>
     </camera>
 
     <camera>
-      <name>Kinect Depth</name>
+      <name>Kinect Depth Video</name>
       <topicName>camera/depth/image</topicName>
     </camera>
 
@@ -36,6 +36,10 @@
       <linearVelocity />
       <angularVelocity />
     </odometry>
+    <disparityImage>
+      <name>Kinect Disparity</name>
+      <topicName>camera/depth/disparity</topicName>
+    </disparityImage>
   </processedData>
 
   <joints>
