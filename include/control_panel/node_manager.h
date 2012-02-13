@@ -41,6 +41,8 @@ class NodeManager : public QThread
 
 	public:
 		NodeManager(struct RobotConfig *);
+        bool controlNodeEnabled() const { return control_node_enabled; }
+        void enableControlNode(bool enable);
 		void run();
 		void stop();
 		bool isConnected() const;
@@ -78,6 +80,7 @@ class NodeManager : public QThread
 		ros::CallbackQueue robot_callback_queue;
 		struct RobotConfig *robot_config;
 		bool connected;
+        bool control_node_enabled;
         QTimer *pub_timer;
 
         QList<ImuNode *> *imu_node_list;

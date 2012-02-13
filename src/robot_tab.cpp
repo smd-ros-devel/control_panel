@@ -243,11 +243,11 @@ void RobotTab::keyPressEvent(QKeyEvent *event)
 			node_manager->control_node->setAngularZ(-1.0);
 			break;
 
-        case Qt::Key_Q:
+        case Qt::Key_Q: // Stride left
             node_manager->control_node->setLinearY(1.0);
             break;
 
-        case Qt::Key_E:
+        case Qt::Key_E: // Stride right
             node_manager->control_node->setLinearY(-1.0);
 
 		default:
@@ -305,6 +305,10 @@ void RobotTab::setRCMode(int rc_mode)
     if(rc_mode == Globals::Disabled)
     {
         use_keyboard = false;
+
+        if(node_manager->controlNodeEnabled())
+            node_manager->enableControlNode(false);
+
         if(robot_config->controls.used)
             node_manager->joystick_node->unsubscribe();
 
@@ -313,6 +317,10 @@ void RobotTab::setRCMode(int rc_mode)
     else if(rc_mode == Globals::Keyboard)
     {
         use_keyboard = true;
+
+        if(!node_manager->controlNodeEnabled())
+            node_manager->enableControlNode(true);
+
         if(robot_config->controls.used)
             node_manager->joystick_node->unsubscribe();
 
@@ -321,6 +329,10 @@ void RobotTab::setRCMode(int rc_mode)
     else if(rc_mode == Globals::Joystick)
     {
         use_keyboard = false;
+
+        if(!node_manager->controlNodeEnabled())
+            node_manager->enableControlNode(true);
+
         if(robot_config->controls.used)
             node_manager->joystick_node->subscribe();
 

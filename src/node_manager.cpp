@@ -15,6 +15,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
     range_node(NULL)
 {
 	connected = false;
+    control_node_enabled = false;
 	robot_config = new_robot_config;
 
     gps_node_list = new QList<GpsNode *>;
@@ -74,11 +75,6 @@ void NodeManager::run()
     emit connectionStatusChanged(Globals::Connecting);
 
 	// Start necessary ROS nodes
-	if(control_node)
-    {
-		control_node->advertise();
-        pub_timer->start(30);
-    }
 	if(diagnostic_node)
 	{
 		diagnostic_node->setTopic(robot_config->diagnostics.topicName.toStdString());
@@ -121,9 +117,6 @@ void NodeManager::stop()
 	if(connected)
 	{
 		connected = false;
-
-        if(control_node)
-            pub_timer->stop();
 
 		printf("Shutting down %s's node handle\n",
 			robot_config->getRobotName().toStdString().c_str());
@@ -330,4 +323,23 @@ void NodeManager::joystickButtonChanged(int button, bool state)
 				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
 	}
+}
+
+void NodeManager::enableControlNode(bool enable)
+{
+    if(connected && control_node)
+    {
+        if(enable)
+        {
+            control_node->advertise();
+            pub_timer->start(30);
+            control_node_enabled = true;
+        }
+        else
+        {
+            control_node->unadvertise();
+            pub_timer->stop();
+            control_node_enabled = false;
+        }
+    }
 }
