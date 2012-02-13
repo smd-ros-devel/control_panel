@@ -316,7 +316,8 @@ void RobotConfig::addJoint(QDomElement e)
             std::cerr << "WARNING: Unknown joint tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
-    joint_states.joints.insert(joint_states.joints.begin(), new_joint);
+    joint_states.joints.push_back(new_joint);
+    //joint_states.joints.insert(joint_states.joints.begin(), new_joint);
     joint_states.used = true;
 }
 ////////////////////////// End Joints //////////////////////////////
