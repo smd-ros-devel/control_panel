@@ -312,7 +312,7 @@ void NodeManager::joystickButtonChanged(int button, bool state)
 		{
 			// Reset Message
 			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
-				if(robot_config->commands.custom[i].name == "reset")
+				if(robot_config->commands.custom[i].name == "Reset")
 				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
 		if(button == 15)

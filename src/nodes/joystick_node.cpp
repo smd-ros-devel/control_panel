@@ -32,7 +32,7 @@
  * \date   Oct, 2011
  * \author Scott K Logan, Matt Richard
  */
-#include <QVector>
+#include <vector>
 #include "control_panel/nodes/joystick_node.h"
 
 JoystickNode::JoystickNode(ros::NodeHandle *nh_ptr) : nh(nh_ptr)
@@ -44,13 +44,13 @@ void JoystickNode::joyCallback(const sensor_msgs::JoyConstPtr &msg)
 {
 	unsigned int i;
 
-	static QVector<double> axes(msg->axes.size(), 0);
-	static QVector<bool> buttons(msg->buttons.size(), false);
+    static std::vector<double> axes(msg->axes.size(), 0);
+    static std::vector<bool> buttons(msg->buttons.size(), false);
 
 	if((unsigned)axes.size() != msg->axes.size())
-		axes.fill(msg->axes.size(), 0);
+        axes.resize(msg->axes.size(), 0);
 	if((unsigned)buttons.size() != msg->buttons.size())
-		buttons.fill(msg->buttons.size(), false);
+        buttons.resize(msg->buttons.size(), false);
 
 	for(i = 0; i < msg->axes.size(); i++)
 	{
