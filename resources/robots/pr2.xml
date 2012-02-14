@@ -172,7 +172,6 @@
     <topicName>joint_states</topicName>
     <position />
     <velocity />
-    <effort />
     <joint>
       <name>fl_caster_rotation_joint</name>
       <displayName>FL Caster Rotation</displayName>

@@ -1,16 +1,18 @@
-/******************************************************************************
-** robot_widget.cpp
-**
-** Author:      Matt Richard
-** Date:        Oct 17, 2011
-** Description: RobotWidget is the widget displayed in the scroll area in the
-**              MainTab for one robot in the robot list. This reads every
-**              robot's configuration file and displays the basic detailes of
-**              the robot.
-******************************************************************************/
+/* @todo Add license here */
 
+
+/**
+ * \file   robot_widget.cpp
+ * \date   Oct 17, 2011
+ * \author Matt Richard
+ * \brief  Displays details of a robot to be listed in the main tab.
+ *
+ * RobotWidget is the widget displayed in the scroll area in the
+ * MainTab for one robot in the robot list. This reads every
+ * robot's configuration file and displays the basic detailes of
+ * the robot.
+ */
 #include <QtGui>
-
 #include "control_panel/robot_widget.h"
 
 RobotWidget::RobotWidget(QWidget *parent) : QFrame(parent)
@@ -56,7 +58,7 @@ void RobotWidget::createWidgets()
 	robot_picture_label->setFixedSize(80, 80);
 
 	QFont font;
-	font.setPointSize(14);
+	font.setPointSize(15);
 
 	robot_name_label = new QLabel;
 	robot_name_label->setFont(font);
@@ -65,6 +67,8 @@ void RobotWidget::createWidgets()
 
 	drive_system_label = new QLabel(tr("Drive System: "));
 
+    robot_namespace_label =new QLabel(tr("Namespace: "));
+
 	select_checkbox = new QCheckBox(tr("Select"));
 	connect(select_checkbox, SIGNAL(stateChanged(int)),
 		this, SLOT(selectCheckboxChanged(int)));
@@ -72,15 +76,24 @@ void RobotWidget::createWidgets()
 
 void RobotWidget::createLayout()
 {
-	QVBoxLayout *robot_name_vlayout = new QVBoxLayout;
-	robot_name_vlayout->addWidget(robot_name_label, 0, Qt::AlignLeft);
-	robot_name_vlayout->addWidget(system_label, 0, Qt::AlignLeft);
-	robot_name_vlayout->addWidget(drive_system_label, 0, Qt::AlignLeft);
+    QLabel *sys = new QLabel("System: ");
+    QLabel *d_sys = new QLabel("Drive System: ");
+    QLabel *ns = new QLabel("Namespace: ");
+
+    QGridLayout *robot_info_gridlayout = new QGridLayout;
+    robot_info_gridlayout->setVerticalSpacing(0);
+    robot_info_gridlayout->addWidget(robot_name_label, 0, 0, 1, 2, Qt::AlignLeft);
+    robot_info_gridlayout->addWidget(sys, 1, 0, Qt::AlignLeft);
+    robot_info_gridlayout->addWidget(system_label, 1, 1, Qt::AlignLeft);
+    robot_info_gridlayout->addWidget(d_sys, 2, 0, Qt::AlignLeft);
+    robot_info_gridlayout->addWidget(drive_system_label, 2, 1, Qt::AlignLeft);
+    robot_info_gridlayout->addWidget(ns, 3, 0, Qt::AlignLeft);
+    robot_info_gridlayout->addWidget(robot_namespace_label, 3, 1, Qt::AlignLeft);
 
 	robot_widget_layout = new QHBoxLayout;
 	robot_widget_layout->addWidget(robot_picture_label, 0, Qt::AlignLeft);
-	robot_widget_layout->addLayout(robot_name_vlayout);
-	robot_widget_layout->addStretch();
+    robot_widget_layout->addLayout(robot_info_gridlayout);
+    robot_widget_layout->addStretch();
 	robot_widget_layout->addWidget(select_checkbox, 0, Qt::AlignRight);
 }
 
@@ -97,6 +110,14 @@ void RobotWidget::setRobotName(const std::string &name)
 	robot_name_label->setText(getRobotName());
 }
 
+void RobotWidget::setRobotNamespace(const std::string &ns)
+{
+    if(ns == "")
+        robot_namespace_label->setText(tr("/"));
+    else
+        robot_namespace_label->setText(ns.c_str());
+}
+
 QString RobotWidget::getRobotName() const
 {
 	if(robot_name.isEmpty())
@@ -111,13 +132,12 @@ QString RobotWidget::getConfigPath() const
 
 void RobotWidget::setSystem(const std::string &robot_system)
 {
-	system_label->setText(tr("System: %1").arg(robot_system.c_str()));
+	system_label->setText(tr(robot_system.c_str()));
 }
 
 void RobotWidget::setDriveSystem(const std::string &robot_drive_system)
 {
-	drive_system_label->setText(tr("Drive System: %1").arg(
-		robot_drive_system.c_str()));
+	drive_system_label->setText(tr(robot_drive_system.c_str()));
 }
 
 void RobotWidget::setConfigPath(const std::string &robot_config_path)
@@ -150,5 +170,6 @@ void RobotWidget::setRobot(RobotConfig *rbt)
 	setSystem(rbt->system.toStdString());
 	setDriveSystem(rbt->driveSystem.toStdString());
 	setRobotPicture(rbt->image);
+    setRobotNamespace(rbt->nameSpace.toStdString());
 }
 

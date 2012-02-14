@@ -30,7 +30,7 @@
 /**
  * \file   main_tab.cpp
  * \date   Oct 10, 2011
- * \author Matt Richard
+ * \author Matt Richard, Scott K Logan
  * \brief  Displays the list of all robots
  *
  * The main tab displayed when the Control Panel is first
@@ -42,8 +42,6 @@
 #include <QtGui>
 #include "control_panel/main_tab.h"
 #include <iostream>
-#include <stdio.h>
-
 
 MainTab::MainTab(const QString &robots, QWidget *parent)
     : QWidget(parent)

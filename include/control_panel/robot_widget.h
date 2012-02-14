@@ -1,14 +1,17 @@
-/******************************************************************************
-** robot_widget.h
-**
-** Author:      Matt Richard
-** Date:        Oct 17, 2011
-** Description: RobotWidget is the widget displayed in the scroll area in the
-**              MainTab for one robot in the robot list. This reads every
-**              robot's configuration file and displays the basic detailes of
-**              the robot.
-******************************************************************************/
+/* @todo Add license here */
 
+
+/**
+ * \file   robot_widget.h
+ * \date   Oct 17, 2011
+ * \author Matt Richard
+ * \brief  @todo Write brief description
+ * 
+ * RobotWidget is the widget displayed in the scroll area in the
+ * MainTab for one robot in the robot list. This reads every
+ * robot's configuration file and displays the basic detailes of
+ * the robot.
+ */
 #ifndef CONTROL_PANEL_ROBOT_WIDGET_H
 #define CONTROL_PANEL_ROBOT_WIDGET_H
 
@@ -25,10 +28,12 @@ class QString;
 QT_END_NAMESPACE
 
 #include "robot_config.h"
-
 #include <string>
-#include <stdio.h>
 
+/**
+ * \class RobotWidget
+ * \brief @todo Write brief class description
+ */
 class RobotWidget : public QFrame
 {
 	Q_OBJECT
@@ -37,6 +42,7 @@ class RobotWidget : public QFrame
 		RobotWidget(QWidget *parent = 0);
 		void setRobotPicture(const QImage &robot_image);
 		void setRobotName(const std::string &name);
+        void setRobotNamespace(const std::string &ns);
 		QString getRobotName() const;
 		QString getConfigPath() const;
 		void setSystem(const std::string &robot_system);
@@ -61,7 +67,6 @@ class RobotWidget : public QFrame
 		void createLayout();
 
 		QString robot_name;
-
 		QString configFilePath;
 
 		QHBoxLayout *robot_widget_layout;
@@ -72,6 +77,7 @@ class RobotWidget : public QFrame
 		QLabel *robot_name_label;
 		QLabel *system_label;
 		QLabel *drive_system_label;
+        QLabel *robot_namespace_label;
 
 		QCheckBox *select_checkbox;
 };
