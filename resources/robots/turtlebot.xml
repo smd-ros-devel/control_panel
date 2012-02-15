@@ -3,7 +3,7 @@
   <system>UGV</system>
   <driveSystem>Differential drive</driveSystem>
   <imageFile>turtlebot.png</imageFile>
-  <nameSpace></nameSpace>
+  <nameSpace>turtlebot</nameSpace>
 
   <sensors>
     <camera>

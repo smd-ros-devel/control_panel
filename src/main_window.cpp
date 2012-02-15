@@ -246,6 +246,7 @@ void MainWindow::createMenuActions()
 
     set_velocity_action = new QAction(tr("Set Velocity Scale"), this);
     set_velocity_action->setEnabled(false);
+    set_velocity_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
     connect(set_velocity_action, SIGNAL(triggered()), SLOT(setMaxVelocity()));
 
 	gestures_action = new QAction(tr("Kinect &Gestures"), this);
@@ -366,29 +367,29 @@ void MainWindow::createMenus()
 
 	// Create edit menu
     edit_menu = menuBar()->addMenu(tr("&Edit"));
-    edit_menu->addAction(master_settings_action);
+    //edit_menu->addAction(master_settings_action);
 	edit_menu->addAction(configuration_file_action);
-    edit_menu->addAction(topics_action);
+    //edit_menu->addAction(topics_action);
     edit_menu->addAction(set_velocity_action);
 	edit_menu->addSeparator();
-	edit_menu->addAction(gestures_action);
+	//edit_menu->addAction(gestures_action);
 
 	// Create view menu
 	view_menu = menuBar()->addMenu(tr("&View"));
 	view_menu->addAction(show_menu_bar_action);
 	view_menu->addAction(full_screen_action);
 	view_menu->addSeparator();
-	view_menu->addAction(tab_in_window_action);
-	view_menu->addAction(system_diagnostics_action);
+	//view_menu->addAction(tab_in_window_action);
+	//view_menu->addAction(system_diagnostics_action);
 
 	// Create connections menu
     connections_menu = menuBar()->addMenu(tr("&Connections"));
 	connections_menu->addAction(connect_action);
     connections_menu->addAction(disconnect_action);
-	connections_menu->addSeparator()->setText(tr("Robot Mode"));
-	connections_menu->addAction(manual_mode_action);
-	connections_menu->addAction(semiautonomous_mode_action);
-	connections_menu->addAction(autonomous_mode_action);
+	//connections_menu->addSeparator()->setText(tr("Robot Mode"));
+	//connections_menu->addAction(manual_mode_action);
+	//connections_menu->addAction(semiautonomous_mode_action);
+	//connections_menu->addAction(autonomous_mode_action);
 	connections_menu->addSeparator()->setText(tr("RC Mode"));
     connections_menu->addAction(disable_rc_action);
 	connections_menu->addAction(keyboard_rc_action);
@@ -403,13 +404,14 @@ void MainWindow::createMenus()
 
 void MainWindow::editMasterSettings()
 {
+/*
     MasterSettingsDialog master_settings;
-//    master_settings.setMasterURI(QString(qt_node->getMasterURI().c_str()));
-//    master_settings.setHostIP(QString(qt_node->getHostIP().c_str()));
+    master_settings.setMasterURI(QString(qt_node->getMasterURI().c_str()));
+    master_settings.setHostIP(QString(qt_node->getHostIP().c_str()));
 
     if(master_settings.exec())
     {
-/*
+
         qt_node->stop();
 
         if(!master_settings.disconnectPushed())
@@ -428,8 +430,9 @@ void MainWindow::editMasterSettings()
         }
         else
             main_tab->setMasterStatus(false);
-*/
+
     }
+*/
 }
 
 /******************************************************************************

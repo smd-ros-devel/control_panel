@@ -116,10 +116,13 @@ void NodeManager::stop()
 {
 	if(connected)
 	{
+        enableControlNode(false);
+
 		connected = false;
 
 		printf("Shutting down %s's node handle\n",
 			robot_config->getRobotName().toStdString().c_str());
+
 		// Shutdown node handle
 		// Why do we need to unsubscribe camera_node here?
 		if(camera_node)
@@ -337,8 +340,8 @@ void NodeManager::enableControlNode(bool enable)
         }
         else
         {
-            control_node->unadvertise();
             pub_timer->stop();
+            control_node->unadvertise();
             control_node_enabled = false;
         }
     }
