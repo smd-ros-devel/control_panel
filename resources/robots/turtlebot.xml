@@ -3,28 +3,30 @@
   <system>UGV</system>
   <driveSystem>Differential drive</driveSystem>
   <imageFile>turtlebot.png</imageFile>
-  <nameSpace>turtlebot</nameSpace>
+  <nameSpace></nameSpace>
 
   <sensors>
     <camera>
       <name>Kinect Color Video</name>
       <topicName>camera/rgb/image_color</topicName>
     </camera>
-
     <camera>
       <name>Kinect Monochrome Video</name>
       <topicName>camera/rgb/image_mono</topicName>
     </camera>
-
     <camera>
       <name>Kinect Depth Video</name>
       <topicName>camera/depth/image</topicName>
     </camera>
 
-    <camera>
-      <name>Color Video</name>
-      <topicName>usb_cam/image_raw</topicName>
-    </camera>
+    <laser>
+      <name>Kinect Laser Scan</name>
+      <topicName>scan</topicName>
+    </laser>
+    <laser>
+      <name>Narrow Scan</name>
+      <topicName>narrow_scan</topicName>
+    </laser>
   </sensors>
 
   <processedData>
@@ -70,12 +72,12 @@
     </drive>
   </controls>
 
-  <diagnostics>
+  <!-- diagnostics>
     <topicName>diagnostics</topicName>
 
     <batteryLevel>
       <name>Laptop Battery</name>
       <max>100.0</max>
     </batteryLevel>
-  </diagnostics>
+  </diagnostics -->
 </robot>

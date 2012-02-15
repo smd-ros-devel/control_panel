@@ -57,7 +57,7 @@ void ImuDisplay::createWidget()
     if(use_attitude_ind)
     {
         attitude = new AttitudeIndicator;
-        widget_layout->addStretch();
+        //widget_layout->addStretch();
         widget_layout->addWidget(attitude);//, 0, Qt::AlignLeft);
     }
 

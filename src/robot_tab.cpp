@@ -79,6 +79,8 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
         connect(node_manager->range_node, SIGNAL(rangeReceived(float, bool)),
             data_pane, SLOT(updateRange(float)));
     }
+    if(!robot_config->diagnostics.batteryLevel.empty())
+        data_pane->showBatteryDisplay(true);
 
 
 	createLayout();

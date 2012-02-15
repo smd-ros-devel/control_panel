@@ -54,7 +54,7 @@ HeadingIndicator::HeadingIndicator(QWidget *parent)
     setBackgroundRole(QPalette::Window);
     setAutoFillBackground(true);
     setScene(scene);
-
+    setInteractive(false);
 
     // Initialize heading indicator
     setYaw(0.0);

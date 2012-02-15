@@ -31,7 +31,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 	text_item = new QGraphicsTextItem(tr("Loading..."));
 	text_item->setFont(font);
 	text_item->setDefaultTextColor(Qt::white);
-
+    text_item->setVisible(false);
+    
 	scene = new QGraphicsScene(this);
 	scene->setBackgroundBrush(Qt::black);
 	scene->addItem(text_item);
@@ -74,6 +75,9 @@ void ImageViewer::setImagePixmap(const QPixmap &pixmap, int interval)
 	image_item->setPixmap(image_pixmap);
 
     scene->setSceneRect(scene->itemsBoundingRect());
+
+    if(scale_factor == 1.0)
+        centerOn(image_item);
 }
 
 void ImageViewer::setImageVisible(bool visible)

@@ -28,6 +28,7 @@ BatteryDisplay::BatteryDisplay(QWidget *parent)
     setFrameStyle(QFrame::NoFrame | QFrame::Plain);
     setBackgroundRole(QPalette::Window);
     setAutoFillBackground(true);
+    setInteractive(false);
 
 
     // Create graphics items

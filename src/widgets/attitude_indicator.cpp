@@ -1,23 +1,15 @@
-/******************************************************************************
-** attitude_indicator.cpp
-**
-** Author:      Matt Richard
-** Date:        July 15, 2011
-** Description: 
-******************************************************************************/
+/* @todo Add license here */
 
+
+/**
+ * \file   attitude_indicator.cpp
+ * \date   July 15, 2011
+ * \author Matt Richard
+ */
 #include <QtGui>
-
 #include "control_panel/widgets/attitude_indicator.h"
 
 
-/******************************************************************************
-** Function:    AttitudeIndicator
-** Author:      Matt Richard
-** Parameters:  QWidget *parent -
-** Returns:     None
-** Description: Constructor
-******************************************************************************/
 AttitudeIndicator::AttitudeIndicator(QWidget *parent)
     : QGraphicsView(parent)
 {
@@ -28,6 +20,7 @@ AttitudeIndicator::AttitudeIndicator(QWidget *parent)
     setFrameStyle(QFrame::NoFrame | QFrame::Plain);
     setBackgroundRole(QPalette::Window);
     setAutoFillBackground(true);
+    setInteractive(false);
 
 
     // Create graphics items

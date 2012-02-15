@@ -18,16 +18,6 @@
       <name>Kinect Depth Video</name>
       <topicName>depth/image_raw</topicName>
     </camera>
-
-    <imu>
-      <name>IMU</name>
-      <topicName>imu/data</topicName>
-      <roll />
-      <pitch />
-      <yaw />
-      <angularVelocity />
-      <linearAcceleration />
-    </imu>
   </sensors>
 
   <controls>
