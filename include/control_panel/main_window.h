@@ -31,7 +31,6 @@
  * \file   main_window.h
  * \date   June 2011
  * \author Matt Richard, Scott K Logan
- * \brief  
  */
 #ifndef CONTROL_PANEL_MAIN_WINDOW_H
 #define CONTROL_PANEL_MAIN_WINDOW_H
@@ -41,7 +40,6 @@
 QT_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
-class QIcon;
 class QKeyEvent;
 class QMenu;
 class QMessageBox;
@@ -52,7 +50,6 @@ QT_END_NAMESPACE
 
 #include <QIcon>
 #include <string>
-#include <stdio.h>
 
 #include "main_tab.h"
 #include "robot_tab.h"
@@ -83,6 +80,7 @@ class MainWindow : public QMainWindow
 
     private slots:
 		void about();
+        void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
 		void editRobotConfigFile();
         void editTopics();
@@ -96,6 +94,8 @@ class MainWindow : public QMainWindow
 		//void openWidgetInWindow();
 		//void updateJoystickAxis(int axis, double value);
 		//void updateJoystickButton(int axis, bool state);
+        void selectNextTab();
+        void selectPreviousTab();
 		void startConnection();
         void stopConnection();
 		void tabChanged(int index);
@@ -146,6 +146,12 @@ class MainWindow : public QMainWindow
 		QAction *joystick_rc_action;
 		QAction *help_action;
         QAction *about_action;
+
+        // Keyboard shortcut actions
+        QAction *next_tab_action;
+        QAction *prev_tab_action;
+        QAction *close_tab_action;
+
 
 		QActionGroup *robot_mode_actiongroup;
 		QActionGroup *robot_rc_actiongroup;

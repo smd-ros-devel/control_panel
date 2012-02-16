@@ -3,7 +3,7 @@
   <system>UGV</system>
   <driveSystem>Differential drive</driveSystem>
   <imageFile>turtlebot.png</imageFile>
-  <nameSpace>turtlebot</nameSpace>
+  <nameSpace></nameSpace>
 
   <sensors>
     <camera>
@@ -42,6 +42,10 @@
       <name>Kinect Disparity</name>
       <topicName>camera/depth/disparity</topicName>
     </disparityImage>
+    <map>
+      <name>Intelligent Map</name>
+      <topicName>map</topicName>
+    </map>
   </processedData>
 
   <joints>

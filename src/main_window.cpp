@@ -34,6 +34,7 @@
  */
 #include <QtGui>
 #include "control_panel/main_window.h"
+#include <stdio.h>
 
 
 MainWindow::MainWindow(int argc, char **argv)
@@ -56,6 +57,21 @@ MainWindow::MainWindow(int argc, char **argv)
 	main_tab = new MainTab(robot_directory);
     main_tab->setMasterStatus(true);
 	tab_widget->addTab(main_tab, "Main");
+
+
+    // Keyboard shortcut actions
+    next_tab_action = new QAction(this);
+    next_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Tab));
+    connect(next_tab_action, SIGNAL(triggered()), this, SLOT(selectNextTab()));
+
+    prev_tab_action = new QAction(this);
+    prev_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_Tab));
+    connect(prev_tab_action, SIGNAL(triggered()), this, SLOT(selectPreviousTab()));
+
+    close_tab_action = new QAction(this);
+    close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+    //close_tab_action->setShortcutContext(Qt::ApplicationShortcut);
+    connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
 
 
 	// Connections
@@ -265,6 +281,7 @@ void MainWindow::createMenuActions()
 	full_screen_action = new QAction(tr("&Full Screen"), this);
 	full_screen_action->setShortcut(Qt::Key_F11);
 	full_screen_action->setCheckable(true);
+    //full_screen_action->setShortcutContext(Qt::ApplicationShortcut);
 	connect(full_screen_action, SIGNAL(toggled(bool)), 
 		this, SLOT(fullScreenChanged(bool)));
 
@@ -679,6 +696,11 @@ void MainWindow::closeTab(int index)
     int button_pushed;
 	RobotTab *tab;
 
+    printf("Close tab index: %d\n", index);
+
+    if(index == -1) // Close current tab
+        index = tab_widget->currentIndex();
+
 	// Check if the tab is main tab or not
 	if(index != 0)
 	{
@@ -961,4 +983,32 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 		tab_widget->setTabIcon(i, robot_connected_icon);
 	else
 		printf("ERROR -- unknown status detected when updating robot tab's icon\n");
+}
+
+void MainWindow::selectNextTab()
+{
+    int index = tab_widget->currentIndex();
+
+    // Check if we're at the last tab
+    if(index + 1 != tab_widget->count())
+        tab_widget->setCurrentIndex(index + 1);
+    else // Cycle back around to the main tab
+        tab_widget->setCurrentIndex(0);
+}
+
+void MainWindow::selectPreviousTab()
+{
+    int index = tab_widget->currentIndex();
+
+    // Check if we're at the main tab
+    if(index != 0)
+        tab_widget->setCurrentIndex(index - 1);
+    else
+        tab_widget->setCurrentIndex(tab_widget->count() - 1);
+}
+
+void MainWindow::closeCurrentTab()
+{
+    printf("Closing current tab\n");
+    closeTab(tab_widget->currentIndex());
 }
