@@ -29,5 +29,6 @@
         <file>images/turtlebot.png</file>
         <file>images/erratic.png</file>
         <file>images/little_boy.jpg</file>
+        <file>images/fat_man.jpg</file>
     </qresource>
 </RCC>

@@ -18,6 +18,10 @@
       <name>Kinect Depth Video</name>
       <topicName>depth/image_raw</topicName>
     </camera>
+    <camera>
+      <name>Kinect IR Video</name>
+      <topicName>ir/image_raw</topicName>
+    </camera>
   </sensors>
 
   <controls>

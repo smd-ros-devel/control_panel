@@ -22,16 +22,6 @@
       <name>Kinect IR Video</name>
       <topicName>ir/image_raw</topicName>
     </camera>
-
-    <imu>
-      <name>IMU</name>
-      <topicName>imu/data</topicName>
-      <roll />
-      <pitch />
-      <yaw />
-      <angularVelocity />
-      <linearAcceleration />
-    </imu>
   </sensors>
 
   <controls>
