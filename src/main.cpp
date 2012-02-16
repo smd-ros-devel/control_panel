@@ -31,7 +31,7 @@
  * \file   main.cpp
  * \date   June 2011
  * \author Matt Richard
- * \brief  Control Panel execution point.
+ * \brief  Control Panel execution.
  */
 #include <QApplication>
 #include "ros/ros.h"

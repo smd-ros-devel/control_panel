@@ -50,6 +50,13 @@ void RangeNode::rangeCallback(const sensor_msgs::RangeConstPtr &msg)
 {
     bool valid = true;
 
+    if(msg->range != msg->range)
+    {
+        ROS_ERROR("NaN detected in Range message");
+        return;
+    }
+
+    // Check if the range value is valid
     if(msg->range < msg->min_range || msg->range > msg->max_range)
         valid = false;
 

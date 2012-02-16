@@ -54,5 +54,14 @@ void GpsNode::unsubscribe()
 
 void GpsNode::gpsCallback(const sensor_msgs::NavSatFixConstPtr &msg)
 {
+    // Check for any NaN values
+    if(msg->latitude != msg->latitude ||
+       msg->longitude != msg->longitude ||
+       msg->altitude != msg->altitude)
+    {
+        ROS_ERROR("NaN detected in NavSatFix message");
+        return;
+    }
+
 	emit gpsDataReceived(msg->latitude, msg->longitude, msg->altitude);
 }
