@@ -59,14 +59,6 @@ MainWindow::MainWindow(int argc, char **argv)
 
 
     // Keyboard shortcut actions
-//    next_tab_action = new QAction(this);
-//    next_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Tab));
-//    connect(next_tab_action, SIGNAL(triggered()), this, SLOT(selectNextTab()));
-
-//    prev_tab_action = new QAction(this);
-//    prev_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_Tab));
-//    connect(prev_tab_action, SIGNAL(triggered()), this, SLOT(selectPreviousTab()));
-
     close_tab_action = new QAction(tab_widget);
     close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
     //close_tab_action->setShortcutContext(Qt::ApplicationShortcut);
@@ -105,12 +97,6 @@ MainWindow::MainWindow(int argc, char **argv)
     else // Master successfuly connected
         main_tab->setMasterStatus(true);
 */
-    //QProcess rxgraph_process;
-    //QStringList args;
-    //args << "dynamic_reconfigure" << "reconfigure_gui";
-    //rxgraph_process.start(QString("rosrun"), args);
-    //rxgraph_process.start(QString("rxgraph"));
-    //rxgraph_process.waitForFinished();
 }
 
 void MainWindow::readSettings()
@@ -999,28 +985,6 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 		tab_widget->setTabIcon(i, robot_connected_icon);
 	else
 		printf("ERROR -- unknown status detected when updating robot tab's icon\n");
-}
-
-void MainWindow::selectNextTab()
-{
-    int index = tab_widget->currentIndex();
-
-    // Check if we're at the last tab
-    if(index + 1 != tab_widget->count())
-        tab_widget->setCurrentIndex(index + 1);
-    else // Cycle back around to the main tab
-        tab_widget->setCurrentIndex(0);
-}
-
-void MainWindow::selectPreviousTab()
-{
-    int index = tab_widget->currentIndex();
-
-    // Check if we're at the main tab
-    if(index != 0)
-        tab_widget->setCurrentIndex(index - 1);
-    else
-        tab_widget->setCurrentIndex(tab_widget->count() - 1);
 }
 
 void MainWindow::closeCurrentTab()

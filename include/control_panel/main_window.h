@@ -93,8 +93,6 @@ class MainWindow : public QMainWindow
 		//void openWidgetInWindow();
 		//void updateJoystickAxis(int axis, double value);
 		//void updateJoystickButton(int axis, bool state);
-        void selectNextTab();
-        void selectPreviousTab();
 		void startConnection();
         void stopConnection();
 		void tabChanged(int index);
@@ -152,8 +150,6 @@ class MainWindow : public QMainWindow
         QAction *about_action;
 
         // Keyboard shortcut actions
-        QAction *next_tab_action;
-        QAction *prev_tab_action;
         QAction *close_tab_action;
 
 

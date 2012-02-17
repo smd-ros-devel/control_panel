@@ -56,6 +56,10 @@
 
   <processedData>
     <disparityImage>
+      <name>Kinect Depth Registered Disparity</name>
+      <topicName>camera/depth_registered/disparity</topicName>
+    </disparityImage>
+    <disparityImage>
       <name>Kinect Depth Disparity</name>
       <topicName>camera/depth/disparity</topicName>
     </disparityImage>
