@@ -54,6 +54,8 @@ void OdometryNode::unsubscribe()
 
 void OdometryNode::odometryCallback(const nav_msgs::OdometryConstPtr &msg)
 {
+    /* @todo Change this into for loops */
+
     // Check for any NaN values
     if(msg->pose.pose.position.x != msg->pose.pose.position.x ||
        msg->pose.pose.position.y != msg->pose.pose.position.y ||

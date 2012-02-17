@@ -67,9 +67,6 @@ void MainTab::createWidgets()
     ros_master_label = new QLabel(tr("ROS Master: "));
     ros_master_label->setFont(font);
 
-    master_status_label = new QLabel("<font color='red'>Disconnected</font>");
-    master_status_label->setFont(font);
-
 	robot_list_scrollarea = new QScrollArea;
 	robot_list_scrollarea->setWidgetResizable(true);
 	robot_list_widget = new QWidget;
@@ -87,14 +84,6 @@ void MainTab::createWidgets()
 
 void MainTab::createLayout()
 {
-/*
-    QHBoxLayout *header_hlayout = new QHBoxLayout;
-    header_hlayout->addWidget(robot_list_label, 0, Qt::AlignLeft);
-    header_hlayout->addStretch();
-    header_hlayout->addWidget(ros_master_label, 0, Qt::AlignRight);
-    header_hlayout->addWidget(master_status_label, 0, Qt::AlignRight);
-*/
-
 	QHBoxLayout *button_hlayout = new QHBoxLayout;
 	button_hlayout->addWidget(deselect_all_button, 0, Qt::AlignLeft);
 	button_hlayout->addStretch();
@@ -109,19 +98,9 @@ void MainTab::createLayout()
 	robot_list_scrollarea->setWidget(robot_list_widget);
 
 	main_tab_layout = new QVBoxLayout;
-//	main_tab_layout->addLayout(header_hlayout);
     main_tab_layout->addWidget(robot_list_label, 0, Qt::AlignLeft);
     main_tab_layout->addWidget(robot_list_scrollarea);
 	main_tab_layout->addLayout(button_hlayout);
-}
-
-
-void MainTab::setMasterStatus(bool connected)
-{
-    if(connected)
-        master_status_label->setText("<font color='green'>Connected</font>");
-    else
-        master_status_label->setText("<font color='red'>Disconnected</font>");
 }
 
 

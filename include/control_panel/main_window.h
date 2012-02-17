@@ -36,6 +36,7 @@
 #define CONTROL_PANEL_MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <QIcon>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -48,9 +49,7 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
-#include <QIcon>
 #include <string>
-
 #include "main_tab.h"
 #include "robot_tab.h"
 #include "robot_config_file_dialog.h"
@@ -101,6 +100,8 @@ class MainWindow : public QMainWindow
 		void tabChanged(int index);
 		void toggleRC(QAction *action);
 		void updateTabIcon(int status, const QString &robot_name);
+        void startRxgraph();
+        void startDynamicReconfigure();
 
     private:
         void createMenuActions();
@@ -121,6 +122,7 @@ class MainWindow : public QMainWindow
         QMenu *edit_menu;
 		QMenu *view_menu;
         QMenu *connections_menu;
+        QMenu *tools_menu;
         QMenu *help_menu;
 
         // Menu action items
@@ -144,6 +146,8 @@ class MainWindow : public QMainWindow
         QAction *disable_rc_action;
 		QAction *keyboard_rc_action;
 		QAction *joystick_rc_action;
+        QAction *rxgraph_action;
+        QAction *dynamic_reconfigure_action;
 		QAction *help_action;
         QAction *about_action;
 

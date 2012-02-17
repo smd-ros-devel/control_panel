@@ -67,7 +67,6 @@ class MainTab : public QWidget
 
 	public:
 		MainTab(const QString &robots, QWidget *parent = 0);
-        void setMasterStatus(bool connected);
 
 	signals:
 		void loadRobots(const QStringList &robot_load_list, bool auto_connect);
@@ -87,7 +86,6 @@ class MainTab : public QWidget
 
 		QLabel *robot_list_label;
         QLabel *ros_master_label;
-        QLabel *master_status_label;
 
 		QScrollArea *robot_list_scrollarea;
 		QWidget *robot_list_widget;

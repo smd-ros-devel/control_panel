@@ -55,20 +55,19 @@ MainWindow::MainWindow(int argc, char **argv)
 
 	// Create and insert the Main Tab
 	main_tab = new MainTab(robot_directory);
-    main_tab->setMasterStatus(true);
 	tab_widget->addTab(main_tab, "Main");
 
 
     // Keyboard shortcut actions
-    next_tab_action = new QAction(this);
-    next_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Tab));
-    connect(next_tab_action, SIGNAL(triggered()), this, SLOT(selectNextTab()));
+//    next_tab_action = new QAction(this);
+//    next_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Tab));
+//    connect(next_tab_action, SIGNAL(triggered()), this, SLOT(selectNextTab()));
 
-    prev_tab_action = new QAction(this);
-    prev_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_Tab));
-    connect(prev_tab_action, SIGNAL(triggered()), this, SLOT(selectPreviousTab()));
+//    prev_tab_action = new QAction(this);
+//    prev_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_Tab));
+//    connect(prev_tab_action, SIGNAL(triggered()), this, SLOT(selectPreviousTab()));
 
-    close_tab_action = new QAction(this);
+    close_tab_action = new QAction(tab_widget);
     close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
     //close_tab_action->setShortcutContext(Qt::ApplicationShortcut);
     connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
@@ -106,6 +105,12 @@ MainWindow::MainWindow(int argc, char **argv)
     else // Master successfuly connected
         main_tab->setMasterStatus(true);
 */
+    //QProcess rxgraph_process;
+    //QStringList args;
+    //args << "dynamic_reconfigure" << "reconfigure_gui";
+    //rxgraph_process.start(QString("rosrun"), args);
+    //rxgraph_process.start(QString("rxgraph"));
+    //rxgraph_process.waitForFinished();
 }
 
 void MainWindow::readSettings()
@@ -355,9 +360,15 @@ void MainWindow::createMenuActions()
 		this, SLOT(toggleRC(QAction *)));
 
 
-	/**
-	** Help Menu Actions
-	**/
+    /* Tools Menu Actions */
+    rxgraph_action = new QAction(tr("rx&graph"), this);
+    connect(rxgraph_action, SIGNAL(triggered()), this, SLOT(startRxgraph()));
+
+    dynamic_reconfigure_action = new QAction(tr("Dynamic &Reconfigure"), this);
+    connect(dynamic_reconfigure_action, SIGNAL(triggered()), this, SLOT(startDynamicReconfigure()));
+
+
+	/* Help Menu Actions */
 	help_action = new QAction(tr("&Help"), this);
 	help_action->setShortcuts(QKeySequence::HelpContents);
 	help_action->setEnabled(false);
@@ -411,6 +422,11 @@ void MainWindow::createMenus()
     connections_menu->addAction(disable_rc_action);
 	connections_menu->addAction(keyboard_rc_action);
 	connections_menu->addAction(joystick_rc_action);
+
+    // Create tools menu
+    tools_menu = menuBar()->addMenu(tr("&Tools"));
+    tools_menu->addAction(rxgraph_action);
+    tools_menu->addAction(dynamic_reconfigure_action);
 
 	// Create help menu
     help_menu = menuBar()->addMenu(tr("&Help"));
@@ -1009,6 +1025,27 @@ void MainWindow::selectPreviousTab()
 
 void MainWindow::closeCurrentTab()
 {
-    printf("Closing current tab\n");
     closeTab(tab_widget->currentIndex());
+}
+
+void MainWindow::startRxgraph()
+{
+    if(QProcess::startDetached("rxgraph"))
+        printf("rxgraph started successfully\n");
+    else
+    {
+        printf("rxgraph not found\n");
+        /* @todo Display a QMessageBox warning the user that rxgraph was not executed successfully */
+    }
+}
+
+void MainWindow::startDynamicReconfigure()
+{
+    if(QProcess::startDetached("rosrun dynamic_reconfigure reconfigure_gui"))
+        printf("reconfigure_gui started successfully\n");
+    else
+    {
+        printf("reconfigure_gui not found\n");
+        /* @todo Display a QMessageBox warning the user that reconfigure_gui was not executed successfully */
+    }
 }
