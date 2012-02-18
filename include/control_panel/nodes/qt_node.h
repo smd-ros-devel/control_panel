@@ -38,63 +38,47 @@
 #include <QThread>
 #include "ros/ros.h"
 #include <string>
-#include <map>
+#include "command_node.h"
+//#include "joystick_node.h"
+//#include "diagnostics_node.h"
 
 
 /**
  * \class QtNode
- * \brief Initilizes and shutsdown a ROS node. This also handles the global joystick input and diagnostics
+ * \brief Initilizes and shutsdown a ROS node. This also handles the global joystick input, diagnostics, and services
  */
 class QtNode : public QThread
 {
     Q_OBJECT
 
     public:
-        QtNode(int argc, char **argv);
+        QtNode(int argc, char **argv, const std::string &name = "qt_node");
         ~QtNode();
 
         /**
-         * \brief Returns the ROS_MASTER_URI
+         * \brief Returns the name of the node
          */
-        std::string getMasterURI() const;
-
-        /**
-         * \brief Returns the ROS_IP
-         */
-        std::string getHostIP() const;
-
-        /**
-         * \brief Returns __name
-         */
-        std::string getNodeName() const;
+        std::string getNodeName() const { return node_name; }
 
         /**
          * \brief
-         *
-         * \param use_env_vars
          */
-        bool init(bool use_env_vars);
+        bool init();
 
         /**
          * \brief
          */
         void run();
         void stop();
-        void setMasterURI(const std::string &uri);
-        void setHostIP(const std::string &ip);
         void setNodeName(const std::string &name);
 
-//    public slots:
-
-
-//    signals:
-
+        CommandNode *service_node;
 
     private:
-        std::string master_uri;
-        std::string host_ip;
+        int arg_count;
+        char **arg_vec;
         std::string node_name;
-        std::map<std::string, std::string> remappings;
+        ros::NodeHandle *nh;
 };
 
 #endif // CONTROL_PANEL_QT_NODE_H

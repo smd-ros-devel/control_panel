@@ -39,6 +39,12 @@
 
 MainWindow::MainWindow(int argc, char **argv)
 {
+    qt_node = new QtNode(argc, argv, "control_panel");
+    if(!qt_node->init())
+    {
+        exit(1);
+    }
+
     // Load tab connection status icons
 	robot_disconnected_icon.addFile(":/images/status_lights/status_light_grey.png");
 	robot_connecting_icon.addFile(":/images/status_lights/status_light_yellow.png");
@@ -347,6 +353,9 @@ void MainWindow::createMenuActions()
 
 
     /* Tools Menu Actions */
+    call_service_action = new QAction(tr("Call Service"), this);
+    connect(call_service_action, SIGNAL(triggered()), this, SLOT(callService()));
+
     rxgraph_action = new QAction(tr("rx&graph"), this);
     connect(rxgraph_action, SIGNAL(triggered()), this, SLOT(startRxgraph()));
 
@@ -385,7 +394,7 @@ void MainWindow::createMenus()
 	edit_menu->addAction(configuration_file_action);
     //edit_menu->addAction(topics_action);
     edit_menu->addAction(set_velocity_action);
-	edit_menu->addSeparator();
+	//edit_menu->addSeparator();
 	//edit_menu->addAction(gestures_action);
 
 	// Create view menu
@@ -411,6 +420,7 @@ void MainWindow::createMenus()
 
     // Create tools menu
     tools_menu = menuBar()->addMenu(tr("&Tools"));
+    tools_menu->addAction(call_service_action);
     tools_menu->addAction(rxgraph_action);
     tools_menu->addAction(dynamic_reconfigure_action);
 
@@ -990,6 +1000,18 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 void MainWindow::closeCurrentTab()
 {
     closeTab(tab_widget->currentIndex());
+}
+
+void MainWindow::callService()
+{
+    bool ok;
+
+    QString service_name = QInputDialog::getText(this, tr("Call Service"),
+        tr("Service Name"), QLineEdit::Normal, tr(""), &ok);
+
+    if(ok && !service_name.isEmpty())
+        if(qt_node->service_node)
+            qt_node->service_node->callEmpty(service_name);
 }
 
 void MainWindow::startRxgraph()

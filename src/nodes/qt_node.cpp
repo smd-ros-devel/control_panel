@@ -39,86 +39,39 @@
 
 #include <iostream>
 
-QtNode::QtNode(int argc, char **argv)
-{
-    char *span;
-
-    // Store all command line arguments in a map
-    for(int i = 1; i < argc; i++)
-    {
-        span = strstr(argv[i], ":=");
-        if(span != NULL)
-        {
-            char *key = (char *)malloc(strlen(argv[i]));
-
-            strncpy(key, argv[i], span - argv[i]);
-
-            remappings[key] = span + 2;
-
-            free(key);
-        }
-    }
-
-    node_name = "qt_node";
-    master_uri = "http://localhost:11311";
-}
+QtNode::QtNode(int argc, char **argv, const std::string &name)
+    : service_node(NULL), arg_count(argc), arg_vec(argv), node_name(name), nh(NULL)
+{ }
 
 QtNode::~QtNode()
 {
     stop();
+
+    // Destroy node handle
+    if(nh)
+        delete nh;
 }
 
-std::string QtNode::getMasterURI() const
+bool QtNode::init()
 {
-    return master_uri;
-}
-
-std::string QtNode::getHostIP() const
-{
-    return host_ip;
-}
-
-std::string QtNode::getNodeName() const
-{
-    return node_name;
-}
-
-bool QtNode::init(bool use_env_vars)
-{
-    if(use_env_vars)
+    if(ros::isStarted())
     {
-        remappings.erase("__master");
-        remappings.erase("__ip");
-    }
-    else
-    {
-        if(master_uri != "")
-            remappings["__master"] = master_uri;
-        if(host_ip != "")
-            remappings["__ip"] = host_ip;
+        ROS_ERROR("%s node is already running\n", node_name.c_str());
+        return false;
     }
 
-    std::map<std::string, std::string>::iterator it;
-    it = remappings.find("__master");
-    if(it != remappings.end())
-        std::cout << "__master = " << it->second << std::endl;
-
-    it = remappings.find("__ip");
-    if(it != remappings.end())
-        std::cout << "__ip = " << it->second << std::endl;
-
-    printf("Initializing ROS node\n");
-    ros::init(remappings, node_name);
+    ROS_INFO("Initializing ROS node");
+    ros::init(arg_count, arg_vec, node_name);
 
     // Verify we have connection with the master
     if(!ros::master::check())
     {
-        printf("Could not connect to master\n");
+        ROS_ERROR("Could not connect to master");
         return false;
     }
 
-    printf("Starting global thread\n");
-    ros::start();
+    nh = new ros::NodeHandle();
+
     start(); // start thread
 
     return true;
@@ -126,31 +79,17 @@ bool QtNode::init(bool use_env_vars)
 
 void QtNode::run()
 {
-    ros::NodeHandle nh;
+    service_node = new CommandNode(nh);
 
     ros::spin();
+
+    delete service_node;
 }
 
 void QtNode::stop()
 {
-    // Shutdown the node if it's running
-    if(ros::isStarted())
-    {
-        ROS_INFO("Shutting down node");
-        ros::shutdown();
-        ros::waitForShutdown();
-        wait();
-    }
-}
-
-void QtNode::setMasterURI(const std::string &uri)
-{
-    master_uri = uri;
-}
-
-void QtNode::setHostIP(const std::string &ip)
-{
-    host_ip = ip;
+    exit();
+    wait();
 }
 
 void QtNode::setNodeName(const std::string &name)

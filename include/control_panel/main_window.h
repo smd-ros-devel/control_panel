@@ -49,13 +49,11 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
-#include <string>
+#include "nodes/qt_node.h"
 #include "main_tab.h"
 #include "robot_tab.h"
 #include "robot_config_file_dialog.h"
 #include "master_settings_dialog.h"
-//#include "nodes/joystick_node.h"
-//#include "nodes/qt_node.h"
 #include "globals.h"
 
 
@@ -79,6 +77,7 @@ class MainWindow : public QMainWindow
 
     private slots:
 		void about();
+        void callService();
         void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
 		void editRobotConfigFile();
@@ -105,6 +104,8 @@ class MainWindow : public QMainWindow
         void createMenuActions();
         void createMenus();
 		void createTab();
+
+        QtNode *qt_node;
 
         QTabWidget *tab_widget;
 		MainTab *main_tab;
@@ -144,6 +145,7 @@ class MainWindow : public QMainWindow
         QAction *disable_rc_action;
 		QAction *keyboard_rc_action;
 		QAction *joystick_rc_action;
+        QAction *call_service_action;
         QAction *rxgraph_action;
         QAction *dynamic_reconfigure_action;
 		QAction *help_action;
@@ -152,13 +154,8 @@ class MainWindow : public QMainWindow
         // Keyboard shortcut actions
         QAction *close_tab_action;
 
-
 		QActionGroup *robot_mode_actiongroup;
 		QActionGroup *robot_rc_actiongroup;
-
-//		JoystickNode *joystick_node;
-
-//        QtNode *qt_node;
 };
 
 #endif // CONTROL_PANEL_MAIN_WINDOW_H

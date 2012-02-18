@@ -34,7 +34,7 @@
  * \brief  Control Panel execution.
  */
 #include <QApplication>
-#include "ros/ros.h"
+//#include "ros/ros.h"
 #include "control_panel/main_window.h"
 #include <stdio.h>
 
@@ -42,13 +42,13 @@
 int main(int argc, char **argv)
 {
 	// Start ROS node
-	printf("Initializing SRS Control Panel ROS node.\n");
-	ros::init(argc, argv, "control_panel", ros::init_options::AnonymousName);
-    if(!ros::master::check())
-    {
-        ROS_ERROR("Could not connect to Master.");
-        return 1;
-    }
+	//printf("Initializing SRS Control Panel ROS node.\n");
+	//ros::init(argc, argv, "control_panel", ros::init_options::AnonymousName);
+    //if(!ros::master::check())
+    //{
+    //    ROS_ERROR("Could not connect to Master.");
+    //    return 1;
+    //}
 
 	// Create Qt application
 	printf("Initializing SRS Control Panel Application.\n");
