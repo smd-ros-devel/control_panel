@@ -77,7 +77,7 @@ void OdometryDisplay::createWidget()
         data_gridlayout->addWidget(name_label, curr_row, 0, 1, 0, Qt::AlignHCenter);
         curr_row++;
 
-        data_gridlayout->setColumnMinimumWidth(1, 100);
+        data_gridlayout->setColumnMinimumWidth(1, 150);
     }
 
     // Create postition labels and add to the grid layout
@@ -169,7 +169,7 @@ void OdometryDisplay::updateOdometryDisplay(const QVector3D &position,
     // Update and display postition
     pos = position;
     if(use_pos)
-        position_label->setText(QString("(%1,%2,%3)").arg(pos.x(), 6, 'f', 1).arg(
+        position_label->setText(QString("( %1, %2, %3)").arg(pos.x(), 6, 'f', 1).arg(
             pos.y(), 6, 'f', 1).arg(pos.z(), 6, 'f', 1));
 
 

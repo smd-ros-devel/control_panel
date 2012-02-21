@@ -84,25 +84,6 @@ MainWindow::MainWindow(int argc, char **argv)
 	setCentralWidget(tab_widget);
     setWindowTitle("SRS Control Panel");
 
-/*
-    // Initilize Control Panel node
-    qt_node = new QtNode(argc, argv);
-    qt_node->setNodeName("control_panel");
-
-    // Initilize using environmental variables
-    if(!qt_node->init(true))
-    {
-        main_tab->setMasterStatus(false);
-
-        // ROS Master not found. Display warning to user.
-        QMessageBox::warning(this, tr("ROS Master not found."),
-            tr("Unable to connect with the ROS Master.\n") +
-            tr("Configure the master settings in the Edit menu."),
-            QMessageBox::Ok, QMessageBox::Ok);
-    }
-    else // Master successfuly connected
-        main_tab->setMasterStatus(true);
-*/
 }
 
 void MainWindow::readSettings()
@@ -524,7 +505,7 @@ void MainWindow::setMaxVelocity()
         // Prompt use for new scale
         scale = QInputDialog::getDouble(this, tr("Set Velocity Scale"),
             tr("Scale:"), tab->node_manager->control_node->getScale(),
-            0.0, 1.0, 3, &ok);
+            0.00, 1.00, 2, &ok);
 
         // Set scale
         if(ok)
