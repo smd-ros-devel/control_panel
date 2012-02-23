@@ -337,7 +337,10 @@ void MainWindow::createMenuActions()
     call_service_action = new QAction(tr("Call Service"), this);
     connect(call_service_action, SIGNAL(triggered()), this, SLOT(callService()));
 
-    rxgraph_action = new QAction(tr("rx&graph"), this);
+    rxconsole_action = new QAction(tr("Rx&console"), this);
+    connect(rxconsole_action, SIGNAL(triggered()), this, SLOT(startRxconsole()));
+
+    rxgraph_action = new QAction(tr("Rx&graph"), this);
     connect(rxgraph_action, SIGNAL(triggered()), this, SLOT(startRxgraph()));
 
     dynamic_reconfigure_action = new QAction(tr("Dynamic &Reconfigure"), this);
@@ -402,6 +405,7 @@ void MainWindow::createMenus()
     // Create tools menu
     tools_menu = menuBar()->addMenu(tr("&Tools"));
     tools_menu->addAction(call_service_action);
+    tools_menu->addAction(rxconsole_action);
     tools_menu->addAction(rxgraph_action);
     tools_menu->addAction(dynamic_reconfigure_action);
 
@@ -995,13 +999,24 @@ void MainWindow::callService()
             qt_node->service_node->callEmpty(service_name);
 }
 
+void MainWindow::startRxconsole()
+{
+    if(QProcess::startDetached("rxconsole"))
+        printf("rxconsole started successfully\n");
+    else
+    {
+        perror("rxconsole failed to start. It may not be installed.\n");
+        /* @todo Warn user of failure */
+    }
+}
+
 void MainWindow::startRxgraph()
 {
     if(QProcess::startDetached("rxgraph"))
         printf("rxgraph started successfully\n");
     else
     {
-        printf("rxgraph not found\n");
+        perror("rxgraph failed to start. It may not be installed.\n");
         /* @todo Display a QMessageBox warning the user that rxgraph was not executed successfully */
     }
 }
@@ -1012,7 +1027,7 @@ void MainWindow::startDynamicReconfigure()
         printf("reconfigure_gui started successfully\n");
     else
     {
-        printf("reconfigure_gui not found\n");
+        perror("reconfigure_gui failed to start. It may not be installed.\n");
         /* @todo Display a QMessageBox warning the user that reconfigure_gui was not executed successfully */
     }
 }

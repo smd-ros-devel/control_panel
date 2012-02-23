@@ -97,6 +97,7 @@ class MainWindow : public QMainWindow
 		void tabChanged(int index);
 		void toggleRC(QAction *action);
 		void updateTabIcon(int status, const QString &robot_name);
+        void startRxconsole();
         void startRxgraph();
         void startDynamicReconfigure();
 
@@ -146,6 +147,7 @@ class MainWindow : public QMainWindow
 		QAction *keyboard_rc_action;
 		QAction *joystick_rc_action;
         QAction *call_service_action;
+        QAction *rxconsole_action;
         QAction *rxgraph_action;
         QAction *dynamic_reconfigure_action;
 		QAction *help_action;

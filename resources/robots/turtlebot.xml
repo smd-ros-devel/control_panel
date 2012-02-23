@@ -27,6 +27,16 @@
       <name>Narrow Scan</name>
       <topicName>narrow_scan</topicName>
     </laser>
+
+    <imu>
+      <name>Raw IMU</name>
+      <topicName>imu/raw</topicName>
+      <roll />
+      <pitch />
+      <yaw />
+      <hideAttitude />
+      <hideHeading />
+    </imu>
   </sensors>
 
   <processedData>

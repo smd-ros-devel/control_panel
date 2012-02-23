@@ -325,7 +325,7 @@ class DisparityImageNode : public QObject
          *
          * \param msg The received stereo_msgs::DisparityImage to convert
          */
-        void disparityCallback(const stereo_msgs::DisparityImage::ConstPtr &msg);
+        void disparityCallback(const stereo_msgs::DisparityImageConstPtr &msg);
 
         /**
          * \brief Returns the subscribers topic name

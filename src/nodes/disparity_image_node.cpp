@@ -28,7 +28,7 @@
 
 
 /**
- * \file   disparity_node.cpp
+ * \file   disparity_image_node.cpp
  * \date   Feb 5, 2012
  * \author Matt Richard
  */
