@@ -248,3 +248,13 @@ void DisplayPane::sourceChanged(int index)
 
     emit changeSource(source_selector->currentText().toStdString());
 }
+
+void DisplayPane::showPosition(bool show)
+{
+    image_viewer->showOdometry(show);
+}
+
+void DisplayPane::setPosition(const QVector3D &pos)
+{
+    image_viewer->setRobotPosition(pos.x(), pos.y());
+}

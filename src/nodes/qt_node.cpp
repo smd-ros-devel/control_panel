@@ -35,9 +35,6 @@
 #include "control_panel/nodes/qt_node.h"
 #include "ros/network.h"
 #include <string.h>
-#include <stdio.h>
-
-#include <iostream>
 
 QtNode::QtNode(int argc, char **argv, const std::string &name)
     : service_node(NULL), arg_count(argc), arg_vec(argv), node_name(name), nh(NULL)
@@ -49,7 +46,10 @@ QtNode::~QtNode()
 
     // Destroy node handle
     if(nh)
+    {
+        nh->shutdown();
         delete nh;
+    }
 }
 
 bool QtNode::init()

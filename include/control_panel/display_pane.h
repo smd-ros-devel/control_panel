@@ -75,6 +75,8 @@ class DisplayPane : public QWidget
         void connectionStatusChanged(int new_status);
 		void setImage(const QImage &new_image, int grid_interval = -1);
         void sourceChanged(int index);
+        void showPosition(bool show);
+        void setPosition(const QVector3D &pos);
 
     signals:
         void changeSource(const std::string source);

@@ -413,8 +413,9 @@ void RobotTab::setupDataPane()
 
     for(unsigned int i = 0; i < robot_config->processedData.odometry.size(); i++)
     {
+        OdometryNode *odom = node_manager->addOdometryNode(robot_config->processedData.odometry[i].topicName.toStdString());
         connect(
-            node_manager->addOdometryNode(robot_config->processedData.odometry[i].topicName.toStdString()),
+            odom,
             SIGNAL(odometryDataReceived(const QVector3D &, const QQuaternion &,
                                         const QVector3D &, const QVector3D &)),
             data_pane->addOdometryDisplay(robot_config->processedData.odometry[i].name, robot_config->processedData.odometry[i].position,
@@ -424,6 +425,13 @@ void RobotTab::setupDataPane()
             SLOT(updateOdometryDisplay(const QVector3D &, const QQuaternion &,
                                        const QVector3D &, const QVector3D &))
             );
+
+        if(robot_config->processedData.maps.size())
+            connect(odom, SIGNAL(odometryDataReceived(const QVector3D &, const QQuaternion &, const QVector3D &, const QVector3D &)),
+                processed_data_display, SLOT(setPosition(const QVector3D &)));
+        
+        connect(node_manager, SIGNAL(mapSubscribed(bool)),
+            processed_data_display, SLOT(showPosition(bool)));
     }
 
     // Create nodes and widgets for all imu sensors

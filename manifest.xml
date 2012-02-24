@@ -10,7 +10,6 @@
   <url>http://ros.org/wiki/control_panel</url>
 
 
-  <!-- depend package="tf"/ -->
   <depend package="roscpp"/>
   <depend package="std_msgs"/>
   <depend package="std_srvs"/>

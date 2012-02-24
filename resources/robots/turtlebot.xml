@@ -27,16 +27,6 @@
       <name>Narrow Scan</name>
       <topicName>narrow_scan</topicName>
     </laser>
-
-    <imu>
-      <name>Raw IMU</name>
-      <topicName>imu/raw</topicName>
-      <roll />
-      <pitch />
-      <yaw />
-      <hideAttitude />
-      <hideHeading />
-    </imu>
   </sensors>
 
   <processedData>
@@ -85,13 +75,4 @@
       <topicName>cmd_vel</topicName>
     </drive>
   </controls>
-
-  <!-- diagnostics>
-    <topicName>diagnostics</topicName>
-
-    <batteryLevel>
-      <name>Laptop Battery</name>
-      <max>100.0</max>
-    </batteryLevel>
-  </diagnostics -->
 </robot>

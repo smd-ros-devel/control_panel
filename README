@@ -14,12 +14,3 @@ ROS:
 
 Qt:
   http://qt.nokia.com
-
-
-Known Bugs
--------------------------------------------------------------------------------
-1. Focus is lost after creating (or canceling) a new robot connection. Resolved.
-2. Focus is lost after connecting (or canceling the connection) to a robot. Resolved.
-3. After the first connection with a robot (i.e., first tab is created), 
-   the program won’t accept keyboard input. If a second tab is created, 
-   keyboard input works fine. Resolved.

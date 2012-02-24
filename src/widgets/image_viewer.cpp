@@ -20,6 +20,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
     grid_pen.setWidth(1);
 //	mouse_scroll = true;
 	scale_factor = 1.0;
+    show_odom = false;
 
 	image_item = new QGraphicsPixmapItem(image_pixmap);
 	image_item->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
@@ -32,11 +33,17 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 	text_item->setFont(font);
 	text_item->setDefaultTextColor(Qt::white);
     text_item->setVisible(false);
-    
+   
+    robot_pos_item = new QGraphicsEllipseItem(QRectF(0, 0, 6, 6));
+    robot_pos_item->setVisible(false);
+    robot_pos_item->setBrush(QBrush(Qt::red));
+    robot_pos_item->setPen(Qt::NoPen);
+
 	scene = new QGraphicsScene(this);
 	scene->setBackgroundBrush(Qt::black);
 	scene->addItem(text_item);
 	scene->addItem(image_item);
+    scene->addItem(robot_pos_item);
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -115,6 +122,27 @@ void ImageViewer::setScale(int factor)
 void ImageViewer::showGrid(bool show)
 {
 	grid_visible = show;
+}
+
+void ImageViewer::showOdometry(bool show)
+{
+    show_odom = show;
+    robot_pos_item->setVisible(show);
+    robot_pos_item->setPos(
+        (scene->width() / 2.0) - (robot_pos_item->boundingRect().width() / 2.0),
+        (scene->height() / 2.0) - (robot_pos_item->boundingRect().height() / 2.0));
+}
+
+void ImageViewer::setRobotPosition(double x_pos, double y_pos)
+{
+    if(show_odom)
+    {
+        double centerx = (scene->width() / 2.0) - (robot_pos_item->boundingRect().width() / 2.0);
+        double centery = (scene->height() / 2.0) - (robot_pos_item->boundingRect().height() / 2.0);
+        printf("Scene center: %f\n", scene->width() / 2.0);
+        printf("Scene center: %f\n", scene->height() / 2.0);
+        robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
+    }
 }
 
 void ImageViewer::drawForeground(QPainter *painter, const QRectF &rect)

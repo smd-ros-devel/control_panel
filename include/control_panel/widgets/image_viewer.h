@@ -19,6 +19,7 @@ QT_BEGIN_NAMESPACE
 class QGraphicsPixmapItem;
 class QGraphicsScene;
 class QGraphicsTextItem;
+class QGraphicsEllipseItem;
 class QPainter;
 class QPen;
 class QRectF;
@@ -40,10 +41,12 @@ class ImageViewer : public QGraphicsView
 		void setGridLineInterval(int pixels);
 		void setImagePixmap(const QPixmap &pixmap, int interval = -1);
 		void setImageVisible(bool visible);
+        void setRobotPosition(double x_pos, double y_pos);
 
 	public slots:
 		void setScale(int factor);
         void showGrid(bool show);
+        void showOdometry(bool show);
 
 	signals:
 		void scaleChanged(int factor);
@@ -56,6 +59,7 @@ class ImageViewer : public QGraphicsView
 		QGraphicsScene *scene;
 		QGraphicsPixmapItem *image_item;
 		QGraphicsTextItem *text_item;
+        QGraphicsEllipseItem *robot_pos_item;
 
 		QPixmap image_pixmap;
 		bool grid_visible;
@@ -63,6 +67,7 @@ class ImageViewer : public QGraphicsView
         QPen grid_pen;
 		//bool mouse_scroll;
 		float scale_factor;
+        bool show_odom;
 };
 
 #endif // CONTROL_PANEL_IMAGE_VIEWER_H

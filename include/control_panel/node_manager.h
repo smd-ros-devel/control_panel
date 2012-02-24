@@ -101,6 +101,7 @@ class NodeManager : public QThread
 
 	signals:
 		void connectionStatusChanged(int status);
+        void mapSubscribed(bool sub);
 
 	private:
 		ros::NodeHandle *nh_ptr;

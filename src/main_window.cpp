@@ -693,11 +693,6 @@ void MainWindow::closeTab(int index)
     int button_pushed;
 	RobotTab *tab;
 
-    printf("Close tab index: %d\n", index);
-
-    if(index == -1) // Close current tab
-        index = tab_widget->currentIndex();
-
 	// Check if the tab is main tab or not
 	if(index != 0)
 	{
