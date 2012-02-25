@@ -1,14 +1,14 @@
-/******************************************************************************
- * image_viewer.cpp
- *
- * Author:      Matt Richard
- * Date:        Jan 4, 2012
- * Description: A graphics view widget for displaying a robots video, LiDAR,
- *              and map feeds. The view allows for a grip to be overlayed on
- *              top of the image, zooming in and out, and moving the image
- *              around.
- *****************************************************************************/
+/* @todo Add license here */
 
+/**
+ * \file   image_viewer.cpp
+ * \date   Jan 4, 2012
+ * \author Matt Richard
+ * \brief  A graphics view widget for displaying a robots video, LiDAR, and map feeds.
+ *
+ * The view allows for a grip to be overlayed on top of the image, zooming in and out,
+ * and moving the image around.
+ */
 #include <QtGui>
 #include "control_panel/widgets/image_viewer.h"
 
@@ -18,7 +18,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
     grid_interval = 20;
     grid_pen.setColor(Qt::blue);
     grid_pen.setWidth(1);
-//	mouse_scroll = true;
 	scale_factor = 1.0;
     show_odom = false;
 
@@ -95,8 +94,8 @@ void ImageViewer::setImageVisible(bool visible)
 		image_pixmap.fill(Qt::black);
 	
 	text_item->setVisible(visible);
-	text_item->setPos((scene->width() / 2.0) - (text_item->boundingRect().width() / 2.0),
-		(scene->height() / 2.0) - (text_item->boundingRect().height() / 2.0));
+	text_item->setPos((scene->width() - text_item->boundingRect().width()) / 2.0,
+		(scene->height() - text_item->boundingRect().height()) / 2.0);
 
 	image_item->setPixmap(image_pixmap);
     image_item->setVisible(visible);
@@ -107,14 +106,6 @@ void ImageViewer::setScale(int factor)
 	scale_factor = (float)factor / 100.0;
 
     resetMatrix();
-	//resetTransform();
-
-	//if(mouse_scroll)
-	//	setResizeAnchor(QGraphicsView::AnchorUnderMouse);
-	//else
-	//	setResizeAnchor(QGraphicsView::AnchorViewCenter);
-
-	//mouse_scroll = false;
 
 	scale(scale_factor, scale_factor);
 }
@@ -137,10 +128,11 @@ void ImageViewer::setRobotPosition(double x_pos, double y_pos)
 {
     if(show_odom)
     {
-        double centerx = (scene->width() / 2.0) - (robot_pos_item->boundingRect().width() / 2.0);
-        double centery = (scene->height() / 2.0) - (robot_pos_item->boundingRect().height() / 2.0);
-        printf("Scene center: %f\n", scene->width() / 2.0);
-        printf("Scene center: %f\n", scene->height() / 2.0);
+        double centerx = (image_item->boundingRect().width() -
+            robot_pos_item->boundingRect().width()) / 2.0;
+        double centery = (image_item->boundingRect().height() -
+            robot_pos_item->boundingRect().height()) / 2.0;
+        //double center = std::min(centerx, centery);
         robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
     }
 }
@@ -169,9 +161,6 @@ void ImageViewer::drawForeground(QPainter *painter, const QRectF &rect)
 
 void ImageViewer::wheelEvent(QWheelEvent *event)
 {
-//	centerOn(mapToScene(event->pos()));
-//	mouse_scroll = true;
-
 	scale_factor += (float)event->delta() / 1000.0;
 
 	if(scale_factor < 0.25)
