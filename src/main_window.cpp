@@ -39,10 +39,11 @@
 
 MainWindow::MainWindow(int argc, char **argv)
 {
+    /* Initialize the control panel ROS node */
     qt_node = new QtNode(argc, argv, "control_panel");
     if(!qt_node->init())
     {
-        exit(1);
+        exit(1); // Could not connect to the ROS master, so exit.
     }
 
     // Load tab connection status icons
@@ -65,10 +66,10 @@ MainWindow::MainWindow(int argc, char **argv)
 
 
     // Keyboard shortcut actions
-    close_tab_action = new QAction(tab_widget);
-    close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
-    //close_tab_action->setShortcutContext(Qt::ApplicationShortcut);
-    connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
+    /* This action doesn't work because robot_tab uses the w key */
+    //close_tab_action = new QAction(tab_widget);
+    //close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+    //connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
 
 
 	// Connections
@@ -103,13 +104,6 @@ void MainWindow::writeSettings()
     settings.setValue("maximized", isMaximized());
 }
 
-/******************************************************************************
- * Function:    closeEvent
- * Author:      Matt Richard
- * Parameters:  QCloseEvent *event
- * Returns:     void
- * Description: For now, just accepts the close event.
- *****************************************************************************/
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     int button_pushed;
@@ -243,9 +237,6 @@ void MainWindow::createMenuActions()
     set_velocity_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
     connect(set_velocity_action, SIGNAL(triggered()), SLOT(setMaxVelocity()));
 
-	gestures_action = new QAction(tr("Kinect &Gestures"), this);
-	gestures_action->setEnabled(false);
-
 
 	/**
 	** View Menu Actions
@@ -271,10 +262,6 @@ void MainWindow::createMenuActions()
 	tab_in_window_action = new QAction(tr("Open Tab in New Window"), this);
 	tab_in_window_action->setEnabled(false);
 	//connect(tab_in_window_action, SIGNAL(triggered()), this, SLOT(openTabInWindow()));
-
-	system_diagnostics_action = new QAction(tr("Open System Diagnostics Tab"), 
-		this);
-	system_diagnostics_action->setEnabled(false);
 
 
 	/**
@@ -337,6 +324,9 @@ void MainWindow::createMenuActions()
     call_service_action = new QAction(tr("Call Service"), this);
     connect(call_service_action, SIGNAL(triggered()), this, SLOT(callService()));
 
+    rviz_action = new QAction(tr("R&viz"), this);
+    connect(rviz_action, SIGNAL(triggered()), this, SLOT(startRviz()));
+
     rxconsole_action = new QAction(tr("Rx&console"), this);
     connect(rxconsole_action, SIGNAL(triggered()), this, SLOT(startRxconsole()));
 
@@ -379,7 +369,6 @@ void MainWindow::createMenus()
     //edit_menu->addAction(topics_action);
     edit_menu->addAction(set_velocity_action);
 	//edit_menu->addSeparator();
-	//edit_menu->addAction(gestures_action);
 
 	// Create view menu
 	view_menu = menuBar()->addMenu(tr("&View"));
@@ -387,7 +376,6 @@ void MainWindow::createMenus()
 	view_menu->addAction(full_screen_action);
 	view_menu->addSeparator();
 	//view_menu->addAction(tab_in_window_action);
-	//view_menu->addAction(system_diagnostics_action);
 
 	// Create connections menu
     connections_menu = menuBar()->addMenu(tr("&Connections"));
@@ -405,6 +393,7 @@ void MainWindow::createMenus()
     // Create tools menu
     tools_menu = menuBar()->addMenu(tr("&Tools"));
     tools_menu->addAction(call_service_action);
+    tools_menu->addAction(rviz_action);
     tools_menu->addAction(rxconsole_action);
     tools_menu->addAction(rxgraph_action);
     tools_menu->addAction(dynamic_reconfigure_action);
@@ -542,8 +531,7 @@ void MainWindow::help()
  *****************************************************************************/
 void MainWindow::about()
 {
-	// @todo
-	// Finish Control Panel About information
+	/* @todo Finish Control Panel About information */
 	QMessageBox::about(this, tr("About SRS Control Panel"),
 		tr("<h1>Shared Robotics Systems<br/>") +
 		tr("Control Panel</h1>") +
@@ -735,13 +723,6 @@ void MainWindow::fullScreenChanged(bool checked)
 		showNormal();
 }
 
-/******************************************************************************
- * Function:    openTabInWindow
- * Author:      
- * Parameters:
- * Returns:     void
- * Description:
- *****************************************************************************/
 void MainWindow::openTabInWindow()
 {
 }
@@ -977,10 +958,10 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 		printf("ERROR -- unknown status detected when updating robot tab's icon\n");
 }
 
-void MainWindow::closeCurrentTab()
-{
-    closeTab(tab_widget->currentIndex());
-}
+//void MainWindow::closeCurrentTab()
+//{
+//    closeTab(tab_widget->currentIndex());
+//}
 
 void MainWindow::callService()
 {
@@ -992,6 +973,17 @@ void MainWindow::callService()
     if(ok && !service_name.isEmpty())
         if(qt_node->service_node)
             qt_node->service_node->callEmpty(service_name);
+}
+
+void MainWindow::startRviz()
+{
+    if(QProcess::startDetached("rosrun rviz rviz"))
+        printf("rviz started successfully\n");
+    else
+    {
+        perror("rviz failed to start. It may not be installed.\n");
+        /* @todo Warn user of failure */
+    }
 }
 
 void MainWindow::startRxconsole()

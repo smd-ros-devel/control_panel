@@ -46,8 +46,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setRenderHints(QPainter::Antialiasing | 
-		QPainter::SmoothPixmapTransform);
+	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 	setFrameStyle(QFrame::NoFrame | QFrame::Plain);
 	setScene(scene);
 	setDragMode(QGraphicsView::ScrollHandDrag);

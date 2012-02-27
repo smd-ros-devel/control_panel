@@ -59,15 +59,29 @@ QT_END_NAMESPACE
 
 /**
  * \class MainWindow
- * \brief Handles the menus and tabs.
+ * \brief Control Panel main window, which manages the menus and tabs.
  */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
     public:
+        /**
+         * \brief Constructor. Initializes QtNode and sets up the menus and tab widget.
+         *
+         * \param argc Command line argument count to be passed into QtNode
+         * \param argv Command line argument vector to be passed into QtNode
+         */
         MainWindow(int argc, char **argv);
+
+        /**
+         * \brief Reads the program's saved settings
+         */
         void readSettings();
+
+        /**
+         * \brief Writes the program's settings when the program is closing.
+         */
         void writeSettings();
 
     protected:
@@ -78,7 +92,7 @@ class MainWindow : public QMainWindow
     private slots:
 		void about();
         void callService();
-        void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
+        //void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
 		void editRobotConfigFile();
         void editTopics();
@@ -97,6 +111,7 @@ class MainWindow : public QMainWindow
 		void tabChanged(int index);
 		void toggleRC(QAction *action);
 		void updateTabIcon(int status, const QString &robot_name);
+        void startRviz();
         void startRxconsole();
         void startRxgraph();
         void startDynamicReconfigure();
@@ -147,6 +162,7 @@ class MainWindow : public QMainWindow
 		QAction *keyboard_rc_action;
 		QAction *joystick_rc_action;
         QAction *call_service_action;
+        QAction *rviz_action;
         QAction *rxconsole_action;
         QAction *rxgraph_action;
         QAction *dynamic_reconfigure_action;
@@ -154,7 +170,7 @@ class MainWindow : public QMainWindow
         QAction *about_action;
 
         // Keyboard shortcut actions
-        QAction *close_tab_action;
+        //QAction *close_tab_action;
 
 		QActionGroup *robot_mode_actiongroup;
 		QActionGroup *robot_rc_actiongroup;

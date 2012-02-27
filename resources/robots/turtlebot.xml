@@ -43,7 +43,7 @@
       <topicName>camera/depth/disparity</topicName>
     </disparityImage>
     <map>
-      <name>Intelligent Map</name>
+      <name>Map</name>
       <topicName>map</topicName>
     </map>
   </processedData>
