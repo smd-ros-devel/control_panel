@@ -19,10 +19,10 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
 
     QLabel *system_label = new QLabel(tr("System"));
     QStringList system_list;
-    system_list << "UGV (Unmanned Ground Vehicle)"
-                << "UAV (Unmanned Aerial Vehicle)"
-                << "AUV (Autonomous Underwater Vehicle)"
-                << "USV (Unmanned Surface Vehicle)"
+    system_list << "UGV"// (Unmanned Ground Vehicle)"
+                << "UAV"// (Unmanned Aerial Vehicle)"
+                << "AUV"// (Autonomous Underwater Vehicle)"
+                << "USV"// (Unmanned Surface Vehicle)"
                 << "Humanoid";
     QComboBox *system_combobox = new QComboBox;
     system_combobox->addItems(system_list);
@@ -82,12 +82,12 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     for(unsigned int i = 0; i < robot_config->sensors.cameras.size(); i++)
     {
         QTreeWidgetItem *camera_item = new QTreeWidgetItem;
-        camera_item->setText(0, tr("Camera (Image.msg)"));
+        camera_item->setText(0, tr("Camera"));
         camera_item->setText(1, robot_config->sensors.cameras[i].name);
         camera_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_config->sensors.cameras[i].name)));
         camera_item->addChild(new QTreeWidgetItem((QTreeWidget *)0, 
-            (QStringList() << tr("Name") << robot_config->sensors.cameras[i].topicName)));
+            (QStringList() << tr("Topic Name") << robot_config->sensors.cameras[i].topicName)));
 
         camera_itemlist.append(camera_item);
     }
@@ -99,7 +99,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     for(unsigned int i = 0; i < robot_config->sensors.gps.size(); i++)
     {
         QTreeWidgetItem *gps_item = new QTreeWidgetItem;
-        gps_item->setText(0, tr("GPS (NavSatFix.msg)"));
+        gps_item->setText(0, tr("GPS"));
         gps_item->setText(1, robot_config->sensors.gps[i].name);
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_config->sensors.gps[i].name)));
@@ -132,7 +132,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     for(unsigned int i = 0; i < robot_config->sensors.imu.size(); i++)
     {
         QTreeWidgetItem *imu_item = new QTreeWidgetItem;
-        imu_item->setText(0, tr("IMU (Imu.msg)"));
+        imu_item->setText(0, tr("IMU"));
         imu_item->setText(1, robot_config->sensors.imu[i].name);
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_config->sensors.imu[i].name)));
@@ -195,7 +195,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     for(unsigned int i = 0; i < robot_config->sensors.lasers.size(); i++)
     {
         QTreeWidgetItem *laser_item = new QTreeWidgetItem;
-        laser_item->setText(0, tr("Laser Rangefinder (LaserScan.msg)"));
+        laser_item->setText(0, tr("Laser Rangefinder"));
         laser_item->setText(1, robot_config->sensors.lasers[i].name);
         laser_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_config->sensors.lasers[i].name)));
@@ -210,7 +210,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     for(unsigned int i = 0; i < robot_config->sensors.range.size(); i++)
     {
         QTreeWidgetItem *range_item = new QTreeWidgetItem;
-        range_item->setText(0, tr("Sonar/1D-Infrared (Range.msg)"));
+        range_item->setText(0, tr("Sonar/1D-Infrared"));
         range_item->setText(1, robot_config->sensors.range[i].name);
         range_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_config->sensors.range[i].name)));
@@ -247,7 +247,8 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
 
 ////////////////////////////// Processed Data Tab //////////////////////////
 
-ProcessedDataTab::ProcessedDataTab(QWidget *parent) : QWidget(parent)
+ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
+    QWidget *parent) : QWidget(parent)
 {
     QLabel *processed_data_label = new QLabel(tr("Processed Data"));
     QStringList processed_data_list;
@@ -259,7 +260,119 @@ ProcessedDataTab::ProcessedDataTab(QWidget *parent) : QWidget(parent)
     processed_data_combobox->addItems(processed_data_list);
     QPushButton *add_button = new QPushButton(tr("Add"));
 
-    QScrollArea *processed_data_scrollarea = new QScrollArea;
+    /* Add disparity images from robot configuration file */
+    QList<QTreeWidgetItem *> disparity_image_itemlist;
+    for(unsigned int i = 0; i < robot_processed_data->disparity_images.size(); i++)
+    {
+        QTreeWidgetItem *disparity_image_item = new QTreeWidgetItem;
+        disparity_image_item->setText(0, tr("Disparity Image"));
+        disparity_image_item->setText(1, robot_processed_data->disparity_images[i].name);
+        disparity_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Name") << robot_processed_data->disparity_images[i].name)));
+        disparity_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Topic Name") << robot_processed_data->disparity_images[i].topicName)));
+
+        disparity_image_itemlist.append(disparity_image_item);
+    }
+
+    /* Add odometry from robot configuration file */
+    QList<QTreeWidgetItem *> odometry_itemlist;
+    for(unsigned int i = 0; i < robot_processed_data->odometry.size(); i++)
+    {
+        QTreeWidgetItem *odometry_item = new QTreeWidgetItem;
+        odometry_item->setText(0, tr("Odometry"));
+        odometry_item->setText(1, robot_processed_data->odometry[i].name);
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Name") << robot_processed_data->odometry[i].name)));
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Topic Name") << robot_processed_data->odometry[i].topicName)));
+
+        QString odom_pos("No");
+        if(robot_processed_data->odometry[i].position)
+            odom_pos = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Position") << odom_pos)));
+
+        QString odom_ori("No");
+        if(robot_processed_data->odometry[i].orientation)
+            odom_ori = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Orientation") << odom_ori)));
+
+        QString odom_lin_vel("No");
+        if(robot_processed_data->odometry[i].linearVelocity)
+            odom_lin_vel = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Linear Velocity") << odom_lin_vel)));
+
+        QString odom_ang_vel("No");
+        if(robot_processed_data->odometry[i].angularVelocity)
+            odom_ang_vel = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Angular Velocity") << odom_ang_vel)));
+
+        QString odom_show_attitude("No");
+        if(!robot_processed_data->odometry[i].hideAttitude)
+            odom_show_attitude = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Show Attitude Indicator") << odom_show_attitude)));
+
+        QString odom_show_heading("No");
+        if(!robot_processed_data->odometry[i].hideHeading)
+            odom_show_heading = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Show Heading Indicator") << odom_show_heading)));
+
+        QString odom_show_labels("No");
+        if(!robot_processed_data->odometry[i].hideLabels)
+            odom_show_labels = "Yes";
+        odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Show Labels") << odom_show_labels)));
+
+        odometry_itemlist.append(odometry_item);
+    }
+
+    /* Add maps from robot configuration file */
+    QList<QTreeWidgetItem *> map_itemlist;
+    for(unsigned int i = 0; i < robot_processed_data->maps.size(); i++)
+    {
+        QTreeWidgetItem *map_item = new QTreeWidgetItem;
+        map_item->setText(0, tr("Map"));
+        map_item->setText(1, robot_processed_data->maps[i].name);
+        map_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Name") << robot_processed_data->maps[i].name)));
+        map_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Topic Name") << robot_processed_data->maps[i].topicName)));
+
+        map_itemlist.append(map_item);
+    }
+
+    /* Add processed images from robot configuation file */
+    QList<QTreeWidgetItem *> processed_image_itemlist;
+    for(unsigned int i = 0; i < robot_processed_data->images.size(); i++)
+    {
+        QTreeWidgetItem *processed_image_item = new QTreeWidgetItem;
+        processed_image_item->setText(0, tr("Processed Image"));
+        processed_image_item->setText(1, robot_processed_data->images[i].name);
+        processed_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Name") << robot_processed_data->images[i].name)));
+        processed_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Topic Name") << robot_processed_data->images[i].topicName)));
+
+        processed_image_itemlist.append(processed_image_item);
+    }
+
+    QStringList column_list;
+    column_list << "Processed Data" << "Values";
+
+    /* Create tree widget */
+    QTreeWidget *processed_data_treewidget = new QTreeWidget;
+    processed_data_treewidget->setHeaderLabels(column_list);
+    processed_data_treewidget->addTopLevelItems(disparity_image_itemlist);
+    processed_data_treewidget->addTopLevelItems(odometry_itemlist);
+    processed_data_treewidget->addTopLevelItems(map_itemlist);
+    processed_data_treewidget->addTopLevelItems(processed_image_itemlist);
+
 
     QHBoxLayout *processed_data_hlayout = new QHBoxLayout;
     processed_data_hlayout->addWidget(processed_data_label, Qt::AlignLeft);
@@ -269,27 +382,44 @@ ProcessedDataTab::ProcessedDataTab(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *processed_data_layout = new QVBoxLayout;
     processed_data_layout->addLayout(processed_data_hlayout);
-    processed_data_layout->addWidget(processed_data_scrollarea);
+    processed_data_layout->addWidget(processed_data_treewidget);
     setLayout(processed_data_layout);
 }
 
 ///////////////////////// Joints Tab ////////////////////////////
 
-JointsTab::JointsTab(QWidget *parent) : QWidget(parent)
+JointsTab::JointsTab(struct RobotJoints *robot_joints, 
+    QWidget *parent) : QWidget(parent)
 {
     QLabel *topic_name_label = new QLabel(tr("Topic Name"));
-    QLineEdit *topic_name_lineedit = new QLineEdit;
+    QLineEdit *topic_name_lineedit = new QLineEdit(robot_joints->topicName);
 
     QCheckBox *position_checkbox = new QCheckBox(tr("Position"));
-    position_checkbox->setChecked(true);
+    position_checkbox->setChecked(robot_joints->position);
     QCheckBox *velocity_checkbox = new QCheckBox(tr("Velocity"));
-    velocity_checkbox->setChecked(true);
+    velocity_checkbox->setChecked(robot_joints->velocity);
     QCheckBox *effort_checkbox = new QCheckBox(tr("Effort"));
+    effort_checkbox->setChecked(robot_joints->effort);
 
     QLabel *joint_states_label = new QLabel(tr("Joints"));
     QPushButton *add_button = new QPushButton(tr("Add"));
 
-    QScrollArea *joints_scrollarea = new QScrollArea;
+
+    /* Add all joints from the robot configuration file */
+    QList<QTreeWidgetItem *> joint_itemlist;
+    for(unsigned int i = 0; i < robot_joints->joints.size(); i++)
+        joint_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << robot_joints->joints[i].name << robot_joints->joints[i].displayName)));
+
+    QStringList column_names;
+    column_names << "Joint Name" << "Display Name";
+
+    /* Create tree widget */
+    QTreeWidget *joints_treewidget = new QTreeWidget;
+    joints_treewidget->setHeaderLabels(column_names);
+    joints_treewidget->addTopLevelItems(joint_itemlist);
+    joints_treewidget->setSortingEnabled(true);
+
 
     QGridLayout *joints_gridlayout = new QGridLayout;
     joints_gridlayout->addWidget(topic_name_label, 0, 0);
@@ -302,7 +432,7 @@ JointsTab::JointsTab(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *joints_layout = new QVBoxLayout;
     joints_layout->addLayout(joints_gridlayout);
-    joints_layout->addWidget(joints_scrollarea);
+    joints_layout->addWidget(joints_treewidget);
     setLayout(joints_layout);
 }
 
@@ -333,7 +463,8 @@ ControlsTab::ControlsTab(QWidget *parent) : QWidget(parent)
 
 //////////////////////////// Services Tab ///////////////////////////////
 
-ServicesTab::ServicesTab(QWidget *parent) : QWidget(parent)
+ServicesTab::ServicesTab(struct RobotCommands *robot_services, 
+    QWidget *parent) : QWidget(parent)
 {
     QLabel *services_label = new QLabel(tr("Services"));
     QStringList services_list;
@@ -344,7 +475,21 @@ ServicesTab::ServicesTab(QWidget *parent) : QWidget(parent)
     services_combobox->addItems(services_list);
     QPushButton *add_button = new QPushButton(tr("Add"));
 
-    QScrollArea *services_scrollarea = new QScrollArea;
+    
+    /* Add all services from robot configuration file */
+    QList<QTreeWidgetItem *> services_itemlist;
+    for(unsigned int i = 0; i < robot_services->custom.size(); i++)
+        services_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << robot_services->custom[i].name << robot_services->custom[i].topicName)));
+
+    QStringList column_list;
+    column_list << "Name" << "Topic Name";
+
+    /* Create tree widget */
+    QTreeWidget *services_treewidget = new QTreeWidget;
+    services_treewidget->setHeaderLabels(column_list);
+    services_treewidget->addTopLevelItems(services_itemlist);
+
 
     QHBoxLayout *services_hlayout = new QHBoxLayout;
     services_hlayout->addWidget(services_label, Qt::AlignLeft);
@@ -354,7 +499,7 @@ ServicesTab::ServicesTab(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *services_layout = new QVBoxLayout;
     services_layout->addLayout(services_hlayout);
-    services_layout->addWidget(services_scrollarea);
+    services_layout->addWidget(services_treewidget);
     setLayout(services_layout);
 }
 
@@ -414,10 +559,10 @@ RobotConfigFileDialog::RobotConfigFileDialog(
     tab_widget = new QTabWidget;
     tab_widget->addTab(new GeneralTab(robot_config), tr("General"));
     tab_widget->addTab(new SensorsTab(robot_config), tr("Sensors"));
-    tab_widget->addTab(new ProcessedDataTab, tr("ProcessedData"));
-    tab_widget->addTab(new JointsTab, tr("Joints"));
+    tab_widget->addTab(new ProcessedDataTab(&robot_config->processedData), tr("Processed Data"));
+    tab_widget->addTab(new JointsTab(&robot_config->joint_states), tr("Joints"));
     tab_widget->addTab(new ControlsTab, tr("Controls"));
-    tab_widget->addTab(new ServicesTab, tr("Services"));
+    tab_widget->addTab(new ServicesTab(&robot_config->commands), tr("Services"));
     tab_widget->addTab(new DiagnosticsTab, tr("Diagnostics"));
 
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);

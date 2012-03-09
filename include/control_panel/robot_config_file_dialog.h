@@ -61,7 +61,8 @@ class ProcessedDataTab : public QWidget
     Q_OBJECT
 
     public:
-        ProcessedDataTab(QWidget *parent = 0);
+        ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
+            QWidget *parent = 0);
 };
 
 /**
@@ -73,7 +74,7 @@ class JointsTab : public QWidget
     Q_OBJECT
 
     public:
-        JointsTab(QWidget *parent = 0);
+        JointsTab(struct RobotJoints *robot_joints, QWidget *parent = 0);
 };
 
 /**
@@ -97,7 +98,8 @@ class ServicesTab : public QWidget
     Q_OBJECT
 
     public:
-        ServicesTab(QWidget *parent = 0);
+        ServicesTab(struct RobotCommands *robot_services,
+            QWidget *parent = 0);
 };
 
 /**

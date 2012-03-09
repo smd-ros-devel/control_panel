@@ -53,13 +53,12 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
-#include <string>
 #include "control_panel/robot_widget.h"
 
 
 /**
  * \class MainTab
- * \brief
+ * \brief Displays the list of known robots
  */
 class MainTab : public QWidget
 {
@@ -68,11 +67,28 @@ class MainTab : public QWidget
 	public:
 		MainTab(const QString &robots, QWidget *parent = 0);
 
+        /**
+         * \brief Returns the name of the first robot selected.
+         */
+        QString getFirstSelectedRobot();
+
+        /**
+         * \brief Returns the names of all robots that are selected.
+         */
+        QStringList getSelectedRobots();
+
+        /**
+         * \brief Returns the number of RobotWidgets that are selected.
+         */
+        int numSelected();
+
 	signals:
 		void loadRobots(const QStringList &robot_load_list, bool auto_connect);
 
-	private slots:
-		void deselectButtonClicked();
+	public slots:
+		void deselectAllRobots();
+
+    private slots:
 		void loadButtonPressed();
 
 	private:

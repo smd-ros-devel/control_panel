@@ -72,7 +72,7 @@ void MainTab::createWidgets()
 	robot_list_widget = new QWidget;
 
 	deselect_all_button = new QPushButton(tr("Deselect All"));
-	connect(deselect_all_button, SIGNAL(clicked()), this, SLOT(deselectButtonClicked()));
+	connect(deselect_all_button, SIGNAL(clicked()), this, SLOT(deselectAllRobots()));
 
 	auto_connect_checkbox = new QCheckBox(tr("Connect Automatically"));
 	auto_connect_checkbox->setChecked(true);
@@ -103,6 +103,55 @@ void MainTab::createLayout()
 	main_tab_layout->addLayout(button_hlayout);
 }
 
+QString MainTab::getFirstSelectedRobot()
+{
+    QString robot_config_path;
+    bool robot_found = false;
+
+    /* Search for the first selected robot */
+    for(int i = 0; i < robot_list_layout->count() - 1 && !robot_found; i++)
+    {
+        robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+        if(robot_widget->isSelected())
+        {
+            robot_config_path = robot_widget->getConfigPath();
+            robot_found = true;
+        }
+    }
+
+    return robot_config_path;
+}
+
+QStringList MainTab::getSelectedRobots()
+{
+    QStringList robot_list;
+
+    /* Add all selected robots' names to the string list */
+    for(int i = 0; i < robot_list_layout->count() - 1; i++)
+    {
+        robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+        if(robot_widget->isSelected())
+            robot_list << robot_widget->getConfigPath();
+    }
+
+    return robot_list;
+}
+
+int MainTab::numSelected()
+{
+    int count = 0;
+
+    /* Count the number of selected robots */
+    for(int i = 0; i < robot_list_layout->count() - 1; i++)
+    {
+        robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+        if(robot_widget->isSelected())
+            count++;
+    }
+
+    return count;
+}
+
 
 void MainTab::loadRobots()
 {
@@ -128,7 +177,7 @@ void MainTab::loadRobots()
 	}
 }
 
-void MainTab::deselectButtonClicked()
+void MainTab::deselectAllRobots()
 {
 	QLayoutItem *temp;
 

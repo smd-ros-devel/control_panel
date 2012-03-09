@@ -222,9 +222,7 @@ void MainWindow::createMenuActions()
     master_settings_action->setEnabled(false);
     connect(master_settings_action, SIGNAL(triggered()), SLOT(editMasterSettings()));
 
-	configuration_file_action = new QAction(tr("Robot Configuration &File"),
-		this);
-	configuration_file_action->setEnabled(false);
+	configuration_file_action = new QAction(tr("Robot Configuration &File"), this);
 	connect(configuration_file_action, SIGNAL(triggered()),
 		this, SLOT(editRobotConfigFile()));
 
@@ -447,23 +445,60 @@ void MainWindow::editMasterSettings()
  *****************************************************************************/
 void MainWindow::editRobotConfigFile()
 {
-	// Get the index of the current tab
-	int curr_index = tab_widget->currentIndex();
-	RobotTab *tab;
+    QString selected_robot;
+    bool robot_loaded = false;
+    RobotConfig *robot_config;
 
-    // Check if the index in the Main Tab.
-	if(curr_index != 0)
+    /* Make sure only one robot is selected. */
+    if(main_tab->numSelected() < 1)
+    {
+        QMessageBox::information(this, tr("No Robot Selected"),
+            tr("Please select a robot to edit."));
+        return;
+    }
+    if(main_tab->numSelected() > 1)
+    {
+        QMessageBox::information(this, tr("Multiple Robots Selected"),
+            tr("Please select only one robot to edit."));
+        return;
+    }
+
+    selected_robot = main_tab->getFirstSelectedRobot();
+
+    /* Check if the robot is already loaded */
+    for(int i = 1; i < tab_widget->count() && !robot_loaded; i++)
+        if(selected_robot == tab_widget->tabText(i))
+            robot_loaded = true;
+
+    if(robot_loaded)
+    {
+        QMessageBox::information(this, tr("Robot Already Loaded"),
+            tr("The selected robot is already loaded. Please close the") +
+            tr("selected robot's tab to edit the robot's configuration file."));
+        return;
+    }
+
+    robot_config = new RobotConfig;
+
+    /* Load selected robot's configuration file */
+    QFile robot_file(selected_robot);
+    if(!robot_file.open(QIODevice::ReadOnly) ||
+        robot_config->loadFrom(&robot_file, true))
+    {
+        std::cerr << "Error while loading robot configuration for editing for "
+                  << selected_robot.toStdString() << std::endl;
+        return;
+    }
+
+	RobotConfigFileDialog edit_robot_dialog(robot_config);
+	edit_robot_dialog.setTitle("Edit Robot Configuration File");
+
+	if(edit_robot_dialog.exec())
 	{
-		tab = (RobotTab *)tab_widget->currentWidget();
 
-		RobotConfigFileDialog edit_robot_dialog(tab->getConfig());
-		edit_robot_dialog.setTitle("Edit Robot Configuration File");
-
-		if(edit_robot_dialog.exec())
-		{
-
-		}
 	}
+
+    main_tab->deselectAllRobots();
 }
 
 /******************************************************************************
@@ -475,9 +510,8 @@ void MainWindow::editRobotConfigFile()
  *****************************************************************************/
 void MainWindow::editTopics()
 {
-	// @todo
-	// Create a dialog allowing the user to edit the topic names over which
-	// each node is publishing or subscribing to for a connected robot.
+	/* @todo Create a dialog allowing the user to edit the topic names over
+             which each node is publishing or subscribing to for a connected robot. */
 }
 
 void MainWindow::setMaxVelocity()
@@ -606,6 +640,8 @@ void MainWindow::loadSelectedRobots(const QStringList &robot_list,
 
 	// Set the current tab to the last robot loaded
 	tab_widget->setCurrentIndex(index_inserted);
+
+    main_tab->deselectAllRobots();
 }
 
 /******************************************************************************
@@ -871,7 +907,7 @@ void MainWindow::tabChanged(int index)
 
 	connect_action->setEnabled(false);
 	disconnect_action->setEnabled(false);
-	configuration_file_action->setEnabled(false);
+	configuration_file_action->setEnabled(true);
 	robot_rc_actiongroup->setEnabled(false);
 
 	// Check if the current tab is the Main Tab.
@@ -884,7 +920,7 @@ void MainWindow::tabChanged(int index)
 		else
 			connect_action->setEnabled(true);
 
-		configuration_file_action->setEnabled(true);
+		configuration_file_action->setEnabled(false);
 		robot_rc_actiongroup->setEnabled(true);
 
         if(tab->node_manager->control_node)
