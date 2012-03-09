@@ -17,10 +17,11 @@ class QCheckBox;
 class QComboBox;
 class QGridLayout;
 class QLabel;
-class QLineEdit;
+//class QLineEdit;
 class QPushButton;
 QT_END_NAMESPACE
 
+#include <QLineEdit>
 #include <QString>
 #include "globals.h"
 
@@ -29,6 +30,16 @@ class AddSensorDialog : public QDialog
 	Q_OBJECT
 
 	public:
+        enum SensorType
+        {
+            Camera,
+            Compass,
+            GPS,
+            IMU,
+            Laser,
+            Range
+        };
+
 		AddSensorDialog(const QString &type, QWidget *parent = 0);
 		QString getName() const;
 		QString getTopicName() const;
@@ -105,6 +116,39 @@ class AddSensorDialog : public QDialog
 		QLineEdit *voltage_lineedit;
 
 		QDialogButtonBox *cancel_add_buttonbox;
+};
+
+class AddProcessedDataDialog : public QDialog
+{
+    Q_OBJECT
+
+    public:
+};
+
+/**
+ * \class AddJointDialog
+ * \brief Dialog for adding/editing a single robot joint.
+ */
+class JointDialog : public QDialog
+{
+    Q_OBJECT
+
+    public:
+        JointDialog(QWidget *parent = 0);
+        JointDialog(const QString &joint_name, const QString &display_name,
+                    QWidget *parent = 0);
+        QString getDisplayName() const { return display_name_lineedit->text(); }
+        QString getJointName() const { return joint_name_lineedit->text(); }
+        void setDisplayName(const QString &name) { display_name_lineedit->setText(name); }
+        void setJointName(const QString &name) { joint_name_lineedit->setText(name); }
+
+    private:
+        void createDialog();
+
+        QLineEdit *joint_name_lineedit;
+        QLineEdit *display_name_lineedit;
+
+        QDialogButtonBox *button_box;
 };
 
 #endif // CONTROL_PANEL_ADD_SENSOR_DIALOG_H

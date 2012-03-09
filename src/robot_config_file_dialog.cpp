@@ -403,7 +403,7 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
 
     QLabel *joint_states_label = new QLabel(tr("Joints"));
     QPushButton *add_button = new QPushButton(tr("Add"));
-
+    connect(add_button, SIGNAL(clicked()), this, SLOT(addJoint()));
 
     /* Add all joints from the robot configuration file */
     QList<QTreeWidgetItem *> joint_itemlist;
@@ -415,7 +415,7 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
     column_names << "Joint Name" << "Display Name";
 
     /* Create tree widget */
-    QTreeWidget *joints_treewidget = new QTreeWidget;
+    joints_treewidget = new QTreeWidget;
     joints_treewidget->setHeaderLabels(column_names);
     joints_treewidget->addTopLevelItems(joint_itemlist);
     joints_treewidget->setSortingEnabled(true);
@@ -434,6 +434,23 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
     joints_layout->addLayout(joints_gridlayout);
     joints_layout->addWidget(joints_treewidget);
     setLayout(joints_layout);
+}
+
+void JointsTab::addJoint()
+{
+    JointDialog add_joint_dialog;
+    add_joint_dialog.setWindowTitle("Add Joint");
+
+    if(add_joint_dialog.exec())
+    {
+        joints_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << add_joint_dialog.getJointName() << add_joint_dialog.getDisplayName())));
+    }
+}
+
+void JointsTab::editJoint()
+{
+
 }
 
 ////////////////////////////// Controls Tab ////////////////////////////

@@ -508,3 +508,44 @@ QString AddSensorDialog::getVoltage() const
 		return voltage_lineedit->text();
 	return "";
 }
+
+
+////////////////////////////// Joint Dialog /////////////////////////////////
+
+JointDialog::JointDialog(QWidget *parent) : QDialog(parent)
+{
+    createDialog();
+}
+
+JointDialog::JointDialog(const QString &joint_name, const QString &display_name,
+    QWidget *parent) : QDialog(parent)
+{
+    createDialog();
+
+    joint_name_lineedit->setText(joint_name);
+    display_name_lineedit->setText(display_name);
+}
+
+void JointDialog::createDialog()
+{
+    QLabel *joint_name_label = new QLabel(tr("Joint Name"));
+    joint_name_lineedit = new QLineEdit;
+
+    QLabel *display_name_label = new QLabel(tr("Display Name"));
+    display_name_lineedit = new QLineEdit;
+
+    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | 
+                                      QDialogButtonBox::Ok);
+
+    connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QGridLayout *dialog_layout = new QGridLayout;
+    dialog_layout->addWidget(joint_name_label, 0, 0);
+    dialog_layout->addWidget(joint_name_lineedit, 0, 1);
+    dialog_layout->addWidget(display_name_label, 1, 0);
+    dialog_layout->addWidget(display_name_lineedit, 1, 1);
+    dialog_layout->addWidget(button_box, 2, 1);
+    dialog_layout->setSizeConstraint(QLayout::SetFixedSize);
+    setLayout(dialog_layout);
+}

@@ -21,6 +21,7 @@ class QScrollArea;
 class QGridLayout;
 class QVBoxLayout;
 class QTabWidget;
+class QTreeWidget;
 QT_END_NAMESPACE
 
 #include "add_sensor_dialog.h"
@@ -75,6 +76,13 @@ class JointsTab : public QWidget
 
     public:
         JointsTab(struct RobotJoints *robot_joints, QWidget *parent = 0);
+
+    public slots:
+        void addJoint();
+        void editJoint();
+
+    private:
+        QTreeWidget *joints_treewidget;
 };
 
 /**
