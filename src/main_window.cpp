@@ -436,13 +436,6 @@ void MainWindow::editMasterSettings()
 */
 }
 
-/******************************************************************************
- * Function:    editRobotConfigFile
- * Author:      Matt Richard, Scott Logan
- * Parameters:  None
- * Returns:     void
- * Description:
- *****************************************************************************/
 void MainWindow::editRobotConfigFile()
 {
     QString selected_robot;
@@ -491,7 +484,7 @@ void MainWindow::editRobotConfigFile()
     }
 
 	RobotConfigFileDialog edit_robot_dialog(robot_config);
-	edit_robot_dialog.setTitle("Edit Robot Configuration File");
+	edit_robot_dialog.setWindowTitle("Edit Robot Configuration File");
 
 	if(edit_robot_dialog.exec())
 	{
@@ -501,13 +494,6 @@ void MainWindow::editRobotConfigFile()
     main_tab->deselectAllRobots();
 }
 
-/******************************************************************************
- * Function:    editTopics
- * Author:      Matt Richard
- * Parameters:  None
- * Returns:     void
- * Description:
- *****************************************************************************/
 void MainWindow::editTopics()
 {
 	/* @todo Create a dialog allowing the user to edit the topic names over
@@ -529,7 +515,7 @@ void MainWindow::setMaxVelocity()
     // Make sure the robot has a control node
     if(tab->node_manager->control_node)
     {
-        // Prompt use for new scale
+        // Prompt user for new scale
         scale = QInputDialog::getDouble(this, tr("Set Velocity Scale"),
             tr("Scale:"), tab->node_manager->control_node->getScale(),
             0.00, 1.00, 2, &ok);
@@ -540,19 +526,11 @@ void MainWindow::setMaxVelocity()
     }
 }
 
-/******************************************************************************
- * Function:    help
- * Author:      Matt Richard
- * Parameters:  None
- * Returns:     void
- * Description: 
- *****************************************************************************/
 void MainWindow::help()
 {
 	// This will start the help documentation.
 
-	// @todo
-	// Create help documentation.
+	/* @todo Create help documentation */
 }
 
 /******************************************************************************
@@ -573,15 +551,6 @@ void MainWindow::about()
         tr("<p>TODO: Add Control Panel information here.</p>"));
 }
 
-/******************************************************************************
- * Function:    loadSelectedRobots
- * Author:      Matt Richard, Scott Logan
- * Parameters:  const QStringList &robot_list - List of robots names that were
- *                  selected to be loaded.
- *              bool auto_connect - If true, the thread to 
- * Returns:     void
- * Description:
- *****************************************************************************/
 void MainWindow::loadSelectedRobots(const QStringList &robot_list,
 	bool auto_connect)
 {
@@ -763,13 +732,6 @@ void MainWindow::openTabInWindow()
 {
 }
 
-/******************************************************************************
- * Function:    newRobotConfigFile
- * Author:      Matt Richard, Scott Logan
- * Parameters:  None
- * Returns:     void
- * Description: 
- *****************************************************************************/
 void MainWindow::newRobotConfigFile()
 {
 	/**
@@ -779,7 +741,7 @@ void MainWindow::newRobotConfigFile()
 	RobotConfig *new_robot_config = new RobotConfig;
 
 	RobotConfigFileDialog new_robot_dialog(new_robot_config);
-	new_robot_dialog.setTitle("New Robot Configuration File");
+	new_robot_dialog.setWindowTitle("New Robot Configuration File");
 
 	if(new_robot_dialog.exec())
 	{

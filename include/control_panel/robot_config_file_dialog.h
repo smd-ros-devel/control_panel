@@ -1,10 +1,36 @@
-/* @todo Add license here. */
+/*
+ * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of Willow Garage, Inc. nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 
 /**
  * \file   robot_config_file_dialog.h
  * \date   Dec 6, 2011
  * \author Matt Richard
- * Description: Dialog for creating or editing a robot configuration file.
  */
 #ifndef CONTROL_PANEL_ROBOT_CONFIG_FILE_DIALOG_H
 #define CONTROL_PANEL_ROBOT_CONFIG_FILE_DIALOG_H
@@ -14,20 +40,12 @@
 QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QComboBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
-class QScrollArea;
-class QGridLayout;
-class QVBoxLayout;
 class QTabWidget;
 class QTreeWidget;
 QT_END_NAMESPACE
 
-#include "add_sensor_dialog.h"
+#include "component_dialogs.h"
 #include "robot_config.h"
-#include "robot_config_sensor_widget.h"
-#include <string>
 
 /**
  * \class GeneralTab
@@ -51,6 +69,24 @@ class SensorsTab : public QWidget
 
     public:
         SensorsTab(struct RobotConfig *robot_config, QWidget *parent = 0);
+
+    public slots:
+        void addSensor();
+        void editSensor();
+
+    private:
+        enum SensorType
+        {
+            Camera,
+            Compass,
+            Gps,
+            Imu,
+            Laser,
+            Range
+        };
+
+        QTreeWidget *sensors_treewidget;
+        QComboBox *sensors_combobox;
 };
 
 /**
@@ -64,6 +100,22 @@ class ProcessedDataTab : public QWidget
     public:
         ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
             QWidget *parent = 0);
+
+    public slots:
+        void addProcessedData();
+        void editProcessedData();
+
+    private:
+        enum ProcessedDataType
+        {
+            DisparityImage,
+            Map,
+            Odometry,
+            ProcessedImage
+        };
+
+        QTreeWidget *processed_data_treewidget;
+        QComboBox *processed_data_combobox;
 };
 
 /**
@@ -108,6 +160,14 @@ class ServicesTab : public QWidget
     public:
         ServicesTab(struct RobotCommands *robot_services,
             QWidget *parent = 0);
+
+    public slots:
+        void addService();
+        void editService();
+
+    private:
+        QTreeWidget *services_treewidget;
+        QComboBox *services_combobox;
 };
 
 /**
@@ -131,50 +191,13 @@ class RobotConfigFileDialog : public QDialog
 	Q_OBJECT
 
 	public:
-		RobotConfigFileDialog(struct RobotConfig *new_robot_config, QWidget *parent = 0);
-		void setTitle(const std::string &title);
-
-	private slots:
-		void addSensor();
-		void editSelectedSensor();
-		void removeSelectedSensors();
+		RobotConfigFileDialog(struct RobotConfig *new_robot_config,
+                              QWidget *parent = 0);
 
 	private:
-		void createWidgets();
-		void createLayout();
-
         QTabWidget *tab_widget;
         QDialogButtonBox *button_box;
-
-//		QGridLayout *dialog_layout;
-
-		QLabel *robot_name_label;
-		QLabel *system_label;
-		QLabel *drive_system_label;
-		QLabel *image_file_label;
-		QLabel *sensors_label;
-
-		QLineEdit *robot_name_lineedit;
-		QLineEdit *drive_system_lineedit;
-		QLineEdit *image_file_lineedit;
-
-		QComboBox *system_combobox;
-		QComboBox *sensors_combobox;
-
-		QPushButton *browse_button;
-		QPushButton *add_button;
-		QPushButton *edit_button;
-		QPushButton *remove_button;
-
-		QScrollArea *sensors_scrollarea;
-		QVBoxLayout *sensor_list_layout;
-		QWidget *sensor_list_widget;
-
-//		QDialogButtonBox *save_cancel_buttonbox;
-
 		struct RobotConfig *robot_config;
-
-		RobotConfigSensorWidget *sensor_widget;
 };
 
 #endif // CONTROL_PANEL_ROBOT_CONFIG_FILE_DIALOG_H

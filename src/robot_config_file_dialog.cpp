@@ -1,4 +1,31 @@
-/* @todo Add license here */
+/*
+ * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of Willow Garage, Inc. nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 
 /**
  * \file   robot_config_file_dialog.cpp
@@ -6,6 +33,7 @@
  * \author Matt Richard, Scott Logan
  */
 #include <QtGui>
+#include <iostream>
 #include "control_panel/robot_config_file_dialog.h"
 #include "stdio.h"
 
@@ -72,9 +100,10 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
                 << "IMU (Imu.msg)"
                 << "Laser Rangefinder (LaserScan.msg)"
                 << "Sonar/1D-Infrared (Range.msg)";
-    QComboBox *sensors_combobox = new QComboBox;
+    sensors_combobox = new QComboBox;
     sensors_combobox->addItems(sensor_list);
     QPushButton *add_sensor_button = new QPushButton(tr("Add"));
+    connect(add_sensor_button, SIGNAL(clicked()), this, SLOT(addSensor()));
 
 
     /* Add Camera config data to camera item list */
@@ -224,7 +253,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     column_list << "Sensors" << "Value";
 
     /* Create Tree Widget */
-    QTreeWidget *sensors_treewidget = new QTreeWidget;
+    sensors_treewidget = new QTreeWidget;
     sensors_treewidget->setHeaderLabels(column_list);
     sensors_treewidget->addTopLevelItems(camera_itemlist);
     sensors_treewidget->addTopLevelItems(gps_itemlist);
@@ -233,6 +262,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     sensors_treewidget->addTopLevelItems(range_itemlist);
 
 
+    /* Create layout */
     QHBoxLayout *sensors_hlayout = new QHBoxLayout;
     sensors_hlayout->addWidget(sensors_label, Qt::AlignLeft);
     sensors_hlayout->addStretch();
@@ -245,20 +275,82 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     setLayout(sensors_tab_layout);
 }
 
-////////////////////////////// Processed Data Tab //////////////////////////
+void SensorsTab::addSensor()
+{
+    SensorType type = SensorType(sensors_combobox->currentIndex());
+    QString type_str;
 
+    if(type == Camera)
+        type_str = "Camera";
+    else if(type == Compass)
+        type_str = "Compass";
+    else if(type == Gps)
+        type_str = "GPS";
+    else if(type == Imu)
+        type_str = "IMU";
+    else if(type == Laser)
+        type_str = "Laser Rangefinder";
+    else if(type == Range)
+        type_str = "Sonar/1D-Infrared";
+    else
+    {
+        std::cerr << "ERROR -- Unknown SensorType '" << type << "' encountered"
+                  << " while adding sensor to configuration file" << std::endl;
+        return;
+    }
+
+    if(type == Camera || type == Laser || type == Range) // Others require different dialog
+    {
+        ComponentDialog component_dialog(this);
+        component_dialog.setWindowTitle(QString("Add %1").arg(type_str));
+
+        if(component_dialog.exec())
+        {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(0, type_str);
+            item->setText(1, component_dialog.getName());
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << component_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << component_dialog.getTopicName())));
+
+            sensors_treewidget->addTopLevelItem(item);
+        }
+    }
+    else if(type == Compass)
+    {
+
+    }
+    else if(type == Gps)
+    {
+
+    }
+    else if(type == Imu)
+    {
+
+    }
+}
+
+void SensorsTab::editSensor()
+{
+
+}
+
+
+////////////////////////////// Processed Data Tab //////////////////////////
 ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
     QWidget *parent) : QWidget(parent)
 {
     QLabel *processed_data_label = new QLabel(tr("Processed Data"));
     QStringList processed_data_list;
     processed_data_list << "Disparity Image (DisparityImage.msg)"
-                        << "Processed Image (Image.msg)"
                         << "Map (Map.msg)"
-                        << "Odometry (Odometry.msg)";
-    QComboBox *processed_data_combobox = new QComboBox;
+                        << "Odometry (Odometry.msg)"
+                        << "Processed Image (Image.msg)";
+    processed_data_combobox = new QComboBox;
     processed_data_combobox->addItems(processed_data_list);
     QPushButton *add_button = new QPushButton(tr("Add"));
+    connect(add_button, SIGNAL(clicked()), this, SLOT(addProcessedData()));
 
     /* Add disparity images from robot configuration file */
     QList<QTreeWidgetItem *> disparity_image_itemlist;
@@ -366,14 +458,14 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
     column_list << "Processed Data" << "Values";
 
     /* Create tree widget */
-    QTreeWidget *processed_data_treewidget = new QTreeWidget;
+    processed_data_treewidget = new QTreeWidget;
     processed_data_treewidget->setHeaderLabels(column_list);
     processed_data_treewidget->addTopLevelItems(disparity_image_itemlist);
     processed_data_treewidget->addTopLevelItems(odometry_itemlist);
     processed_data_treewidget->addTopLevelItems(map_itemlist);
     processed_data_treewidget->addTopLevelItems(processed_image_itemlist);
 
-
+    /* Create layout */
     QHBoxLayout *processed_data_hlayout = new QHBoxLayout;
     processed_data_hlayout->addWidget(processed_data_label, Qt::AlignLeft);
     processed_data_hlayout->addStretch();
@@ -384,6 +476,119 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
     processed_data_layout->addLayout(processed_data_hlayout);
     processed_data_layout->addWidget(processed_data_treewidget);
     setLayout(processed_data_layout);
+}
+
+void ProcessedDataTab::addProcessedData()
+{
+    /* Get the type of component */
+    ProcessedDataType add_type = ProcessedDataType(processed_data_combobox->currentIndex());
+    QString type_str;
+
+    if(add_type == DisparityImage)
+        type_str = "Disparity Image";
+    else if(add_type == Map)
+        type_str = "Map";
+    else if(add_type == Odometry)
+        type_str = "Odometry";
+    else if(add_type == ProcessedImage)
+        type_str = "Processed Image";
+    else
+    {
+        std::cerr << "ERROR -- Unknown Type encountered '" << add_type
+                  << "' while adding processed data component" << std::endl;
+        return;
+    }
+
+    if(add_type != Odometry) // Odometry needs a different dialog than ComponentDialog
+    {
+        ComponentDialog component_dialog(this);
+        component_dialog.setWindowTitle(QString("Add %1").arg(type_str));
+
+        if(component_dialog.exec())
+        {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(0, type_str);
+            item->setText(1, component_dialog.getName());
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << component_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << component_dialog.getTopicName())));
+
+            processed_data_treewidget->addTopLevelItem(item);
+        }
+    }
+    else
+    {
+        OdometryDialog odom_dialog(this);
+        odom_dialog.setWindowTitle(QString("Add %1").arg(type_str));
+
+        if(odom_dialog.exec())
+        {
+            QTreeWidgetItem *odom_item = new QTreeWidgetItem;
+            odom_item->setText(0, type_str);
+            odom_item->setText(1, odom_dialog.getName());
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << odom_dialog.getName())));
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << odom_dialog.getTopicName())));
+
+            // Set and add position state
+            QString odom_pos("No");
+            if(odom_dialog.isPositionChecked())
+                odom_pos = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Position") << odom_pos)));
+
+            // Set and add orientation state
+            QString odom_ori("No");
+            if(odom_dialog.isOrientationChecked())
+                odom_ori = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Orientation") << odom_ori)));
+
+            // Set and add linear velocity state
+            QString odom_lin_vel("No");
+            if(odom_dialog.isLinearVelocityChecked())
+                odom_lin_vel = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Linear Velocity") << odom_lin_vel)));
+
+            // Set and add angular velocity state
+            QString odom_ang_vel("No");
+            if(odom_dialog.isAngularVelocityChecked())
+                odom_ang_vel = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Angular Velocity") << odom_ang_vel)));
+
+            // Set and add attitude indicator state
+            QString odom_show_attitude("No");
+            if(odom_dialog.isShowAttitudeChecked())
+                odom_show_attitude = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Attitude Indicator") << odom_show_attitude)));
+
+            // Set and add heading indicator state
+            QString odom_show_heading("No");
+            if(odom_dialog.isShowHeadingChecked())
+                odom_show_heading = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Heading Indicator") << odom_show_heading)));
+
+            // Set and add labels state
+            QString odom_show_labels("No");
+            if(odom_dialog.isShowLabelsChecked())
+                odom_show_labels = "Yes";
+            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Labels") << odom_show_labels)));
+
+            processed_data_treewidget->addTopLevelItem(odom_item);
+        }
+    }
+}
+
+void ProcessedDataTab::editProcessedData()
+{
+
 }
 
 ///////////////////////// Joints Tab ////////////////////////////
@@ -438,13 +643,15 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
 
 void JointsTab::addJoint()
 {
-    JointDialog add_joint_dialog;
+    ComponentDialog add_joint_dialog(this);
+    add_joint_dialog.setNameLabelText(tr("Joint Name"));
+    add_joint_dialog.setTopicNameLabelText(tr("Display Name"));
     add_joint_dialog.setWindowTitle("Add Joint");
 
     if(add_joint_dialog.exec())
     {
         joints_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << add_joint_dialog.getJointName() << add_joint_dialog.getDisplayName())));
+            (QStringList() << add_joint_dialog.getName() << add_joint_dialog.getTopicName())));
     }
 }
 
@@ -488,9 +695,10 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
     services_list << "Custom (Empty.srv)"
                   << "Land (Empty.srv)"
                   << "Takeoff (Empty.srv)";
-    QComboBox *services_combobox = new QComboBox;
+    services_combobox = new QComboBox;
     services_combobox->addItems(services_list);
     QPushButton *add_button = new QPushButton(tr("Add"));
+    connect(add_button, SIGNAL(clicked()), this, SLOT(addService()));
 
     
     /* Add all services from robot configuration file */
@@ -500,14 +708,14 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
             (QStringList() << robot_services->custom[i].name << robot_services->custom[i].topicName)));
 
     QStringList column_list;
-    column_list << "Name" << "Topic Name";
+    column_list << "Service Name" << "Topic Name";
 
     /* Create tree widget */
-    QTreeWidget *services_treewidget = new QTreeWidget;
+    services_treewidget = new QTreeWidget;
     services_treewidget->setHeaderLabels(column_list);
     services_treewidget->addTopLevelItems(services_itemlist);
 
-
+    /* Create services tab layout */
     QHBoxLayout *services_hlayout = new QHBoxLayout;
     services_hlayout->addWidget(services_label, Qt::AlignLeft);
     services_hlayout->addStretch();
@@ -518,6 +726,27 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
     services_layout->addLayout(services_hlayout);
     services_layout->addWidget(services_treewidget);
     setLayout(services_layout);
+}
+
+void ServicesTab::addService()
+{
+    ComponentDialog add_service_dialog(this);
+    add_service_dialog.setNameLabelText(tr("Service Name"));
+    add_service_dialog.setWindowTitle("Add Service");
+
+    if(services_combobox->currentText().startsWith(QString("Takeoff")))
+        add_service_dialog.setName(tr("Takeoff"));
+    else if(services_combobox->currentText().startsWith(QString("Land")))
+        add_service_dialog.setName(tr("Land"));
+
+    if(add_service_dialog.exec())
+        services_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << add_service_dialog.getName() << add_service_dialog.getTopicName())));
+}
+
+void ServicesTab::editService()
+{
+
 }
 
 ////////////////////////// Diagnostics Tab ////////////////////////////////
@@ -558,21 +787,14 @@ DiagnosticsTab::DiagnosticsTab(QWidget *parent) : QWidget(parent)
     setLayout(diagnosticstab_layout);
 }
 
-/////////////////////// Robot Config File Dialog //////////////////////////
 
-/******************************************************************************
- * Function:    RobotConfigFileDialog
- * Author:      Matt Richard, Scott Logan
- * Parameters:  struct RobotConfig *new_robot_config -
- *              QWidget *parent - 
- * Returns:     None
- * Description: Constructor.
- *****************************************************************************/
+/////////////////////// Robot Config File Dialog //////////////////////////
 RobotConfigFileDialog::RobotConfigFileDialog(
 	struct RobotConfig *new_robot_config, QWidget *parent) : QDialog(parent)
 {
 	robot_config = new_robot_config;
 
+    // Create tabs
     tab_widget = new QTabWidget;
     tab_widget->addTab(new GeneralTab(robot_config), tr("General"));
     tab_widget->addTab(new SensorsTab(robot_config), tr("Sensors"));
@@ -582,172 +804,15 @@ RobotConfigFileDialog::RobotConfigFileDialog(
     tab_widget->addTab(new ServicesTab(&robot_config->commands), tr("Services"));
     tab_widget->addTab(new DiagnosticsTab, tr("Diagnostics"));
 
-    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
-
-	//createWidgets();
-	//createLayout();
-
-	// Connections
+    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
+                                      QDialogButtonBox::Save);
 	connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
-	//connect(add_button, SIGNAL(clicked()), this, SLOT(addSensor()));
-	//connect(edit_button, SIGNAL(clicked()), this, SLOT(editSelectedSensor()));
-	//connect(remove_button, SIGNAL(clicked()), this, SLOT(removeSelectedSensors()));
 
+    // Create dialog layout
     QVBoxLayout *dialog_layout = new QVBoxLayout;
     dialog_layout->setSizeConstraint(QLayout::SetNoConstraint);
     dialog_layout->addWidget(tab_widget);
     dialog_layout->addWidget(button_box);
 	setLayout(dialog_layout);
-	//layout()->setSizeConstraint(QLayout::SetFixedSize);
-}
-
-/******************************************************************************
- * Function:    create_widgets
- * Author:      Matt Richard
- * Parameters:  None
- * Returns:     void
- * Description: 
- *****************************************************************************/
-void RobotConfigFileDialog::createWidgets()
-{
-/*
-	robot_name_label = new QLabel(tr("Robot's Name"));
-	system_label = new QLabel(tr("System"));
-	drive_system_label = new QLabel(tr("Drive System"));
-	image_file_label = new QLabel(tr("Image File"));
-	sensors_label = new QLabel(tr("Sensors/Components"));
-
-	robot_name_lineedit = new QLineEdit(robot_config->robotName);
-	drive_system_lineedit = new QLineEdit;
-	image_file_lineedit = new QLineEdit;
-
-	QStringList system_list;
-	system_list << "UGV (Unmanned Ground Vehicle)"
-				<< "UAV (Unmanned Aerial Vehicle)"
-                << "AUV (Autonomous Underwater Vehicle)"
-				<< "USV (Unmanned Surface Vehicle)"
-				<< "Humanoid";
-	system_combobox = new QComboBox;
-	system_combobox->addItems(system_list);
-
-	QStringList sensors_list;
-	sensors_list << "Battery Level" << "Camera" << "Compass" << "Computer" << "Contact"
-				 << "Encoder" << "Fan" << "GPS" << "IMU" << "Laser Rangefinder"
-				 << "Light" << "Pressure" << "Radiation" << "Sonar" << "Temperature"
-				 << "Voltage" << "Velocity";
-	sensors_combobox = new QComboBox;
-	sensors_combobox->addItems(sensors_list);
-
-	browse_button = new QPushButton(tr("Browse"));
-	add_button = new QPushButton(tr("Add"));
-	edit_button = new QPushButton(tr("Edit Selected"));
-	remove_button = new QPushButton(tr("Remove Selected"));
-
-	sensors_scrollarea = new QScrollArea;
-	sensors_scrollarea->setWidgetResizable(true);
-	sensors_scrollarea->setFixedHeight(250);
-
-	sensor_list_widget = new QWidget;
-
-	save_cancel_buttonbox = new QDialogButtonBox(QDialogButtonBox::Cancel |
-		QDialogButtonBox::Save);
-*/
-}
-
-/******************************************************************************
- * Function:    create_layout
- * Author:      Matt Richard
- * Parameters:  None
- * Returns:     void
- * Description:
- *****************************************************************************/
-void RobotConfigFileDialog::createLayout()
-{
-/*
-	QHBoxLayout *robot_name_hlayout = new QHBoxLayout;
-	robot_name_hlayout->addWidget(robot_name_label);
-	robot_name_hlayout->addWidget(robot_name_lineedit);
-
-	QHBoxLayout *system_hlayout = new QHBoxLayout;
-	system_hlayout->addWidget(system_label);
-	system_hlayout->addWidget(system_combobox);
-
-	QHBoxLayout *drive_system_hlayout = new QHBoxLayout;
-	drive_system_hlayout->addWidget(drive_system_label);
-	drive_system_hlayout->addWidget(drive_system_lineedit);
-*/
-/*
-	QHBoxLayout *image_file_hlayout = new QHBoxLayout;
-//	image_file_hlayout->addWidget(image_file_label);
-	image_file_hlayout->addWidget(image_file_lineedit);
-	image_file_hlayout->addWidget(browse_button);
-
-	QHBoxLayout *sensors_hlayout = new QHBoxLayout;
-	sensors_hlayout->addWidget(sensors_combobox);
-	sensors_hlayout->addStretch();
-	sensors_hlayout->addWidget(add_button, 0, Qt::AlignRight);
-
-	QHBoxLayout *edit_remove_hlayout = new QHBoxLayout;
-	edit_remove_hlayout->addStretch();
-	edit_remove_hlayout->addWidget(edit_button);
-	edit_remove_hlayout->addWidget(remove_button);
-
-	sensor_list_layout = new QVBoxLayout;
-	sensor_list_layout->addStretch();
-	sensor_list_layout->setSpacing(0);
-
-	sensor_list_widget->setLayout(sensor_list_layout);
-	sensors_scrollarea->setWidget(sensor_list_widget);
-
-	dialog_layout = new QGridLayout;
-	dialog_layout->addWidget(robot_name_label, 0, 0);
-	dialog_layout->addWidget(robot_name_lineedit, 0, 1);
-	dialog_layout->addWidget(system_label, 1, 0);
-	dialog_layout->addWidget(system_combobox, 1, 1);
-	dialog_layout->addWidget(drive_system_label, 2, 0);
-	dialog_layout->addWidget(drive_system_lineedit, 2, 1);
-	dialog_layout->addWidget(image_file_label, 3, 0);
-	dialog_layout->addLayout(image_file_hlayout, 3, 1);
-	dialog_layout->addWidget(sensors_label, 4, 0);
-	dialog_layout->addLayout(sensors_hlayout, 4, 1);
-	dialog_layout->addLayout(edit_remove_hlayout, 5, 1, Qt::AlignRight);
-	dialog_layout->addWidget(sensors_scrollarea, 6, 0, 1, 2);
-	dialog_layout->addWidget(save_cancel_buttonbox, 7, 1, Qt::AlignRight);
-*/
-}
-
-
-void RobotConfigFileDialog::setTitle(const std::string &title)
-{
-	setWindowTitle(title.c_str());
-}
-
-void RobotConfigFileDialog::addSensor()
-{
-/*
-	AddSensorDialog add_sensor_dialog(sensors_combobox->currentText(),
-		this);
-
-	if(add_sensor_dialog.exec())
-	{
-		sensor_widget = new RobotConfigSensorWidget;
-		sensor_widget->setSensorType(sensors_combobox->currentText());
-		sensor_widget->setSensorName(add_sensor_dialog.getName());
-
-		sensor_list_layout->removeItem(sensor_list_layout->takeAt(sensor_list_layout->count() - 1));
-		sensor_list_layout->addWidget(sensor_widget);
-		sensor_list_layout->addStretch();
-	}
-*/
-}
-
-void RobotConfigFileDialog::editSelectedSensor()
-{
-
-}
-
-void RobotConfigFileDialog::removeSelectedSensors()
-{
-
 }
