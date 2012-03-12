@@ -254,6 +254,7 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
 
     /* Create Tree Widget */
     sensors_treewidget = new QTreeWidget;
+    sensors_treewidget->setColumnCount(2);
     sensors_treewidget->setHeaderLabels(column_list);
     sensors_treewidget->addTopLevelItems(camera_itemlist);
     sensors_treewidget->addTopLevelItems(gps_itemlist);
