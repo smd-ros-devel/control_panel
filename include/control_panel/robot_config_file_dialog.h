@@ -68,7 +68,7 @@ class SensorsTab : public QWidget
     Q_OBJECT
 
     public:
-        SensorsTab(struct RobotConfig *robot_config, QWidget *parent = 0);
+        SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent = 0);
 
     public slots:
         void addSensor();
@@ -99,7 +99,7 @@ class ProcessedDataTab : public QWidget
 
     public:
         ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
-            QWidget *parent = 0);
+                         QWidget *parent = 0);
 
     public slots:
         void addProcessedData();
@@ -159,7 +159,7 @@ class ServicesTab : public QWidget
 
     public:
         ServicesTab(struct RobotCommands *robot_services,
-            QWidget *parent = 0);
+                    QWidget *parent = 0);
 
     public slots:
         void addService();

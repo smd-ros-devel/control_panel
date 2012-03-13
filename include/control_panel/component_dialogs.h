@@ -103,6 +103,7 @@ class CompassDialog : public QDialog
         QLineEdit *topic_name_lineedit;
         QCheckBox *show_heading_checkbox;
         QCheckBox *show_label_checkbox;
+        QDialogButtonBox *button_box;
 };
 
 /**

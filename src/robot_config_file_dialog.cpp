@@ -89,7 +89,7 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
 
 ////////////////////////////// Sensors Tab ///////////////////////////////
 
-SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
+SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     : QWidget(parent)
 {
     QLabel *sensors_label = new QLabel(tr("Sensors"));
@@ -106,147 +106,144 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     connect(add_sensor_button, SIGNAL(clicked()), this, SLOT(addSensor()));
 
 
-    /* Add Camera config data to camera item list */
-    QList<QTreeWidgetItem *> camera_itemlist;
-    for(unsigned int i = 0; i < robot_config->sensors.cameras.size(); i++)
+    QList<QTreeWidgetItem *> item_list;
+
+    /* Add Camera config data to item list */
+    for(unsigned int i = 0; i < robot_sensors->cameras.size(); i++)
     {
         QTreeWidgetItem *camera_item = new QTreeWidgetItem;
         camera_item->setText(0, tr("Camera"));
-        camera_item->setText(1, robot_config->sensors.cameras[i].name);
+        camera_item->setText(1, robot_sensors->cameras[i].name);
         camera_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Name") << robot_config->sensors.cameras[i].name)));
+            (QStringList() << tr("Name") << robot_sensors->cameras[i].name)));
         camera_item->addChild(new QTreeWidgetItem((QTreeWidget *)0, 
-            (QStringList() << tr("Topic Name") << robot_config->sensors.cameras[i].topicName)));
+            (QStringList() << tr("Topic Name") << robot_sensors->cameras[i].topicName)));
 
-        camera_itemlist.append(camera_item);
+        item_list.append(camera_item);
     }
 
     /* @todo Add compass' */
 
-    /* Add GPS's config data to GPS list */
-    QList<QTreeWidgetItem *> gps_itemlist;
-    for(unsigned int i = 0; i < robot_config->sensors.gps.size(); i++)
+    /* Add GPS's config data to item list */
+    for(unsigned int i = 0; i < robot_sensors->gps.size(); i++)
     {
         QTreeWidgetItem *gps_item = new QTreeWidgetItem;
         gps_item->setText(0, tr("GPS"));
-        gps_item->setText(1, robot_config->sensors.gps[i].name);
+        gps_item->setText(1, robot_sensors->gps[i].name);
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Name") << robot_config->sensors.gps[i].name)));
+            (QStringList() << tr("Name") << robot_sensors->gps[i].name)));
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Topic Name") << robot_config->sensors.gps[i].topicName)));
+            (QStringList() << tr("Topic Name") << robot_sensors->gps[i].topicName)));
 
         QString gps_lat("No");
-        if(robot_config->sensors.gps[i].latitude)
+        if(robot_sensors->gps[i].latitude)
             gps_lat = "Yes";
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Latitude") << gps_lat)));
 
         QString gps_long("No");
-        if(robot_config->sensors.gps[i].longitude)
+        if(robot_sensors->gps[i].longitude)
             gps_long = "Yes";
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Longitude") << gps_long)));
 
         QString gps_alt("No");
-        if(robot_config->sensors.gps[i].altitude)
+        if(robot_sensors->gps[i].altitude)
             gps_alt = "Yes";
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Altitude") << gps_alt)));
 
-        gps_itemlist.append(gps_item);
+        item_list.append(gps_item);
     }
 
-    /* Add IMU config data to IMU item list */
-    QList<QTreeWidgetItem *> imu_itemlist;
-    for(unsigned int i = 0; i < robot_config->sensors.imu.size(); i++)
+    /* Add IMU config data to item list */
+    for(unsigned int i = 0; i < robot_sensors->imu.size(); i++)
     {
         QTreeWidgetItem *imu_item = new QTreeWidgetItem;
         imu_item->setText(0, tr("IMU"));
-        imu_item->setText(1, robot_config->sensors.imu[i].name);
+        imu_item->setText(1, robot_sensors->imu[i].name);
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Name") << robot_config->sensors.imu[i].name)));
+            (QStringList() << tr("Name") << robot_sensors->imu[i].name)));
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Topic Name") << robot_config->sensors.imu[i].topicName)));
+            (QStringList() << tr("Topic Name") << robot_sensors->imu[i].topicName)));
 
         QString imu_roll("No");
-        if(robot_config->sensors.imu[i].roll)
+        if(robot_sensors->imu[i].roll)
             imu_roll = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Roll") << imu_roll)));
 
         QString imu_pitch("No");
-        if(robot_config->sensors.imu[i].pitch)
+        if(robot_sensors->imu[i].pitch)
             imu_pitch = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Pitch") << imu_pitch)));
 
         QString imu_yaw("No");
-        if(robot_config->sensors.imu[i].yaw)
+        if(robot_sensors->imu[i].yaw)
             imu_yaw = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Yaw") << imu_yaw)));
 
         QString imu_ang_vel("No");
-        if(robot_config->sensors.imu[i].angularVelocity)
+        if(robot_sensors->imu[i].angularVelocity)
             imu_ang_vel = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Angular Velocity") << imu_ang_vel)));
 
         QString imu_lin_accel("No");
-        if(robot_config->sensors.imu[i].linearAcceleration)
+        if(robot_sensors->imu[i].linearAcceleration)
             imu_lin_accel = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Linear Acceleration") << imu_lin_accel)));
 
         QString imu_show_attitude("No");
-        if(!robot_config->sensors.imu[i].hideAttitude)
+        if(!robot_sensors->imu[i].hideAttitude)
             imu_show_attitude = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Show Attitude Indicator") << imu_show_attitude)));
 
         QString imu_show_heading("No");
-        if(!robot_config->sensors.imu[i].hideHeading)
+        if(!robot_sensors->imu[i].hideHeading)
             imu_show_heading = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Show Heading Indicator") << imu_show_heading)));
 
         QString imu_show_labels("No");
-        if(!robot_config->sensors.imu[i].hideLabels)
+        if(!robot_sensors->imu[i].hideLabels)
             imu_show_labels = "Yes";
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Show Labels") << imu_show_labels)));
 
-        imu_itemlist.append(imu_item);
+        item_list.append(imu_item);
     }
 
-    /* Add Laser config data to laser item list */
-    QList<QTreeWidgetItem *> laser_itemlist;
-    for(unsigned int i = 0; i < robot_config->sensors.lasers.size(); i++)
+    /* Add Laser config data to item list */
+    for(unsigned int i = 0; i < robot_sensors->lasers.size(); i++)
     {
         QTreeWidgetItem *laser_item = new QTreeWidgetItem;
         laser_item->setText(0, tr("Laser Rangefinder"));
-        laser_item->setText(1, robot_config->sensors.lasers[i].name);
+        laser_item->setText(1, robot_sensors->lasers[i].name);
         laser_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Name") << robot_config->sensors.lasers[i].name)));
+            (QStringList() << tr("Name") << robot_sensors->lasers[i].name)));
         laser_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Topic Name") << robot_config->sensors.lasers[i].topicName)));
+            (QStringList() << tr("Topic Name") << robot_sensors->lasers[i].topicName)));
 
-        laser_itemlist.append(laser_item);
+        item_list.append(laser_item);
     }
 
-    /* Add Range config data to range item list */
-    QList<QTreeWidgetItem *> range_itemlist;
-    for(unsigned int i = 0; i < robot_config->sensors.range.size(); i++)
+    /* Add Range config data to item list */
+    for(unsigned int i = 0; i < robot_sensors->range.size(); i++)
     {
         QTreeWidgetItem *range_item = new QTreeWidgetItem;
         range_item->setText(0, tr("Sonar/1D-Infrared"));
-        range_item->setText(1, robot_config->sensors.range[i].name);
+        range_item->setText(1, robot_sensors->range[i].name);
         range_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Name") << robot_config->sensors.range[i].name)));
+            (QStringList() << tr("Name") << robot_sensors->range[i].name)));
         range_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Topic Name") << robot_config->sensors.range[i].topicName)));
+            (QStringList() << tr("Topic Name") << robot_sensors->range[i].topicName)));
 
-        range_itemlist.append(range_item);
+        item_list.append(range_item);
     }
 
     QStringList column_list;
@@ -256,11 +253,8 @@ SensorsTab::SensorsTab(struct RobotConfig *robot_config, QWidget *parent)
     sensors_treewidget = new QTreeWidget;
     sensors_treewidget->setColumnCount(2);
     sensors_treewidget->setHeaderLabels(column_list);
-    sensors_treewidget->addTopLevelItems(camera_itemlist);
-    sensors_treewidget->addTopLevelItems(gps_itemlist);
-    sensors_treewidget->addTopLevelItems(imu_itemlist);
-    sensors_treewidget->addTopLevelItems(laser_itemlist);
-    sensors_treewidget->addTopLevelItems(range_itemlist);
+    sensors_treewidget->addTopLevelItems(item_list);
+    sensors_treewidget->resizeColumnToContents(0);
 
 
     /* Create layout */
@@ -320,7 +314,32 @@ void SensorsTab::addSensor()
     }
     else if(type == Compass)
     {
+        CompassDialog compass_dialog(this);
+        
+        if(compass_dialog.exec())
+        {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(0, type_str);
+            item->setText(1, compass_dialog.getName());
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << compass_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << compass_dialog.getTopicName())));
 
+            QString show_heading("No");
+            if(compass_dialog.isShowHeadingChecked())
+                show_heading = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Heading Indicator") << show_heading)));
+
+            QString show_label("No");
+            if(compass_dialog.isShowLabelChecked())
+                show_label = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Label") << show_label)));
+
+            sensors_treewidget->addTopLevelItem(item);
+        }
     }
     else if(type == Gps)
     {
@@ -798,7 +817,7 @@ RobotConfigFileDialog::RobotConfigFileDialog(
     // Create tabs
     tab_widget = new QTabWidget;
     tab_widget->addTab(new GeneralTab(robot_config), tr("General"));
-    tab_widget->addTab(new SensorsTab(robot_config), tr("Sensors"));
+    tab_widget->addTab(new SensorsTab(&robot_config->sensors), tr("Sensors"));
     tab_widget->addTab(new ProcessedDataTab(&robot_config->processedData), tr("Processed Data"));
     tab_widget->addTab(new JointsTab(&robot_config->joint_states), tr("Joints"));
     tab_widget->addTab(new ControlsTab, tr("Controls"));

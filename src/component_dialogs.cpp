@@ -88,7 +88,37 @@ CompassDialog::CompassDialog(QWidget *parent) : QDialog(parent)
 
 void CompassDialog::createDialog()
 {
+    QLabel *name_label = new QLabel(tr("Name"));
+    name_lineedit = new QLineEdit;
 
+    QLabel *topic_name_label = new QLabel(tr("Topic Name"));
+    topic_name_lineedit = new QLineEdit;
+
+    show_heading_checkbox = new QCheckBox(tr("Show Heading"));
+    show_label_checkbox = new QCheckBox(tr("Show Label"));
+
+    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
+                                      QDialogButtonBox::Ok);
+    connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
+
+    // Checkbox group
+    QVBoxLayout *compass_vlayout = new QVBoxLayout;
+    compass_vlayout->addWidget(show_heading_checkbox);
+    compass_vlayout->addWidget(show_label_checkbox);
+
+    QGroupBox *checkbox_group = new QGroupBox(tr("Display Configuration"));
+    checkbox_group->setLayout(compass_vlayout);
+
+    // Compass dialog layout
+    QGridLayout *dialog_layout = new QGridLayout;
+    dialog_layout->addWidget(name_label, 0, 0);
+    dialog_layout->addWidget(name_lineedit, 0, 1);
+    dialog_layout->addWidget(topic_name_label, 1, 0);
+    dialog_layout->addWidget(topic_name_lineedit, 1, 1);
+    dialog_layout->addWidget(checkbox_group, 2, 0, 1, 2);
+    dialog_layout->addWidget(button_box, 3, 1);
+    setLayout(dialog_layout);
 }
 
 /////////////////////////// Gps Dialog ///////////////////////////////
