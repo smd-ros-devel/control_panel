@@ -99,6 +99,7 @@ DisplayPane::DisplayPane(QWidget *parent)
 	display_pane_layout->addLayout(footer_hlayout);
 
     setLayout(display_pane_layout);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 /******************************************************************************

@@ -20,8 +20,7 @@ AttitudeIndicator::AttitudeIndicator(QWidget *parent)
     setFrameStyle(QFrame::NoFrame | QFrame::Plain);
     setBackgroundRole(QPalette::Window);
     setAutoFillBackground(true);
-    setInteractive(false);
-
+    //setInteractive(false);
 
     // Create graphics items
     QPixmap crosshair_pixmap = 

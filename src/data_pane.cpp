@@ -49,6 +49,7 @@ DataPane::DataPane(QWidget *parent) : QWidget(parent)
 
     setLayout(data_pane_layout);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 void DataPane::createLabels()

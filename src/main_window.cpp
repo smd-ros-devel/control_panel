@@ -84,7 +84,7 @@ MainWindow::MainWindow(int argc, char **argv)
     readSettings();
 	setCentralWidget(tab_widget);
     setWindowTitle("SRS Control Panel");
-
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void MainWindow::readSettings()

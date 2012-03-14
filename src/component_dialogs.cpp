@@ -95,7 +95,9 @@ void CompassDialog::createDialog()
     topic_name_lineedit = new QLineEdit;
 
     show_heading_checkbox = new QCheckBox(tr("Show Heading"));
+    show_heading_checkbox->setChecked(true);
     show_label_checkbox = new QCheckBox(tr("Show Label"));
+    show_label_checkbox->setChecked(true);
 
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
                                       QDialogButtonBox::Ok);
@@ -118,7 +120,9 @@ void CompassDialog::createDialog()
     dialog_layout->addWidget(topic_name_lineedit, 1, 1);
     dialog_layout->addWidget(checkbox_group, 2, 0, 1, 2);
     dialog_layout->addWidget(button_box, 3, 1);
+    dialog_layout->setSizeConstraint(QLayout::SetFixedSize);
     setLayout(dialog_layout);
+    setWindowTitle(tr("Add/Edit Compass"));
 }
 
 /////////////////////////// Gps Dialog ///////////////////////////////
@@ -136,7 +140,9 @@ void GpsDialog::createDialog()
     topic_name_lineedit = new QLineEdit;
 
     lat_checkbox = new QCheckBox(tr("Latitude"));
+    lat_checkbox->setChecked(true);
     long_checkbox = new QCheckBox(tr("Longitude"));
+    long_checkbox->setChecked(true);
     alt_checkbox = new QCheckBox(tr("Alititude"));
 
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
@@ -161,7 +167,9 @@ void GpsDialog::createDialog()
     dialog_layout->addWidget(topic_name_lineedit, 1, 1);
     dialog_layout->addWidget(checkbox_group, 2, 0, 1, 2);
     dialog_layout->addWidget(button_box, 3, 1);
+    dialog_layout->setSizeConstraint(QLayout::SetFixedSize);
     setLayout(dialog_layout);
+    setWindowTitle(tr("Add/Edit GPS"));
 }
 
 /////////////////////////// Imu Dialog ///////////////////////////////
@@ -172,7 +180,66 @@ ImuDialog::ImuDialog(QWidget *parent) : QDialog(parent)
 
 void ImuDialog::createDialog()
 {
+    QLabel *name_label = new QLabel(tr("Name"));
+    name_lineedit = new QLineEdit;
 
+    QLabel *topic_name_label = new QLabel(tr("Topic Name"));
+    topic_name_lineedit = new QLineEdit;
+
+    roll_checkbox = new QCheckBox(tr("Roll"));
+    roll_checkbox->setChecked(true);
+    pitch_checkbox = new QCheckBox(tr("Pitch"));
+    pitch_checkbox->setChecked(true);
+    yaw_checkbox = new QCheckBox(tr("Yaw"));
+    yaw_checkbox->setChecked(true);
+    lin_accel_checkbox = new QCheckBox(tr("Linear Acceleration"));
+    ang_vel_checkbox = new QCheckBox(tr("Angular Velocity"));
+
+    show_att_checkbox = new QCheckBox(tr("Show Attitude Indicator"));
+    show_heading_checkbox = new QCheckBox(tr("Show Heading Indicator"));
+    show_labels_checkbox = new QCheckBox(tr("Show Labels"));
+    show_labels_checkbox->setChecked(true);
+
+    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
+                                      QDialogButtonBox::Ok);
+    connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
+
+
+    // IMU Message group
+    QVBoxLayout *msg_vlayout = new QVBoxLayout;
+    msg_vlayout->addWidget(roll_checkbox);
+    msg_vlayout->addWidget(pitch_checkbox);
+    msg_vlayout->addWidget(yaw_checkbox);
+    msg_vlayout->addWidget(lin_accel_checkbox);
+    msg_vlayout->addWidget(ang_vel_checkbox);
+
+    QGroupBox *msg_group = new QGroupBox(tr("IMU Message"));
+    msg_group->setLayout(msg_vlayout);
+
+
+    // Display configuration group
+    QVBoxLayout *display_vlayout = new QVBoxLayout;
+    display_vlayout->addWidget(show_att_checkbox);
+    display_vlayout->addWidget(show_heading_checkbox);
+    display_vlayout->addWidget(show_labels_checkbox);
+
+    QGroupBox *display_group = new QGroupBox(tr("Display Configuration"));
+    display_group->setLayout(display_vlayout);
+
+
+    // Dialog layout
+    QGridLayout *dialog_layout = new QGridLayout;
+    dialog_layout->addWidget(name_label, 0, 0);
+    dialog_layout->addWidget(name_lineedit, 0, 1);
+    dialog_layout->addWidget(topic_name_label, 1, 0);
+    dialog_layout->addWidget(topic_name_lineedit, 1, 1);
+    dialog_layout->addWidget(msg_group, 2, 0, 1, 2);
+    dialog_layout->addWidget(display_group, 3, 0, 1, 2);
+    dialog_layout->addWidget(button_box, 4, 1);
+    dialog_layout->setSizeConstraint(QLayout::SetFixedSize);
+    setLayout(dialog_layout);
+    setWindowTitle(tr("Add/Edit IMU"));
 }
 
 /////////////////////////// Odometry Dialog ///////////////////////////

@@ -43,7 +43,7 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
 	robot_config = new_robot_config;
 	use_keyboard = false;
 
-    raw_data_display = new DisplayPane;
+    raw_data_display = new DisplayPane(this);
     raw_data_display->setTitle("Raw Data");
 
     for(unsigned int i = 0; i < robot_config->sensors.cameras.size(); i++)
@@ -56,7 +56,7 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
     if(!robot_config->processedData.maps.empty() || !robot_config->processedData.images.empty() ||
        !robot_config->processedData.disparity_images.empty())
     {
-        processed_data_display = new DisplayPane;
+        processed_data_display = new DisplayPane(this);
         processed_data_display->setTitle("Processed Data");
 
         for(unsigned int i = 0; i < robot_config->processedData.maps.size(); i++)
@@ -114,6 +114,7 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
 
 	createLayout();
 	setLayout(display_layout);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 /******************************************************************************
@@ -285,8 +286,6 @@ void RobotTab::keyPressEvent(QKeyEvent *event)
 			event->ignore();
 			return;
 	}
-
-	event->accept();
 }
 
 /******************************************************************************
@@ -327,8 +326,6 @@ void RobotTab::keyReleaseEvent(QKeyEvent *event)
 			event->ignore();
 			return;
 	}
-
-	event->accept();
 }
 
 void RobotTab::setRCMode(int rc_mode)
@@ -409,7 +406,7 @@ void RobotTab::processDiagnostic(const QString &key, const QString &val)
 
 void RobotTab::setupDataPane()
 {
-    data_pane = new DataPane;
+    data_pane = new DataPane(this);
 
     for(unsigned int i = 0; i < robot_config->processedData.odometry.size(); i++)
     {

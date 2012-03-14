@@ -384,7 +384,13 @@ void SensorsTab::addSensor()
     }
     else if(type == Imu)
     {
+        ImuDialog imu_dialog(this);
+        imu_dialog.setWindowTitle(QString("Add %1").arg(type_str));
 
+        if(imu_dialog.exec())
+        {
+
+        }
     }
 }
 
