@@ -135,6 +135,7 @@ class GpsDialog : public QDialog
         QCheckBox *lat_checkbox;
         QCheckBox *long_checkbox;
         QCheckBox *alt_checkbox;
+        QDialogButtonBox *button_box;
 };
 
 /**
@@ -181,6 +182,7 @@ class ImuDialog : public QDialog
         QCheckBox *show_att_checkbox;
         QCheckBox *show_heading_checkbox;
         QCheckBox *show_labels_checkbox;
+        QDialogButtonBox *button_box;
 };
 
 /**

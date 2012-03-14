@@ -315,6 +315,7 @@ void SensorsTab::addSensor()
     else if(type == Compass)
     {
         CompassDialog compass_dialog(this);
+        compass_dialog.setWindowTitle(QString("Add %1").arg(type_str));
         
         if(compass_dialog.exec())
         {
@@ -343,7 +344,43 @@ void SensorsTab::addSensor()
     }
     else if(type == Gps)
     {
+        GpsDialog gps_dialog(this);
+        gps_dialog.setWindowTitle(QString("Add %1").arg(type_str));
 
+        if(gps_dialog.exec())
+        {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(0, type_str);
+            item->setText(1, gps_dialog.getName());
+
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << gps_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << gps_dialog.getTopicName())));
+
+            // Add latitude and its check stat
+            QString gps_lat("No");
+            if(gps_dialog.isLatitudeChecked())
+                gps_lat = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Latitude") << gps_lat)));
+
+            // Add longitude and its check state
+            QString gps_long("No");
+            if(gps_dialog.isLongitudeChecked())
+                gps_long = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Longitude") << gps_long)));
+
+            // Add altitude and its check state
+            QString gps_alt("No");
+            if(gps_dialog.isAltitudeChecked())
+                gps_alt = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Altitude") << gps_alt)));
+
+            sensors_treewidget->addTopLevelItem(item);
+        }
     }
     else if(type == Imu)
     {

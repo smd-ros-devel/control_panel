@@ -129,7 +129,39 @@ GpsDialog::GpsDialog(QWidget *parent) : QDialog(parent)
 
 void GpsDialog::createDialog()
 {
+    QLabel *name_label = new QLabel(tr("Name"));
+    name_lineedit = new QLineEdit;
 
+    QLabel *topic_name_label = new QLabel(tr("Topic Name"));
+    topic_name_lineedit = new QLineEdit;
+
+    lat_checkbox = new QCheckBox(tr("Latitude"));
+    long_checkbox = new QCheckBox(tr("Longitude"));
+    alt_checkbox = new QCheckBox(tr("Alititude"));
+
+    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
+                                      QDialogButtonBox::Ok);
+    connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
+
+    // Checkbox group
+    QVBoxLayout *msg_vlayout = new QVBoxLayout;
+    msg_vlayout->addWidget(lat_checkbox);
+    msg_vlayout->addWidget(long_checkbox);
+    msg_vlayout->addWidget(alt_checkbox);
+
+    QGroupBox *checkbox_group = new QGroupBox(tr("NavSatFix Message"));
+    checkbox_group->setLayout(msg_vlayout);
+
+    // GPS dialog layout
+    QGridLayout *dialog_layout = new QGridLayout;
+    dialog_layout->addWidget(name_label, 0, 0);
+    dialog_layout->addWidget(name_lineedit, 0, 1);
+    dialog_layout->addWidget(topic_name_label, 1, 0);
+    dialog_layout->addWidget(topic_name_lineedit, 1, 1);
+    dialog_layout->addWidget(checkbox_group, 2, 0, 1, 2);
+    dialog_layout->addWidget(button_box, 3, 1);
+    setLayout(dialog_layout);
 }
 
 /////////////////////////// Imu Dialog ///////////////////////////////
