@@ -73,11 +73,12 @@ class SensorsTab : public QWidget
     public slots:
         void addSensor();
         void editSensor();
+        void removeSensor();
 
     private:
         enum SensorType
         {
-            Camera,
+            Camera = 1001, // 1000 and below are reserved so start at 1001
             Compass,
             Gps,
             Imu,
@@ -108,7 +109,7 @@ class ProcessedDataTab : public QWidget
     private:
         enum ProcessedDataType
         {
-            DisparityImage,
+            DisparityImage = 1001,
             Map,
             Odometry,
             ProcessedImage

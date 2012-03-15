@@ -102,18 +102,25 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
                 << "Sonar/1D-Infrared (Range.msg)";
     sensors_combobox = new QComboBox;
     sensors_combobox->addItems(sensor_list);
+
     QPushButton *add_sensor_button = new QPushButton(tr("Add"));
     connect(add_sensor_button, SIGNAL(clicked()), this, SLOT(addSensor()));
 
+    //QPushButton *edit_button = new QPushButton(tr("Edit"));
+    //connect(edit_button, SIGNAL(clicked()), this, SLOT(editSensor()));
+
+    //QPushButton *remove_button = new QPushButton(tr("Remove"));
+    //connect(remove_button, SIGNAL(clicked()), this, SLOT(removeSensor()));
 
     QList<QTreeWidgetItem *> item_list;
 
     /* Add Camera config data to item list */
     for(unsigned int i = 0; i < robot_sensors->cameras.size(); i++)
     {
-        QTreeWidgetItem *camera_item = new QTreeWidgetItem;
+        QTreeWidgetItem *camera_item = new QTreeWidgetItem(Camera);
         camera_item->setText(0, tr("Camera"));
         camera_item->setText(1, robot_sensors->cameras[i].name);
+
         camera_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_sensors->cameras[i].name)));
         camera_item->addChild(new QTreeWidgetItem((QTreeWidget *)0, 
@@ -127,9 +134,10 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     /* Add GPS's config data to item list */
     for(unsigned int i = 0; i < robot_sensors->gps.size(); i++)
     {
-        QTreeWidgetItem *gps_item = new QTreeWidgetItem;
+        QTreeWidgetItem *gps_item = new QTreeWidgetItem(Gps);
         gps_item->setText(0, tr("GPS"));
         gps_item->setText(1, robot_sensors->gps[i].name);
+
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_sensors->gps[i].name)));
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -159,9 +167,10 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     /* Add IMU config data to item list */
     for(unsigned int i = 0; i < robot_sensors->imu.size(); i++)
     {
-        QTreeWidgetItem *imu_item = new QTreeWidgetItem;
+        QTreeWidgetItem *imu_item = new QTreeWidgetItem(Imu);
         imu_item->setText(0, tr("IMU"));
         imu_item->setText(1, robot_sensors->imu[i].name);
+
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_sensors->imu[i].name)));
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -221,9 +230,10 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     /* Add Laser config data to item list */
     for(unsigned int i = 0; i < robot_sensors->lasers.size(); i++)
     {
-        QTreeWidgetItem *laser_item = new QTreeWidgetItem;
+        QTreeWidgetItem *laser_item = new QTreeWidgetItem(Laser);
         laser_item->setText(0, tr("Laser Rangefinder"));
         laser_item->setText(1, robot_sensors->lasers[i].name);
+
         laser_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_sensors->lasers[i].name)));
         laser_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -235,7 +245,7 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     /* Add Range config data to item list */
     for(unsigned int i = 0; i < robot_sensors->range.size(); i++)
     {
-        QTreeWidgetItem *range_item = new QTreeWidgetItem;
+        QTreeWidgetItem *range_item = new QTreeWidgetItem(Range);
         range_item->setText(0, tr("Sonar/1D-Infrared"));
         range_item->setText(1, robot_sensors->range[i].name);
         range_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -272,7 +282,7 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
 
 void SensorsTab::addSensor()
 {
-    SensorType type = SensorType(sensors_combobox->currentIndex());
+    SensorType type = SensorType(sensors_combobox->currentIndex() + Camera);
     QString type_str;
 
     if(type == Camera)
@@ -301,9 +311,10 @@ void SensorsTab::addSensor()
 
         if(component_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem;
+            QTreeWidgetItem *item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, component_dialog.getName());
+
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Name") << component_dialog.getName())));
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -319,9 +330,10 @@ void SensorsTab::addSensor()
         
         if(compass_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem;
+            QTreeWidgetItem *item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, compass_dialog.getName());
+
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Name") << compass_dialog.getName())));
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -349,7 +361,7 @@ void SensorsTab::addSensor()
 
         if(gps_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem;
+            QTreeWidgetItem *item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, gps_dialog.getName());
 
@@ -389,7 +401,64 @@ void SensorsTab::addSensor()
 
         if(imu_dialog.exec())
         {
+            QTreeWidgetItem *item = new QTreeWidgetItem(type);
+            item->setText(0, type_str);
+            item->setText(1, imu_dialog.getName());
 
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << imu_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << imu_dialog.getTopicName())));
+
+            QString imu_roll("No");
+            if(imu_dialog.isRollChecked())
+                imu_roll = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Roll") << imu_roll)));
+
+            QString imu_pitch("No");
+            if(imu_dialog.isPitchChecked())
+                imu_pitch = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Pitch") << imu_pitch)));
+
+            QString imu_yaw("No");
+            if(imu_dialog.isYawChecked())
+                imu_yaw = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Yaw") << imu_yaw)));
+
+            QString imu_lin_accel("No");
+            if(imu_dialog.isLinearAccelerationChecked())
+                imu_lin_accel = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Linear Acceleration") << imu_lin_accel)));
+
+            QString imu_ang_vel("No");
+            if(imu_dialog.isAngularVelocityChecked())
+                imu_ang_vel = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Angular Velocity") << imu_ang_vel)));
+
+            QString imu_show_att("No");
+            if(imu_dialog.isShowAttitudeChecked())
+                imu_show_att = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Attitude Indicator") << imu_show_att)));
+
+            QString imu_show_heading("No");
+            if(imu_dialog.isShowHeadingChecked())
+                imu_show_heading = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Heading Indicator") << imu_show_heading)));
+
+            QString imu_show_labels("No");
+            if(imu_dialog.isShowLabelsChecked())
+                imu_show_labels = "Yes";
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Show Labels") << imu_show_labels)));
+
+            sensors_treewidget->addTopLevelItem(item);
         }
     }
 }
@@ -399,8 +468,14 @@ void SensorsTab::editSensor()
 
 }
 
+void SensorsTab::removeSensor()
+{
+
+}
+
 
 ////////////////////////////// Processed Data Tab //////////////////////////
+
 ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
     QWidget *parent) : QWidget(parent)
 {
@@ -415,28 +490,31 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
     QPushButton *add_button = new QPushButton(tr("Add"));
     connect(add_button, SIGNAL(clicked()), this, SLOT(addProcessedData()));
 
+
+    QList<QTreeWidgetItem *> item_list;
+
     /* Add disparity images from robot configuration file */
-    QList<QTreeWidgetItem *> disparity_image_itemlist;
     for(unsigned int i = 0; i < robot_processed_data->disparity_images.size(); i++)
     {
-        QTreeWidgetItem *disparity_image_item = new QTreeWidgetItem;
+        QTreeWidgetItem *disparity_image_item = new QTreeWidgetItem(DisparityImage);
         disparity_image_item->setText(0, tr("Disparity Image"));
         disparity_image_item->setText(1, robot_processed_data->disparity_images[i].name);
+
         disparity_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_processed_data->disparity_images[i].name)));
         disparity_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Topic Name") << robot_processed_data->disparity_images[i].topicName)));
 
-        disparity_image_itemlist.append(disparity_image_item);
+        item_list.append(disparity_image_item);
     }
 
     /* Add odometry from robot configuration file */
-    QList<QTreeWidgetItem *> odometry_itemlist;
     for(unsigned int i = 0; i < robot_processed_data->odometry.size(); i++)
     {
-        QTreeWidgetItem *odometry_item = new QTreeWidgetItem;
+        QTreeWidgetItem *odometry_item = new QTreeWidgetItem(Odometry);
         odometry_item->setText(0, tr("Odometry"));
         odometry_item->setText(1, robot_processed_data->odometry[i].name);
+
         odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_processed_data->odometry[i].name)));
         odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -484,37 +562,37 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
         odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Show Labels") << odom_show_labels)));
 
-        odometry_itemlist.append(odometry_item);
+        item_list.append(odometry_item);
     }
 
     /* Add maps from robot configuration file */
-    QList<QTreeWidgetItem *> map_itemlist;
     for(unsigned int i = 0; i < robot_processed_data->maps.size(); i++)
     {
-        QTreeWidgetItem *map_item = new QTreeWidgetItem;
+        QTreeWidgetItem *map_item = new QTreeWidgetItem(Map);
         map_item->setText(0, tr("Map"));
         map_item->setText(1, robot_processed_data->maps[i].name);
+
         map_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_processed_data->maps[i].name)));
         map_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Topic Name") << robot_processed_data->maps[i].topicName)));
 
-        map_itemlist.append(map_item);
+        item_list.append(map_item);
     }
 
     /* Add processed images from robot configuation file */
-    QList<QTreeWidgetItem *> processed_image_itemlist;
     for(unsigned int i = 0; i < robot_processed_data->images.size(); i++)
     {
-        QTreeWidgetItem *processed_image_item = new QTreeWidgetItem;
+        QTreeWidgetItem *processed_image_item = new QTreeWidgetItem(ProcessedImage);
         processed_image_item->setText(0, tr("Processed Image"));
         processed_image_item->setText(1, robot_processed_data->images[i].name);
+
         processed_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_processed_data->images[i].name)));
         processed_image_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Topic Name") << robot_processed_data->images[i].topicName)));
 
-        processed_image_itemlist.append(processed_image_item);
+        item_list.append(processed_image_item);
     }
 
     QStringList column_list;
@@ -523,10 +601,7 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
     /* Create tree widget */
     processed_data_treewidget = new QTreeWidget;
     processed_data_treewidget->setHeaderLabels(column_list);
-    processed_data_treewidget->addTopLevelItems(disparity_image_itemlist);
-    processed_data_treewidget->addTopLevelItems(odometry_itemlist);
-    processed_data_treewidget->addTopLevelItems(map_itemlist);
-    processed_data_treewidget->addTopLevelItems(processed_image_itemlist);
+    processed_data_treewidget->addTopLevelItems(item_list);
 
     /* Create layout */
     QHBoxLayout *processed_data_hlayout = new QHBoxLayout;
@@ -544,7 +619,7 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
 void ProcessedDataTab::addProcessedData()
 {
     /* Get the type of component */
-    ProcessedDataType add_type = ProcessedDataType(processed_data_combobox->currentIndex());
+    ProcessedDataType add_type = ProcessedDataType(processed_data_combobox->currentIndex() + DisparityImage);
     QString type_str;
 
     if(add_type == DisparityImage)
@@ -569,9 +644,10 @@ void ProcessedDataTab::addProcessedData()
 
         if(component_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem;
+            QTreeWidgetItem *item = new QTreeWidgetItem(add_type);
             item->setText(0, type_str);
             item->setText(1, component_dialog.getName());
+
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Name") << component_dialog.getName())));
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -587,9 +663,10 @@ void ProcessedDataTab::addProcessedData()
 
         if(odom_dialog.exec())
         {
-            QTreeWidgetItem *odom_item = new QTreeWidgetItem;
+            QTreeWidgetItem *odom_item = new QTreeWidgetItem(add_type);
             odom_item->setText(0, type_str);
             odom_item->setText(1, odom_dialog.getName());
+
             odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Name") << odom_dialog.getName())));
             odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
