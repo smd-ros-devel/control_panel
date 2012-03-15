@@ -290,6 +290,7 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
 
 void SensorsTab::addSensor()
 {
+    QTreeWidgetItem *child_item;
     SensorType type = SensorType(sensors_combobox->currentIndex() + Camera);
     QString type_str;
 
@@ -347,13 +348,13 @@ void SensorsTab::addSensor()
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << compass_dialog.getTopicName())));
 
-            QString show_heading = boolToString(compass_dialog.isShowHeadingChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Heading Indicator") << show_heading)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indiciator")));
+            child_item->setCheckState(1, boolToCheckState(compass_dialog.isShowHeadingChecked()));
+            item->addChild(child_item);
 
-            QString show_label = boolToString(compass_dialog.isShowLabelChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Label") << show_label)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Label")));
+            child_item->setCheckState(1, boolToCheckState(compass_dialog.isShowLabelChecked()));
+            item->addChild(child_item);
 
             sensors_treewidget->addTopLevelItem(item);
         }
@@ -374,20 +375,20 @@ void SensorsTab::addSensor()
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << gps_dialog.getTopicName())));
 
-            // Add latitude and its check stat
-            QString gps_lat = boolToString(gps_dialog.isLatitudeChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Latitude") << gps_lat)));
+            // Add latitude and its check state
+            child_item = new QTreeWidgetItem(QStringList(tr("Latitude")));
+            child_item->setCheckState(1, boolToCheckState(gps_dialog.isLatitudeChecked()));
+            item->addChild(child_item);
 
             // Add longitude and its check state
-            QString gps_long = boolToString(gps_dialog.isLongitudeChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Longitude") << gps_long)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Longitude")));
+            child_item->setCheckState(1, boolToCheckState(gps_dialog.isLongitudeChecked()));
+            item->addChild(child_item);
 
             // Add altitude and its check state
-            QString gps_alt = boolToString(gps_dialog.isAltitudeChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Altitude") << gps_alt)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Altitude")));
+            child_item->setCheckState(1, boolToCheckState(gps_dialog.isAltitudeChecked()));
+            item->addChild(child_item);
 
             sensors_treewidget->addTopLevelItem(item);
         }
@@ -408,37 +409,37 @@ void SensorsTab::addSensor()
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << imu_dialog.getTopicName())));
 
-            QString imu_roll = boolToString(imu_dialog.isRollChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Roll") << imu_roll)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Roll")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isRollChecked()));
+            item->addChild(child_item);
 
-            QString imu_pitch = boolToString(imu_dialog.isPitchChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Pitch") << imu_pitch)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Pitch")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isPitchChecked()));
+            item->addChild(child_item);
 
-            QString imu_yaw = boolToString(imu_dialog.isYawChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Yaw") << imu_yaw)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Yaw")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isYawChecked()));
+            item->addChild(child_item);
 
-            QString imu_lin_accel = boolToString(imu_dialog.isLinearAccelerationChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Linear Acceleration") << imu_lin_accel)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Linear Acceleration")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isLinearAccelerationChecked()));
+            item->addChild(child_item);
 
-            QString imu_ang_vel = boolToString(imu_dialog.isAngularVelocityChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Angular Velocity") << imu_ang_vel)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Angular Velocity")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isAngularVelocityChecked()));
+            item->addChild(child_item);
 
-            QString imu_show_att = boolToString(imu_dialog.isShowAttitudeChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Attitude Indicator") << imu_show_att)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Attitude Indicator")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isShowAttitudeChecked()));
+            item->addChild(child_item);
 
-            QString imu_show_heading = boolToString(imu_dialog.isShowHeadingChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Heading Indicator") << imu_show_heading)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isShowHeadingChecked()));
+            item->addChild(child_item);
 
-            QString imu_show_labels = boolToString(imu_dialog.isShowLabelsChecked());
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Labels") << imu_show_labels)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isShowLabelsChecked()));
+            item->addChild(child_item);
 
             sensors_treewidget->addTopLevelItem(item);
         }
@@ -466,7 +467,7 @@ void SensorsTab::editSensor(QTreeWidgetItem *item)
 
 void SensorsTab::removeSensor()
 {
-
+    
 }
 
 

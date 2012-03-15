@@ -64,7 +64,6 @@ MainWindow::MainWindow(int argc, char **argv)
 	main_tab = new MainTab(robot_directory);
 	tab_widget->addTab(main_tab, "Main");
 
-
     // Keyboard shortcut actions
     /* This action doesn't work because robot_tab uses the w key */
     //close_tab_action = new QAction(tab_widget);
