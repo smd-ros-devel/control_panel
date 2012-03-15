@@ -37,6 +37,28 @@
 #include "control_panel/robot_config_file_dialog.h"
 #include "stdio.h"
 
+QString boolToString(bool state)
+{
+    if(state)
+        return QString("Yes");
+    return QString("No");
+}
+
+bool stringToBool(const QString &str)
+{
+    if(str == "Yes")
+        return true;
+    return false;
+}
+
+Qt::CheckState boolToCheckState(bool checked)
+{
+    if(checked)
+        return Qt::Checked;
+    return Qt::Unchecked;
+}
+
+
 ////////////////////////// General Tab ///////////////////////////////
 
 GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
@@ -106,13 +128,14 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     QPushButton *add_sensor_button = new QPushButton(tr("Add"));
     connect(add_sensor_button, SIGNAL(clicked()), this, SLOT(addSensor()));
 
-    //QPushButton *edit_button = new QPushButton(tr("Edit"));
-    //connect(edit_button, SIGNAL(clicked()), this, SLOT(editSensor()));
+    QPushButton *edit_button = new QPushButton(tr("Edit"));
+    connect(edit_button, SIGNAL(clicked()), this, SLOT(editSensor()));
 
-    //QPushButton *remove_button = new QPushButton(tr("Remove"));
-    //connect(remove_button, SIGNAL(clicked()), this, SLOT(removeSensor()));
+    QPushButton *remove_button = new QPushButton(tr("Remove"));
+    connect(remove_button, SIGNAL(clicked()), this, SLOT(removeSensor()));
 
     QList<QTreeWidgetItem *> item_list;
+    QTreeWidgetItem *child_item;
 
     /* Add Camera config data to item list */
     for(unsigned int i = 0; i < robot_sensors->cameras.size(); i++)
@@ -143,23 +166,17 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
         gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Topic Name") << robot_sensors->gps[i].topicName)));
 
-        QString gps_lat("No");
-        if(robot_sensors->gps[i].latitude)
-            gps_lat = "Yes";
-        gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Latitude") << gps_lat)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Latitude")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->gps[i].latitude));
+        gps_item->addChild(child_item);
 
-        QString gps_long("No");
-        if(robot_sensors->gps[i].longitude)
-            gps_long = "Yes";
-        gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Longitude") << gps_long)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Longitude")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->gps[i].longitude));
+        gps_item->addChild(child_item);
 
-        QString gps_alt("No");
-        if(robot_sensors->gps[i].altitude)
-            gps_alt = "Yes";
-        gps_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Altitude") << gps_alt)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Altitude")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->gps[i].altitude));
+        gps_item->addChild(child_item);
 
         item_list.append(gps_item);
     }
@@ -175,54 +192,38 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
             (QStringList() << tr("Name") << robot_sensors->imu[i].name)));
         imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Topic Name") << robot_sensors->imu[i].topicName)));
+        
+        child_item = new QTreeWidgetItem(QStringList(tr("Roll")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->imu[i].roll));
+        imu_item->addChild(child_item);
 
-        QString imu_roll("No");
-        if(robot_sensors->imu[i].roll)
-            imu_roll = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Roll") << imu_roll)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Pitch")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->imu[i].pitch));
+        imu_item->addChild(child_item);
 
-        QString imu_pitch("No");
-        if(robot_sensors->imu[i].pitch)
-            imu_pitch = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Pitch") << imu_pitch)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Yaw")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->imu[i].yaw));
+        imu_item->addChild(child_item);
 
-        QString imu_yaw("No");
-        if(robot_sensors->imu[i].yaw)
-            imu_yaw = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Yaw") << imu_yaw)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Angular Velocity")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->imu[i].angularVelocity));
+        imu_item->addChild(child_item);
 
-        QString imu_ang_vel("No");
-        if(robot_sensors->imu[i].angularVelocity)
-            imu_ang_vel = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Angular Velocity") << imu_ang_vel)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Linear Acceleration")));
+        child_item->setCheckState(1, boolToCheckState(robot_sensors->imu[i].linearAcceleration));
+        imu_item->addChild(child_item);
 
-        QString imu_lin_accel("No");
-        if(robot_sensors->imu[i].linearAcceleration)
-            imu_lin_accel = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Linear Acceleration") << imu_lin_accel)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Show Attitude Indicator")));
+        child_item->setCheckState(1, boolToCheckState(!robot_sensors->imu[i].hideAttitude));
+        imu_item->addChild(child_item);
 
-        QString imu_show_attitude("No");
-        if(!robot_sensors->imu[i].hideAttitude)
-            imu_show_attitude = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Show Attitude Indicator") << imu_show_attitude)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
+        child_item->setCheckState(1, boolToCheckState(!robot_sensors->imu[i].hideHeading));
+        imu_item->addChild(child_item);
 
-        QString imu_show_heading("No");
-        if(!robot_sensors->imu[i].hideHeading)
-            imu_show_heading = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Show Heading Indicator") << imu_show_heading)));
-
-        QString imu_show_labels("No");
-        if(!robot_sensors->imu[i].hideLabels)
-            imu_show_labels = "Yes";
-        imu_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << tr("Show Labels") << imu_show_labels)));
+        child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
+        child_item->setCheckState(1, boolToCheckState(!robot_sensors->imu[i].hideLabels));
+        imu_item->addChild(child_item);
 
         item_list.append(imu_item);
     }
@@ -265,18 +266,25 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
     sensors_treewidget->setHeaderLabels(column_list);
     sensors_treewidget->addTopLevelItems(item_list);
     sensors_treewidget->resizeColumnToContents(0);
-
+    connect(sensors_treewidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+        this, SLOT(editSensor(QTreeWidgetItem *)));
 
     /* Create layout */
     QHBoxLayout *sensors_hlayout = new QHBoxLayout;
-    sensors_hlayout->addWidget(sensors_label, Qt::AlignLeft);
+    sensors_hlayout->addWidget(sensors_label, 0, Qt::AlignLeft);
     sensors_hlayout->addStretch();
-    sensors_hlayout->addWidget(sensors_combobox, Qt::AlignRight);
-    sensors_hlayout->addWidget(add_sensor_button, Qt::AlignRight);
+    sensors_hlayout->addWidget(sensors_combobox, 0, Qt::AlignRight);
+    sensors_hlayout->addWidget(add_sensor_button, 0, Qt::AlignRight);
+
+    QHBoxLayout *button_hlayout = new QHBoxLayout;
+    button_hlayout->addWidget(remove_button, 0, Qt::AlignLeft);
+    button_hlayout->addStretch();
+    button_hlayout->addWidget(edit_button, 0, Qt::AlignRight);
 
     QVBoxLayout *sensors_tab_layout = new QVBoxLayout;
     sensors_tab_layout->addLayout(sensors_hlayout);
     sensors_tab_layout->addWidget(sensors_treewidget);
+    sensors_tab_layout->addLayout(button_hlayout);
     setLayout(sensors_tab_layout);
 }
 
@@ -339,15 +347,11 @@ void SensorsTab::addSensor()
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << compass_dialog.getTopicName())));
 
-            QString show_heading("No");
-            if(compass_dialog.isShowHeadingChecked())
-                show_heading = "Yes";
+            QString show_heading = boolToString(compass_dialog.isShowHeadingChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Show Heading Indicator") << show_heading)));
 
-            QString show_label("No");
-            if(compass_dialog.isShowLabelChecked())
-                show_label = "Yes";
+            QString show_label = boolToString(compass_dialog.isShowLabelChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Show Label") << show_label)));
 
@@ -371,23 +375,17 @@ void SensorsTab::addSensor()
                 (QStringList() << tr("Topic Name") << gps_dialog.getTopicName())));
 
             // Add latitude and its check stat
-            QString gps_lat("No");
-            if(gps_dialog.isLatitudeChecked())
-                gps_lat = "Yes";
+            QString gps_lat = boolToString(gps_dialog.isLatitudeChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Latitude") << gps_lat)));
 
             // Add longitude and its check state
-            QString gps_long("No");
-            if(gps_dialog.isLongitudeChecked())
-                gps_long = "Yes";
+            QString gps_long = boolToString(gps_dialog.isLongitudeChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Longitude") << gps_long)));
 
             // Add altitude and its check state
-            QString gps_alt("No");
-            if(gps_dialog.isAltitudeChecked())
-                gps_alt = "Yes";
+            QString gps_alt = boolToString(gps_dialog.isAltitudeChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Altitude") << gps_alt)));
 
@@ -410,51 +408,35 @@ void SensorsTab::addSensor()
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << imu_dialog.getTopicName())));
 
-            QString imu_roll("No");
-            if(imu_dialog.isRollChecked())
-                imu_roll = "Yes";
+            QString imu_roll = boolToString(imu_dialog.isRollChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Roll") << imu_roll)));
 
-            QString imu_pitch("No");
-            if(imu_dialog.isPitchChecked())
-                imu_pitch = "Yes";
+            QString imu_pitch = boolToString(imu_dialog.isPitchChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Pitch") << imu_pitch)));
 
-            QString imu_yaw("No");
-            if(imu_dialog.isYawChecked())
-                imu_yaw = "Yes";
+            QString imu_yaw = boolToString(imu_dialog.isYawChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Yaw") << imu_yaw)));
 
-            QString imu_lin_accel("No");
-            if(imu_dialog.isLinearAccelerationChecked())
-                imu_lin_accel = "Yes";
+            QString imu_lin_accel = boolToString(imu_dialog.isLinearAccelerationChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Linear Acceleration") << imu_lin_accel)));
 
-            QString imu_ang_vel("No");
-            if(imu_dialog.isAngularVelocityChecked())
-                imu_ang_vel = "Yes";
+            QString imu_ang_vel = boolToString(imu_dialog.isAngularVelocityChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Angular Velocity") << imu_ang_vel)));
 
-            QString imu_show_att("No");
-            if(imu_dialog.isShowAttitudeChecked())
-                imu_show_att = "Yes";
+            QString imu_show_att = boolToString(imu_dialog.isShowAttitudeChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Show Attitude Indicator") << imu_show_att)));
 
-            QString imu_show_heading("No");
-            if(imu_dialog.isShowHeadingChecked())
-                imu_show_heading = "Yes";
+            QString imu_show_heading = boolToString(imu_dialog.isShowHeadingChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Show Heading Indicator") << imu_show_heading)));
 
-            QString imu_show_labels("No");
-            if(imu_dialog.isShowLabelsChecked())
-                imu_show_labels = "Yes";
+            QString imu_show_labels = boolToString(imu_dialog.isShowLabelsChecked());
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Show Labels") << imu_show_labels)));
 
@@ -463,9 +445,23 @@ void SensorsTab::addSensor()
     }
 }
 
-void SensorsTab::editSensor()
+void SensorsTab::editSensor(QTreeWidgetItem *item)
 {
+    QTreeWidgetItem *top_item = item;
 
+    if(item == 0) // Item is unknown so grab current item
+    {
+        top_item = sensors_treewidget->currentItem();
+
+        if(top_item == 0) // No item is selected
+            return;
+    }
+    else if(sensors_treewidget->indexOfTopLevelItem(item))
+        return;
+
+    // Get parent of item
+    if(top_item->parent() != 0)
+        top_item = top_item->parent();
 }
 
 void SensorsTab::removeSensor()

@@ -42,6 +42,7 @@ class QDialogButtonBox;
 class QComboBox;
 class QTabWidget;
 class QTreeWidget;
+class QTreeWidgetItem;
 QT_END_NAMESPACE
 
 #include "component_dialogs.h"
@@ -72,7 +73,7 @@ class SensorsTab : public QWidget
 
     public slots:
         void addSensor();
-        void editSensor();
+        void editSensor(QTreeWidgetItem *item = 0);
         void removeSensor();
 
     private:
