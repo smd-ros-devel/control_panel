@@ -105,7 +105,8 @@ class ProcessedDataTab : public QWidget
 
     public slots:
         void addProcessedData();
-        void editProcessedData();
+        void editProcessedData(QTreeWidgetItem *item = 0);
+        void removeProcessedData();
 
     private:
         enum ProcessedDataType
