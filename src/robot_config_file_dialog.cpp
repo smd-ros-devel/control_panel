@@ -37,25 +37,19 @@
 #include "control_panel/robot_config_file_dialog.h"
 #include "stdio.h"
 
-QString boolToString(bool state)
-{
-    if(state)
-        return QString("Yes");
-    return QString("No");
-}
-
-bool stringToBool(const QString &str)
-{
-    if(str == "Yes")
-        return true;
-    return false;
-}
 
 Qt::CheckState boolToCheckState(bool checked)
 {
     if(checked)
         return Qt::Checked;
     return Qt::Unchecked;
+}
+
+bool checkStateToBool(Qt::CheckState state)
+{
+    if(state == Qt::Checked)
+        return true;
+    return false;
 }
 
 
@@ -154,6 +148,7 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
 
     /* @todo Add compass' */
 
+
     /* Add GPS's config data to item list */
     for(unsigned int i = 0; i < robot_sensors->gps.size(); i++)
     {
@@ -249,6 +244,7 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
         QTreeWidgetItem *range_item = new QTreeWidgetItem(Range);
         range_item->setText(0, tr("Sonar/1D-Infrared"));
         range_item->setText(1, robot_sensors->range[i].name);
+
         range_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
             (QStringList() << tr("Name") << robot_sensors->range[i].name)));
         range_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
@@ -290,10 +286,11 @@ SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
 
 void SensorsTab::addSensor()
 {
-    QTreeWidgetItem *child_item;
+    QTreeWidgetItem *item, *child_item;
+    // Get selected sensor from combobox
     SensorType type = SensorType(sensors_combobox->currentIndex() + Camera);
-    QString type_str;
 
+    QString type_str;
     if(type == Camera)
         type_str = "Camera";
     else if(type == Compass)
@@ -320,7 +317,7 @@ void SensorsTab::addSensor()
 
         if(component_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem(type);
+            item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, component_dialog.getName());
 
@@ -339,7 +336,7 @@ void SensorsTab::addSensor()
         
         if(compass_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem(type);
+            item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, compass_dialog.getName());
 
@@ -348,6 +345,10 @@ void SensorsTab::addSensor()
             item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << compass_dialog.getTopicName())));
 
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
+            child_item->setCheckState(1, boolToCheckState(compass_dialog.isShowHeadingChecked()));
+            item->addChild(child_item);
+            
             child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indiciator")));
             child_item->setCheckState(1, boolToCheckState(compass_dialog.isShowHeadingChecked()));
             item->addChild(child_item);
@@ -366,7 +367,7 @@ void SensorsTab::addSensor()
 
         if(gps_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem(type);
+            item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, gps_dialog.getName());
 
@@ -400,7 +401,7 @@ void SensorsTab::addSensor()
 
         if(imu_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem(type);
+            item = new QTreeWidgetItem(type);
             item->setText(0, type_str);
             item->setText(1, imu_dialog.getName());
 
@@ -421,12 +422,12 @@ void SensorsTab::addSensor()
             child_item->setCheckState(1, boolToCheckState(imu_dialog.isYawChecked()));
             item->addChild(child_item);
 
-            child_item = new QTreeWidgetItem(QStringList(tr("Linear Acceleration")));
-            child_item->setCheckState(1, boolToCheckState(imu_dialog.isLinearAccelerationChecked()));
-            item->addChild(child_item);
-
             child_item = new QTreeWidgetItem(QStringList(tr("Angular Velocity")));
             child_item->setCheckState(1, boolToCheckState(imu_dialog.isAngularVelocityChecked()));
+            item->addChild(child_item);
+
+            child_item = new QTreeWidgetItem(QStringList(tr("Linear Acceleration")));
+            child_item->setCheckState(1, boolToCheckState(imu_dialog.isLinearAccelerationChecked()));
             item->addChild(child_item);
 
             child_item = new QTreeWidgetItem(QStringList(tr("Show Attitude Indicator")));
@@ -457,17 +458,113 @@ void SensorsTab::editSensor(QTreeWidgetItem *item)
         if(top_item == 0) // No item is selected
             return;
     }
-    else if(sensors_treewidget->indexOfTopLevelItem(item))
+    else if(sensors_treewidget->indexOfTopLevelItem(item) != -1)
         return;
 
     // Get parent of item
     if(top_item->parent() != 0)
         top_item = top_item->parent();
+
+    if(top_item->type() == Camera || top_item->type() == Laser || top_item->type() == Range)
+    {
+        ComponentDialog component_dialog(this);
+        component_dialog.setWindowTitle(QString("Edit %1").arg(top_item->text(0)));
+        component_dialog.setName(top_item->child(0)->text(1));
+        component_dialog.setTopicName(top_item->child(1)->text(1));
+
+        if(component_dialog.exec())
+        {
+            top_item->setText(1, component_dialog.getName());
+            top_item->child(0)->setText(1, component_dialog.getName());
+            top_item->child(1)->setText(1, component_dialog.getTopicName());
+        }
+    }
+    else if(top_item->type() == Compass)
+    {
+        CompassDialog compass_dialog(this);
+        compass_dialog.setWindowTitle(QString("Edit %1").arg(top_item->text(0)));
+        compass_dialog.setName(top_item->child(0)->text(1));
+        compass_dialog.setTopicName(top_item->child(1)->text(1));
+        compass_dialog.setShowHeadingChecked(checkStateToBool(top_item->child(2)->checkState(1)));
+        compass_dialog.setShowLabelChecked(checkStateToBool(top_item->child(3)->checkState(1)));
+
+        if(compass_dialog.exec())
+        {
+            top_item->setText(1, compass_dialog.getName());
+            top_item->child(0)->setText(1, compass_dialog.getName());
+            top_item->child(1)->setText(1, compass_dialog.getTopicName());
+            top_item->child(2)->setCheckState(1, boolToCheckState(compass_dialog.isShowHeadingChecked()));
+            top_item->child(3)->setCheckState(1, boolToCheckState(compass_dialog.isShowLabelChecked()));
+        }
+    }
+    else if(top_item->type() == Gps)
+    {
+        GpsDialog gps_dialog(this);
+        gps_dialog.setWindowTitle(QString("Edit %1").arg(top_item->text(0)));
+        gps_dialog.setName(top_item->child(0)->text(1));
+        gps_dialog.setTopicName(top_item->child(1)->text(1));
+        gps_dialog.setLatitudeChecked(checkStateToBool(top_item->child(2)->checkState(1)));
+        gps_dialog.setLongitudeChecked(checkStateToBool(top_item->child(3)->checkState(1)));
+        gps_dialog.setAltitudeChecked(checkStateToBool(top_item->child(4)->checkState(1)));
+
+        if(gps_dialog.exec())
+        {
+            top_item->setText(1, gps_dialog.getName());
+            top_item->child(0)->setText(1, gps_dialog.getName());
+            top_item->child(1)->setText(1, gps_dialog.getTopicName());
+            top_item->child(2)->setCheckState(1, boolToCheckState(gps_dialog.isLatitudeChecked()));
+            top_item->child(3)->setCheckState(1, boolToCheckState(gps_dialog.isLongitudeChecked()));
+            top_item->child(4)->setCheckState(1, boolToCheckState(gps_dialog.isAltitudeChecked()));
+        }
+    }
+    else if(top_item->type() == Imu)
+    {
+        ImuDialog imu_dialog(this);
+        imu_dialog.setWindowTitle(QString("Edit %1").arg(top_item->text(0)));
+        imu_dialog.setName(top_item->child(0)->text(1));
+        imu_dialog.setTopicName(top_item->child(1)->text(1));
+        imu_dialog.setRollChecked(checkStateToBool(top_item->child(2)->checkState(1)));
+        imu_dialog.setPitchChecked(checkStateToBool(top_item->child(3)->checkState(1)));
+        imu_dialog.setYawChecked(checkStateToBool(top_item->child(4)->checkState(1)));
+        imu_dialog.setAngularVelocityChecked(checkStateToBool(top_item->child(5)->checkState(1)));
+        imu_dialog.setLinearAccelerationChecked(checkStateToBool(top_item->child(6)->checkState(1)));
+        imu_dialog.setShowAttitudeChecked(checkStateToBool(top_item->child(7)->checkState(1)));
+        imu_dialog.setShowHeadingChecked(checkStateToBool(top_item->child(8)->checkState(1)));
+        imu_dialog.setShowLabelsChecked(checkStateToBool(top_item->child(9)->checkState(1)));
+
+        if(imu_dialog.exec())
+        {
+            top_item->setText(1, imu_dialog.getName());
+            top_item->child(0)->setText(1, imu_dialog.getName());
+            top_item->child(1)->setText(1, imu_dialog.getTopicName());
+            top_item->child(2)->setCheckState(1, boolToCheckState(imu_dialog.isRollChecked()));
+            top_item->child(3)->setCheckState(1, boolToCheckState(imu_dialog.isPitchChecked()));
+            top_item->child(4)->setCheckState(1, boolToCheckState(imu_dialog.isYawChecked()));
+            top_item->child(5)->setCheckState(1, boolToCheckState(imu_dialog.isAngularVelocityChecked()));
+            top_item->child(6)->setCheckState(1, boolToCheckState(imu_dialog.isLinearAccelerationChecked()));
+            top_item->child(7)->setCheckState(1, boolToCheckState(imu_dialog.isShowAttitudeChecked()));
+            top_item->child(8)->setCheckState(1, boolToCheckState(imu_dialog.isShowHeadingChecked()));
+            top_item->child(9)->setCheckState(1, boolToCheckState(imu_dialog.isShowLabelsChecked()));
+        }
+    }
+    else
+    {
+        std::cerr << "Unknown sensor type '" << top_item->type()
+                  << "' encountered while editing sensor." << std::endl;
+    }
 }
 
 void SensorsTab::removeSensor()
 {
-    
+    QTreeWidgetItem *item = sensors_treewidget->currentItem();
+
+    if(item == 0)
+        return; // No item selected
+
+    if(item->parent() != 0) // Get top level item in the tree widget
+        item = item->parent();
+
+    delete item;
 }
 
 
