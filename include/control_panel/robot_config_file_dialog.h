@@ -58,6 +58,16 @@ class GeneralTab : public QWidget
 
     public:
         GeneralTab(struct RobotConfig *robot_config, QWidget *parent = 0);
+
+    public slots:
+        void findImageFile();
+    
+    private:
+        QLineEdit *robot_name_lineedit;
+        QLineEdit *drive_system_lineedit;
+        QLineEdit *image_file_lineedit;
+        QLineEdit *namespace_lineedit;
+        QComboBox *system_combobox;
 };
 
 /**

@@ -222,6 +222,7 @@ void MainWindow::createMenuActions()
     connect(master_settings_action, SIGNAL(triggered()), SLOT(editMasterSettings()));
 
 	configuration_file_action = new QAction(tr("Robot Configuration &File"), this);
+    configuration_file_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
 	connect(configuration_file_action, SIGNAL(triggered()),
 		this, SLOT(editRobotConfigFile()));
 

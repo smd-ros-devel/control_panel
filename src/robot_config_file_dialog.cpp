@@ -59,7 +59,7 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
     : QWidget(parent)
 {
     QLabel *robot_name_label = new QLabel(tr("Robot's Name"));
-    QLineEdit *robot_name_lineedit = new QLineEdit(robot_config->robotName);
+    robot_name_lineedit = new QLineEdit(robot_config->robotName);
 
     QLabel *system_label = new QLabel(tr("System"));
     QStringList system_list;
@@ -68,7 +68,7 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
                 << "AUV"// (Autonomous Underwater Vehicle)"
                 << "USV"// (Unmanned Surface Vehicle)"
                 << "Humanoid";
-    QComboBox *system_combobox = new QComboBox;
+    system_combobox = new QComboBox;
     system_combobox->addItems(system_list);
 
     int index = system_list.indexOf(robot_config->system);
@@ -76,14 +76,16 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
         system_combobox->setCurrentIndex(index);
 
     QLabel *drive_system_label = new QLabel(tr("Drive System"));
-    QLineEdit *drive_system_lineedit = new QLineEdit(robot_config->driveSystem);
+    drive_system_lineedit = new QLineEdit(robot_config->driveSystem);
 
     QLabel *image_file_label = new QLabel(tr("Image File"));
-    QLineEdit *image_file_lineedit = new QLineEdit(robot_config->imageFilePath);
+    image_file_lineedit = new QLineEdit(robot_config->imageFilePath);
+
     QPushButton *browse_button = new QPushButton(tr("Browse"));
+    connect(browse_button, SIGNAL(clicked()), this, SLOT(findImageFile()));
 
     QLabel *namespace_label = new QLabel(tr("Namespace"));
-    QLineEdit *namespace_lineedit = new QLineEdit(robot_config->nameSpace);
+    namespace_lineedit = new QLineEdit(robot_config->nameSpace);
 
     QHBoxLayout *image_file_hlayout = new QHBoxLayout;
     image_file_hlayout->addWidget(image_file_lineedit);
@@ -101,6 +103,26 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
     general_tab_layout->addWidget(namespace_label, 4, 0);
     general_tab_layout->addWidget(namespace_lineedit, 4, 1);
     setLayout(general_tab_layout);
+}
+
+void GeneralTab::findImageFile()
+{
+    QString path;
+    if(image_file_lineedit->text() != "")
+    {
+        QFileInfo file(image_file_lineedit->text());
+        if(file.exists())
+            path = file.absoluteFilePath();
+        else
+            path = QDir::homePath();
+    }
+    else
+        path = QDir::homePath();
+
+    QString file_name = QFileDialog::getOpenFileName(this, tr("Find Image"),
+        path, tr("Images (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.tiff *.xbm *.xpm)"));
+
+    image_file_lineedit->setText(file_name);
 }
 
 ////////////////////////////// Sensors Tab ///////////////////////////////
@@ -634,65 +656,30 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
         child_item = new QTreeWidgetItem(QStringList(tr("Position")));
         child_item->setCheckState(1, boolToCheckState(robot_processed_data->odometry[i].position));
         odometry_item->addChild(child_item);
-        //QString odom_pos("No");
-        //if(robot_processed_data->odometry[i].position)
-        //    odom_pos = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Position") << odom_pos)));
 
         child_item = new QTreeWidgetItem(QStringList(tr("Orientation")));
         child_item->setCheckState(1, boolToCheckState(robot_processed_data->odometry[i].orientation));
         odometry_item->addChild(child_item);
-        //QString odom_ori("No");
-        //if(robot_processed_data->odometry[i].orientation)
-        //    odom_ori = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Orientation") << odom_ori)));
 
         child_item = new QTreeWidgetItem(QStringList(tr("Linear Velocity")));
         child_item->setCheckState(1, boolToCheckState(robot_processed_data->odometry[i].linearVelocity));
         odometry_item->addChild(child_item);
-        //QString odom_lin_vel("No");
-        //if(robot_processed_data->odometry[i].linearVelocity)
-        //    odom_lin_vel = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Linear Velocity") << odom_lin_vel)));
 
         child_item = new QTreeWidgetItem(QStringList(tr("Angular Velocity")));
         child_item->setCheckState(1, boolToCheckState(robot_processed_data->odometry[i].angularVelocity));
         odometry_item->addChild(child_item);
-        //QString odom_ang_vel("No");
-        //if(robot_processed_data->odometry[i].angularVelocity)
-        //    odom_ang_vel = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Angular Velocity") << odom_ang_vel)));
 
         child_item = new QTreeWidgetItem(QStringList(tr("Show AttitudeIndicator")));
         child_item->setCheckState(1, boolToCheckState(!robot_processed_data->odometry[i].hideAttitude));
         odometry_item->addChild(child_item);
-        //QString odom_show_attitude("No");
-        //if(!robot_processed_data->odometry[i].hideAttitude)
-        //    odom_show_attitude = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Show Attitude Indicator") << odom_show_attitude)));
 
         child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
         child_item->setCheckState(1, boolToCheckState(!robot_processed_data->odometry[i].hideHeading));
         odometry_item->addChild(child_item);
-        //QString odom_show_heading("No");
-        //if(!robot_processed_data->odometry[i].hideHeading)
-        //    odom_show_heading = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Show Heading Indicator") << odom_show_heading)));
 
         child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
         child_item->setCheckState(1, boolToCheckState(!robot_processed_data->odometry[i].hideLabels));
         odometry_item->addChild(child_item);
-        //QString odom_show_labels("No");
-        //if(!robot_processed_data->odometry[i].hideLabels)
-        //    odom_show_labels = "Yes";
-        //odometry_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-        //    (QStringList() << tr("Show Labels") << odom_show_labels)));
 
         item_list.append(odometry_item);
     }
@@ -734,6 +721,7 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
     processed_data_treewidget = new QTreeWidget;
     processed_data_treewidget->setHeaderLabels(column_list);
     processed_data_treewidget->addTopLevelItems(item_list);
+    processed_data_treewidget->resizeColumnToContents(0);
     connect(processed_data_treewidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
             this, SLOT(editProcessedData(QTreeWidgetItem *)));
 
@@ -758,6 +746,7 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
 
 void ProcessedDataTab::addProcessedData()
 {
+    QTreeWidgetItem *item, *child_item;
     /* Get the type of component */
     ProcessedDataType add_type = ProcessedDataType(processed_data_combobox->currentIndex() + DisparityImage);
     QString type_str;
@@ -784,7 +773,7 @@ void ProcessedDataTab::addProcessedData()
 
         if(component_dialog.exec())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem(add_type);
+            item = new QTreeWidgetItem(add_type);
             item->setText(0, type_str);
             item->setText(1, component_dialog.getName());
 
@@ -803,77 +792,135 @@ void ProcessedDataTab::addProcessedData()
 
         if(odom_dialog.exec())
         {
-            QTreeWidgetItem *odom_item = new QTreeWidgetItem(add_type);
-            odom_item->setText(0, type_str);
-            odom_item->setText(1, odom_dialog.getName());
+            item = new QTreeWidgetItem(add_type);
+            item->setText(0, type_str);
+            item->setText(1, odom_dialog.getName());
 
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Name") << odom_dialog.getName())));
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
                 (QStringList() << tr("Topic Name") << odom_dialog.getTopicName())));
 
             // Set and add position state
-            QString odom_pos("No");
-            if(odom_dialog.isPositionChecked())
-                odom_pos = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Position") << odom_pos)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Position")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isPositionChecked()));
+            item->addChild(child_item);
 
             // Set and add orientation state
-            QString odom_ori("No");
-            if(odom_dialog.isOrientationChecked())
-                odom_ori = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Orientation") << odom_ori)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Orientation")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isOrientationChecked()));
+            item->addChild(child_item);
 
             // Set and add linear velocity state
-            QString odom_lin_vel("No");
-            if(odom_dialog.isLinearVelocityChecked())
-                odom_lin_vel = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Linear Velocity") << odom_lin_vel)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Linear Velocity")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isLinearVelocityChecked()));
+            item->addChild(child_item);
 
             // Set and add angular velocity state
-            QString odom_ang_vel("No");
-            if(odom_dialog.isAngularVelocityChecked())
-                odom_ang_vel = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Angular Velocity") << odom_ang_vel)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Angular Velocity")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isAngularVelocityChecked()));
+            item->addChild(child_item);
 
             // Set and add attitude indicator state
-            QString odom_show_attitude("No");
-            if(odom_dialog.isShowAttitudeChecked())
-                odom_show_attitude = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Attitude Indicator") << odom_show_attitude)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Attitude Indicator")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowAttitudeChecked()));\
+            item->addChild(child_item);
 
             // Set and add heading indicator state
-            QString odom_show_heading("No");
-            if(odom_dialog.isShowHeadingChecked())
-                odom_show_heading = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Heading Indicator") << odom_show_heading)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowHeadingChecked()));
+            item->addChild(child_item);
 
             // Set and add labels state
-            QString odom_show_labels("No");
-            if(odom_dialog.isShowLabelsChecked())
-                odom_show_labels = "Yes";
-            odom_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Show Labels") << odom_show_labels)));
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowLabelsChecked()));
+            item->addChild(child_item);
 
-            processed_data_treewidget->addTopLevelItem(odom_item);
+            processed_data_treewidget->addTopLevelItem(item);
         }
     }
 }
 
 void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
 {
+    QTreeWidgetItem *top_item = item;
 
+    if(item == 0) // Item is unknown so grab current item
+    {
+        top_item = processed_data_treewidget->currentItem();
+
+        if(top_item == 0) // No item is selected
+            return;
+    }
+    else if(processed_data_treewidget->indexOfTopLevelItem(item) != -1)
+        return;
+
+    // Get parent item
+    if(top_item->parent() != 0)
+        top_item = top_item->parent();
+
+    if(top_item->type() == DisparityImage || top_item->type() == Map ||
+       top_item->type() == ProcessedImage)
+    {
+        ComponentDialog component_dialog(this);
+        component_dialog.setWindowTitle(QString("Edit %1").arg(top_item->type()));
+        component_dialog.setName(top_item->child(0)->text(1));
+        component_dialog.setTopicName(top_item->child(1)->text(1));
+        
+        if(component_dialog.exec())
+        {
+            top_item->setText(1, component_dialog.getName());
+            top_item->child(0)->setText(1, component_dialog.getName());
+            top_item->child(1)->setText(1, component_dialog.getTopicName());
+        }
+    }
+    else if(top_item->type() == Odometry)
+    {
+        OdometryDialog odom_dialog(this);
+        odom_dialog.setWindowTitle(QString("Edit %1").arg(top_item->type()));
+        odom_dialog.setName(top_item->child(0)->text(1));
+        odom_dialog.setTopicName(top_item->child(1)->text(1));
+        odom_dialog.setPositionChecked(checkStateToBool(top_item->child(2)->checkState(1)));
+        odom_dialog.setOrientationChecked(checkStateToBool(top_item->child(3)->checkState(1)));
+        odom_dialog.setLinearVelocityChecked(checkStateToBool(top_item->child(4)->checkState(1)));
+        odom_dialog.setAngularVelocityChecked(checkStateToBool(top_item->child(5)->checkState(1)));
+        odom_dialog.setShowAttitudeChecked(checkStateToBool(top_item->child(6)->checkState(1)));
+        odom_dialog.setShowHeadingChecked(checkStateToBool(top_item->child(7)->checkState(1)));
+        odom_dialog.setShowLabelsChecked(checkStateToBool(top_item->child(8)->checkState(1)));
+
+        if(odom_dialog.exec())
+        {
+            top_item->setText(1, odom_dialog.getName());
+            top_item->child(0)->setText(1, odom_dialog.getName());
+            top_item->child(1)->setText(1, odom_dialog.getTopicName());
+            top_item->child(2)->setCheckState(1, boolToCheckState(odom_dialog.isPositionChecked()));
+            top_item->child(3)->setCheckState(1, boolToCheckState(odom_dialog.isOrientationChecked()));
+            top_item->child(4)->setCheckState(1, boolToCheckState(odom_dialog.isLinearVelocityChecked()));
+            top_item->child(5)->setCheckState(1, boolToCheckState(odom_dialog.isAngularVelocityChecked()));
+            top_item->child(6)->setCheckState(1, boolToCheckState(odom_dialog.isShowAttitudeChecked()));
+            top_item->child(7)->setCheckState(1, boolToCheckState(odom_dialog.isShowHeadingChecked()));
+            top_item->child(8)->setCheckState(1, boolToCheckState(odom_dialog.isShowLabelsChecked()));
+        }
+    }
+    else
+    {
+        std::cerr << "Unknown processed data type '" << top_item->type()
+                  << "' encountered while editing." << std::endl;
+    }
 }
 
 void ProcessedDataTab::removeProcessedData()
 {
+    // Get current item
+    QTreeWidgetItem *item = processed_data_treewidget->currentItem();
 
+    if(item == 0) // No item is selected
+        return;
+
+    if(item->parent() != 0) // Get top level item in the tree widget
+        item = item->parent();
+
+    delete item;
 }
 
 ///////////////////////// Joints Tab ////////////////////////////
@@ -908,6 +955,7 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
     joints_treewidget = new QTreeWidget;
     joints_treewidget->setHeaderLabels(column_names);
     joints_treewidget->addTopLevelItems(joint_itemlist);
+    joints_treewidget->resizeColumnToContents(0);
     joints_treewidget->setSortingEnabled(true);
 
 
@@ -959,10 +1007,10 @@ ControlsTab::ControlsTab(QWidget *parent) : QWidget(parent)
     QScrollArea *controls_scrollarea = new QScrollArea;
 
     QHBoxLayout *controls_hlayout = new QHBoxLayout;
-    controls_hlayout->addWidget(controls_label, Qt::AlignLeft);
+    controls_hlayout->addWidget(controls_label, 0, Qt::AlignLeft);
     controls_hlayout->addStretch();
-    controls_hlayout->addWidget(controls_combobox, Qt::AlignRight);
-    controls_hlayout->addWidget(add_button, Qt::AlignRight);
+    controls_hlayout->addWidget(controls_combobox, 0, Qt::AlignRight);
+    controls_hlayout->addWidget(add_button, 0, Qt::AlignRight);
 
     QVBoxLayout *controls_layout = new QVBoxLayout;
     controls_layout->addLayout(controls_hlayout);
@@ -1002,10 +1050,10 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
 
     /* Create services tab layout */
     QHBoxLayout *services_hlayout = new QHBoxLayout;
-    services_hlayout->addWidget(services_label, Qt::AlignLeft);
+    services_hlayout->addWidget(services_label, 0, Qt::AlignLeft);
     services_hlayout->addStretch();
-    services_hlayout->addWidget(services_combobox, Qt::AlignRight);
-    services_hlayout->addWidget(add_button, Qt::AlignRight);
+    services_hlayout->addWidget(services_combobox, 0, Qt::AlignRight);
+    services_hlayout->addWidget(add_button, 0, Qt::AlignRight);
 
     QVBoxLayout *services_layout = new QVBoxLayout;
     services_layout->addLayout(services_hlayout);
