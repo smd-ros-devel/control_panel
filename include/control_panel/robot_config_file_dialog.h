@@ -58,6 +58,7 @@ class GeneralTab : public QWidget
 
     public:
         GeneralTab(struct RobotConfig *robot_config, QWidget *parent = 0);
+        void storeToConfig(struct RobotConfig *robot_config);
 
     public slots:
         void findImageFile();
@@ -80,6 +81,7 @@ class SensorsTab : public QWidget
 
     public:
         SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent = 0);
+        void storeToConfig(struct RobotSensors *robot_sensors);
 
     public slots:
         void addSensor();
@@ -112,6 +114,7 @@ class ProcessedDataTab : public QWidget
     public:
         ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
                          QWidget *parent = 0);
+        void storeToConfig(struct RobotProcessedData *robot_processed_data);
 
     public slots:
         void addProcessedData();
@@ -141,13 +144,19 @@ class JointsTab : public QWidget
 
     public:
         JointsTab(struct RobotJoints *robot_joints, QWidget *parent = 0);
+        void storeToConfig(struct RobotJoints *robot_joints);
 
     public slots:
         void addJoint();
-        void editJoint();
+        void editJoint(QTreeWidgetItem *item = 0);
+        void removeJoint();
 
     private:
         QTreeWidget *joints_treewidget;
+        QLineEdit *topic_name_lineedit;
+        QCheckBox *position_checkbox;
+        QCheckBox *velocity_checkbox;
+        QCheckBox *effort_checkbox;
 };
 
 /**

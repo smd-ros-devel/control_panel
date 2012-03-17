@@ -125,6 +125,15 @@ void GeneralTab::findImageFile()
     image_file_lineedit->setText(file_name);
 }
 
+void GeneralTab::storeToConfig(struct RobotConfig *robot_config)
+{
+    robot_config->robotName = robot_name_lineedit->text();
+    robot_config->system = system_combobox->currentText();
+    robot_config->driveSystem = drive_system_lineedit->text();
+    robot_config->imageFilePath = image_file_lineedit->text();
+    robot_config->nameSpace = namespace_lineedit->text();
+}
+
 ////////////////////////////// Sensors Tab ///////////////////////////////
 
 SensorsTab::SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent)
@@ -599,6 +608,75 @@ void SensorsTab::removeSensor()
     delete item;
 }
 
+void SensorsTab::storeToConfig(struct RobotSensors *robot_sensors)
+{
+    QTreeWidgetItemIterator it(sensors_treewidget);
+    while(*it)
+    {
+        if((*it)->type() == Camera)
+        {
+            struct RobotCamera temp_camera;
+            temp_camera.name = (*it)->child(0)->text(1);
+            temp_camera.topicName = (*it)->child(1)->text(1);
+
+            robot_sensors->cameras.push_back(temp_camera);
+        }
+        else if((*it)->type() == Compass)
+        {
+            /* @todo Store compass to configuration file */
+        }
+        else if((*it)->type() == Gps)
+        {
+            struct RobotGPS temp_gps;
+            temp_gps.name = (*it)->child(0)->text(1);
+            temp_gps.topicName = (*it)->child(1)->text(1);
+            temp_gps.latitude = checkStateToBool((*it)->child(2)->checkState(1));
+            temp_gps.longitude = checkStateToBool((*it)->child(3)->checkState(1));
+            temp_gps.altitude = checkStateToBool((*it)->child(4)->checkState(1));
+
+            robot_sensors->gps.push_back(temp_gps);
+        }
+        else if((*it)->type() == Imu)
+        {
+            struct RobotIMU temp_imu;
+            temp_imu.name = (*it)->child(0)->text(1);
+            temp_imu.topicName = (*it)->child(1)->text(1);
+            temp_imu.roll = checkStateToBool((*it)->child(2)->checkState(1));
+            temp_imu.pitch = checkStateToBool((*it)->child(3)->checkState(1));
+            temp_imu.yaw = checkStateToBool((*it)->child(4)->checkState(1));
+            temp_imu.angularVelocity = checkStateToBool((*it)->child(5)->checkState(1));
+            temp_imu.linearAcceleration = checkStateToBool((*it)->child(6)->checkState(1));
+            temp_imu.hideAttitude = !checkStateToBool((*it)->child(7)->checkState(1));
+            temp_imu.hideHeading = !checkStateToBool((*it)->child(8)->checkState(1));
+            temp_imu.hideLabels = !checkStateToBool((*it)->child(9)->checkState(1));
+
+            robot_sensors->imu.push_back(temp_imu);
+        }
+        else if((*it)->type() == Laser)
+        {
+            struct RobotLaser temp_laser;
+            temp_laser.name = (*it)->child(0)->text(1);
+            temp_laser.topicName = (*it)->child(1)->text(1);
+
+            robot_sensors->lasers.push_back(temp_laser);
+        }
+        else if((*it)->type() == Range)
+        {
+            struct RobotRange temp_range;
+            temp_range.name = (*it)->child(0)->text(1);
+            temp_range.topicName = (*it)->child(1)->text(1);
+
+            robot_sensors->range.push_back(temp_range);
+        }
+        else
+        {
+            std::cerr << "ERROR -- Unknown sensor type '" << (*it)->type()
+                      << "' encountered when storing sensors to config file." << std::endl;
+        }
+
+        it++;
+    }
+}
 
 ////////////////////////////// Processed Data Tab //////////////////////////
 
@@ -863,7 +941,7 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
        top_item->type() == ProcessedImage)
     {
         ComponentDialog component_dialog(this);
-        component_dialog.setWindowTitle(QString("Edit %1").arg(top_item->type()));
+        component_dialog.setWindowTitle(QString("Edit %1").arg(top_item->text(0)));
         component_dialog.setName(top_item->child(0)->text(1));
         component_dialog.setTopicName(top_item->child(1)->text(1));
         
@@ -923,24 +1001,84 @@ void ProcessedDataTab::removeProcessedData()
     delete item;
 }
 
+void ProcessedDataTab::storeToConfig(struct RobotProcessedData *robot_processed_data)
+{
+    QTreeWidgetItemIterator it(processed_data_treewidget);
+    while(*it)
+    {
+        if((*it)->type() == DisparityImage)
+        {
+            struct RobotDisparityImage temp_disp_image;
+            temp_disp_image.name = (*it)->child(0)->text(1);
+            temp_disp_image.topicName = (*it)->child(1)->text(1);
+
+            robot_processed_data->disparity_images.push_back(temp_disp_image);
+        }
+        else if((*it)->type() == Map)
+        {
+            struct RobotMap temp_map;
+            temp_map.name = (*it)->child(0)->text(1);
+            temp_map.topicName = (*it)->child(1)->text(1);
+
+            robot_processed_data->maps.push_back(temp_map);
+        }
+        else if((*it)->type() == Odometry)
+        {
+            struct RobotOdometry temp_odom;
+            temp_odom.name = (*it)->child(0)->text(1);
+            temp_odom.topicName = (*it)->child(1)->text(1);
+            temp_odom.position = checkStateToBool((*it)->child(2)->checkState(1));
+            temp_odom.orientation = checkStateToBool((*it)->child(3)->checkState(1));
+            temp_odom.linearVelocity = checkStateToBool((*it)->child(4)->checkState(1));
+            temp_odom.angularVelocity = checkStateToBool((*it)->child(5)->checkState(1));
+            temp_odom.hideAttitude = !checkStateToBool((*it)->child(6)->checkState(1));
+            temp_odom.hideHeading = !checkStateToBool((*it)->child(7)->checkState(1));
+            temp_odom.hideLabels = !checkStateToBool((*it)->child(8)->checkState(1));
+
+            robot_processed_data->odometry.push_back(temp_odom);
+        }
+        else if((*it)->type() == ProcessedImage)
+        {
+            struct RobotCamera temp_image;
+            temp_image.name = (*it)->child(0)->text(1);
+            temp_image.topicName = (*it)->child(1)->text(1);
+
+            robot_processed_data->images.push_back(temp_image);
+        }
+        else
+        {
+            std::cerr << "ERROR -- Unknown sensor type '" << (*it)->type()
+                      << "' encountered when storing sensors to config file." << std::endl;
+        }
+
+        it++;
+    }
+}
+
 ///////////////////////// Joints Tab ////////////////////////////
 
 JointsTab::JointsTab(struct RobotJoints *robot_joints, 
     QWidget *parent) : QWidget(parent)
 {
     QLabel *topic_name_label = new QLabel(tr("Topic Name"));
-    QLineEdit *topic_name_lineedit = new QLineEdit(robot_joints->topicName);
+    topic_name_lineedit = new QLineEdit(robot_joints->topicName);
 
-    QCheckBox *position_checkbox = new QCheckBox(tr("Position"));
+    position_checkbox = new QCheckBox(tr("Position"));
     position_checkbox->setChecked(robot_joints->position);
-    QCheckBox *velocity_checkbox = new QCheckBox(tr("Velocity"));
+    velocity_checkbox = new QCheckBox(tr("Velocity"));
     velocity_checkbox->setChecked(robot_joints->velocity);
-    QCheckBox *effort_checkbox = new QCheckBox(tr("Effort"));
+    effort_checkbox = new QCheckBox(tr("Effort"));
     effort_checkbox->setChecked(robot_joints->effort);
 
-    QLabel *joint_states_label = new QLabel(tr("Joints"));
+    //QLabel *joint_states_label = new QLabel(tr("Joints"));
     QPushButton *add_button = new QPushButton(tr("Add"));
     connect(add_button, SIGNAL(clicked()), this, SLOT(addJoint()));
+
+    QPushButton *edit_button = new QPushButton(tr("Edit"));
+    connect(edit_button, SIGNAL(clicked()), this, SLOT(editJoint()));
+
+    QPushButton *remove_button = new QPushButton(tr("Remove"));
+    connect(remove_button, SIGNAL(clicked()), this, SLOT(removeJoint()));
 
     /* Add all joints from the robot configuration file */
     QList<QTreeWidgetItem *> joint_itemlist;
@@ -957,19 +1095,29 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
     joints_treewidget->addTopLevelItems(joint_itemlist);
     joints_treewidget->resizeColumnToContents(0);
     joints_treewidget->setSortingEnabled(true);
+    connect(joints_treewidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+            this, SLOT(editJoint(QTreeWidgetItem *)));
 
 
+    // Create joints tab layout
     QGridLayout *joints_gridlayout = new QGridLayout;
     joints_gridlayout->addWidget(topic_name_label, 0, 0);
     joints_gridlayout->addWidget(topic_name_lineedit, 0, 1);
-    joints_gridlayout->addWidget(position_checkbox, 1, 1);
-    joints_gridlayout->addWidget(velocity_checkbox, 2, 1);
-    joints_gridlayout->addWidget(effort_checkbox, 3, 1);
-    joints_gridlayout->addWidget(joint_states_label, 4, 0);
-    joints_gridlayout->addWidget(add_button, 4, 1, Qt::AlignRight);
+    joints_gridlayout->addWidget(position_checkbox, 1, 0);
+    joints_gridlayout->addWidget(velocity_checkbox, 2, 0);
+    joints_gridlayout->addWidget(effort_checkbox, 3, 0);
+    //joints_gridlayout->addWidget(joint_states_label, 4, 0);
+    //joints_gridlayout->addWidget(add_button, 4, 1, Qt::AlignRight);
+
+    QHBoxLayout *button_hlayout = new QHBoxLayout;
+    button_hlayout->addWidget(add_button, 0, Qt::AlignLeft);
+    button_hlayout->addWidget(edit_button, 0, Qt::AlignLeft);
+    button_hlayout->addStretch();
+    button_hlayout->addWidget(remove_button, 0, Qt::AlignRight);
 
     QVBoxLayout *joints_layout = new QVBoxLayout;
     joints_layout->addLayout(joints_gridlayout);
+    joints_layout->addLayout(button_hlayout);
     joints_layout->addWidget(joints_treewidget);
     setLayout(joints_layout);
 }
@@ -988,9 +1136,61 @@ void JointsTab::addJoint()
     }
 }
 
-void JointsTab::editJoint()
+void JointsTab::editJoint(QTreeWidgetItem *item)
 {
+    QTreeWidgetItem *joint_item = item;
 
+    if(joint_item == 0) // Item is unknown
+    {
+        joint_item = joints_treewidget->currentItem();
+
+        if(joint_item == 0) // No item is selected
+            return;
+    }
+
+    ComponentDialog edit_joint_dialog(this);
+    edit_joint_dialog.setNameLabelText(tr("Joint Name"));
+    edit_joint_dialog.setName(joint_item->text(0));
+    edit_joint_dialog.setTopicNameLabelText(tr("Display Name"));
+    edit_joint_dialog.setTopicName(joint_item->text(1));
+    edit_joint_dialog.setWindowTitle(tr("Edit Joint"));
+
+    if(edit_joint_dialog.exec())
+    {
+        joint_item->setText(0, edit_joint_dialog.getName());
+        joint_item->setText(1, edit_joint_dialog.getTopicName());
+    }
+}
+
+void JointsTab::removeJoint()
+{
+    // Get currently selected item to remove
+    QTreeWidgetItem *item = joints_treewidget->currentItem();
+
+    if(item == 0) // No item was selected
+        return;
+
+    delete item;
+}
+
+void JointsTab::storeToConfig(struct RobotJoints *robot_joints)
+{
+    robot_joints->topicName = topic_name_lineedit->text();
+    robot_joints->position = position_checkbox->isChecked();
+    robot_joints->velocity = velocity_checkbox->isChecked();
+    robot_joints->effort = effort_checkbox->isChecked();
+    robot_joints->used = false;
+
+    QTreeWidgetItemIterator it(joints_treewidget);
+    while(*it)
+    {
+        struct RobotJoint temp_joint;
+        temp_joint.name = (*it)->text(0);
+        temp_joint.displayName = (*it)->text(1);
+
+        robot_joints->joints.push_back(temp_joint);
+        robot_joints->used = true;
+    }
 }
 
 ////////////////////////////// Controls Tab ////////////////////////////
