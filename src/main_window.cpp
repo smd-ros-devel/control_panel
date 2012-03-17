@@ -317,7 +317,7 @@ void MainWindow::createMenuActions()
 	connect(robot_rc_actiongroup, SIGNAL(triggered(QAction *)),
 		this, SLOT(toggleRC(QAction *)));
 
-    call_robot_service_action = new QAction(tr("Call Robot Service"), this);
+    call_robot_service_action = new QAction(tr("Call Robot's Service"), this);
     call_robot_service_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
     call_robot_service_action->setEnabled(false);
     connect(call_robot_service_action, SIGNAL(triggered()), this, SLOT(callRobotService()));
