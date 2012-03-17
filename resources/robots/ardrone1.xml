@@ -46,6 +46,10 @@
       <name>Camera Toggle</name>
       <topicName>togglecam</topicName>
     </custom>
+    <custom>
+      <name>Flatten Trim</name>
+      <topicName>flat_trim</topicName>
+    </custom>
   </commands>
 
   <diagnostics>

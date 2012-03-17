@@ -48,6 +48,7 @@ QT_END_NAMESPACE
 #include "node_manager.h"
 #include "globals.h"
 #include "robot_config.h"
+#include "call_service_dialog.h"
 
 
 /**
@@ -61,6 +62,7 @@ class RobotTab : public QWidget
 	public:
 		RobotTab(struct RobotConfig *robot_config, QWidget *parent = 0);
 		~RobotTab();
+        void callService();
 		void connectToRobot();
 		void disconnectRobot();
 		struct RobotConfig * getConfig();

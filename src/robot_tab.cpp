@@ -328,6 +328,36 @@ void RobotTab::keyReleaseEvent(QKeyEvent *event)
 	}
 }
 
+void RobotTab::callService()
+{
+    unsigned int i = 0;
+    bool found_srv = false;
+
+    if(node_manager->isConnected() && node_manager->command_node)
+    {
+        QString srv_name;
+        QStringList services;
+
+        for(i = 0; i < robot_config->commands.custom.size(); i++)
+            services << robot_config->commands.custom[i].name;
+
+        CallServiceDialog call_srv_dialog(services);
+        if(call_srv_dialog.exec())
+        {
+            srv_name = call_srv_dialog.getSelectedService();
+
+            for(i = 0; i < robot_config->commands.custom.size() && !found_srv; i++)
+                if(robot_config->commands.custom[i].name == srv_name)
+                    found_srv = true;
+
+            if(found_srv)
+                node_manager->command_node->callEmpty(robot_config->commands.custom[i-1].topicName);
+            else
+                std::cerr << "Selected service was not found in the robot configuration file" << std::endl;
+        }
+    }
+}
+
 void RobotTab::setRCMode(int rc_mode)
 {
     if(rc_mode == Globals::Disabled)

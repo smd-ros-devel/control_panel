@@ -317,6 +317,11 @@ void MainWindow::createMenuActions()
 	connect(robot_rc_actiongroup, SIGNAL(triggered(QAction *)),
 		this, SLOT(toggleRC(QAction *)));
 
+    call_robot_service_action = new QAction(tr("Call Robot Service"), this);
+    call_robot_service_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
+    call_robot_service_action->setEnabled(false);
+    connect(call_robot_service_action, SIGNAL(triggered()), this, SLOT(callRobotService()));
+
 
     /* Tools Menu Actions */
     call_service_action = new QAction(tr("Call Service"), this);
@@ -387,6 +392,8 @@ void MainWindow::createMenus()
     connections_menu->addAction(disable_rc_action);
 	connections_menu->addAction(keyboard_rc_action);
 	connections_menu->addAction(joystick_rc_action);
+    connections_menu->addSeparator();
+    connections_menu->addAction(call_robot_service_action);
 
     // Create tools menu
     tools_menu = menuBar()->addMenu(tr("&Tools"));
@@ -632,13 +639,14 @@ void MainWindow::startConnection()
 	{
 		curr_tab = (RobotTab *)tab_widget->currentWidget();
 
-		// Connect tot he robot if not already connected
+		// Connect to the robot if not already connected
 		if(!curr_tab->robotConnected())
 		{
 			curr_tab->connectToRobot();
 
 			connect_action->setEnabled(false);
 			disconnect_action->setEnabled(true);
+            call_robot_service_action->setEnabled(true);
 		}
 	}
 }
@@ -669,6 +677,7 @@ void MainWindow::stopConnection()
 
 			disconnect_action->setEnabled(false);
 			connect_action->setEnabled(true);
+            call_robot_service_action->setEnabled(false);
 		}
 	}
 }
@@ -871,6 +880,7 @@ void MainWindow::tabChanged(int index)
 	disconnect_action->setEnabled(false);
 	configuration_file_action->setEnabled(true);
 	robot_rc_actiongroup->setEnabled(false);
+    call_robot_service_action->setEnabled(false);
 
 	// Check if the current tab is the Main Tab.
 	if(index != 0)
@@ -878,7 +888,10 @@ void MainWindow::tabChanged(int index)
 		tab = (RobotTab *)tab_widget->currentWidget();
 
 		if(tab->robotConnected())
+        {
 			disconnect_action->setEnabled(true);
+            call_robot_service_action->setEnabled(true);
+        }
 		else
 			connect_action->setEnabled(true);
 
@@ -960,6 +973,12 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 //{
 //    closeTab(tab_widget->currentIndex());
 //}
+
+void MainWindow::callRobotService()
+{
+    if(tab_widget->currentIndex() != 0)
+        ((RobotTab *)tab_widget->currentWidget())->callService();
+}
 
 void MainWindow::callService()
 {

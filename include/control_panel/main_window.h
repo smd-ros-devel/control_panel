@@ -91,6 +91,7 @@ class MainWindow : public QMainWindow
 
     private slots:
 		void about();
+        void callRobotService();
         void callService();
         //void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
@@ -161,6 +162,7 @@ class MainWindow : public QMainWindow
         QAction *disable_rc_action;
 		QAction *keyboard_rc_action;
 		QAction *joystick_rc_action;
+        QAction *call_robot_service_action;
         QAction *call_service_action;
         QAction *rviz_action;
         QAction *rxconsole_action;
