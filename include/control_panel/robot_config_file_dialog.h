@@ -216,8 +216,18 @@ class RobotConfigFileDialog : public QDialog
 		RobotConfigFileDialog(struct RobotConfig *new_robot_config,
                               QWidget *parent = 0);
 
+    public slots:
+        void saveConfig();
+
 	private:
         QTabWidget *tab_widget;
+        GeneralTab *general_tab;
+        SensorsTab *sensors_tab;
+        ProcessedDataTab *processed_data_tab;
+        JointsTab *joints_tab;
+        ControlsTab *controls_tab;
+        ServicesTab *services_tab;
+        DiagnosticsTab *diagnostics_tab;
         QDialogButtonBox *button_box;
 		struct RobotConfig *robot_config;
 };

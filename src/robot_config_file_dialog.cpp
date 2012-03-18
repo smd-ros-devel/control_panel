@@ -1327,19 +1327,27 @@ RobotConfigFileDialog::RobotConfigFileDialog(
 {
 	robot_config = new_robot_config;
 
+    general_tab = new GeneralTab(robot_config);
+    sensors_tab = new SensorsTab(&robot_config->sensors);
+    processed_data_tab = new ProcessedDataTab(&robot_config->processedData);
+    joints_tab = new JointsTab(&robot_config->joint_states);
+    controls_tab = new ControlsTab;
+    services_tab = new ServicesTab(&robot_config->commands);
+    diagnostics_tab = new DiagnosticsTab;
+
     // Create tabs
     tab_widget = new QTabWidget;
-    tab_widget->addTab(new GeneralTab(robot_config), tr("General"));
-    tab_widget->addTab(new SensorsTab(&robot_config->sensors), tr("Sensors"));
-    tab_widget->addTab(new ProcessedDataTab(&robot_config->processedData), tr("Processed Data"));
-    tab_widget->addTab(new JointsTab(&robot_config->joint_states), tr("Joints"));
-    tab_widget->addTab(new ControlsTab, tr("Controls"));
-    tab_widget->addTab(new ServicesTab(&robot_config->commands), tr("Services"));
-    tab_widget->addTab(new DiagnosticsTab, tr("Diagnostics"));
+    tab_widget->addTab(general_tab, tr("General"));
+    tab_widget->addTab(sensors_tab, tr("Sensors"));
+    tab_widget->addTab(processed_data_tab, tr("Processed Data"));
+    tab_widget->addTab(joints_tab, tr("Joints"));
+    tab_widget->addTab(controls_tab, tr("Controls"));
+    tab_widget->addTab(services_tab, tr("Services"));
+    tab_widget->addTab(diagnostics_tab, tr("Diagnostics"));
 
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
                                       QDialogButtonBox::Save);
-	connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
+	//connect(button_box, SIGNAL(accepted()), this, SLOT(saveConfig()));
 	connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
 
     // Create dialog layout
@@ -1348,4 +1356,25 @@ RobotConfigFileDialog::RobotConfigFileDialog(
     dialog_layout->addWidget(tab_widget);
     dialog_layout->addWidget(button_box);
 	setLayout(dialog_layout);
+}
+
+void RobotConfigFileDialog::saveConfig()
+{
+    QString file_name = QFileDialog::getSaveFileName(this, tr("Save Robot Configuration File"),
+        QDir::homePath(), tr("XML files (*.xml)"));
+
+    if(file_name.isNull())
+        return;
+
+    robot_config->defaults();
+
+    general_tab->storeToConfig(robot_config);
+    sensors_tab->storeToConfig(&robot_config->sensors);
+    processed_data_tab->storeToConfig(&robot_config->processedData);
+    joints_tab->storeToConfig(&robot_config->joint_states);
+    //controls_tab->storeToConfig(&robot_config->controls);
+    //services_tab->storeToConfig(&robot_config->commands);
+    //diagnostics_tab->storeToConfig(&robot_config->diagnostics);
+
+    accept();
 }
