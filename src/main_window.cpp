@@ -692,10 +692,20 @@ void MainWindow::closeTab(int index)
  *****************************************************************************/
 void MainWindow::fullScreenChanged(bool checked)
 {
+    static bool prev_maximized = isMaximized();
+
 	if(checked)
+    {
+        prev_maximized = isMaximized();
 		showFullScreen();
+    }
 	else
-		showNormal();
+    {
+        if(prev_maximized)
+            showMaximized();
+        else
+		    showNormal();
+    }
 }
 
 void MainWindow::openTabInWindow()

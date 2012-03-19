@@ -52,6 +52,7 @@ MainTab::MainTab(const QString &robots, QWidget *parent)
 	createLayout();
 
 	setMinimumWidth(800);
+    setMinimumHeight(400);
 	setLayout(main_tab_layout);
 }
 
