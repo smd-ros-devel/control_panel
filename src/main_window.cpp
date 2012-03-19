@@ -217,10 +217,6 @@ void MainWindow::createMenuActions()
 	/**
 	** Edit Menu Actions
 	**/
-    master_settings_action = new QAction(tr("ROS &Master Settings"), this);
-    master_settings_action->setEnabled(false);
-    connect(master_settings_action, SIGNAL(triggered()), SLOT(editMasterSettings()));
-
 	configuration_file_action = new QAction(tr("Robot Configuration &File"), this);
     configuration_file_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
 	connect(configuration_file_action, SIGNAL(triggered()),
@@ -367,11 +363,9 @@ void MainWindow::createMenus()
 
 	// Create edit menu
     edit_menu = menuBar()->addMenu(tr("&Edit"));
-    //edit_menu->addAction(master_settings_action);
 	edit_menu->addAction(configuration_file_action);
     //edit_menu->addAction(topics_action);
     edit_menu->addAction(set_velocity_action);
-	//edit_menu->addSeparator();
 
 	// Create view menu
 	view_menu = menuBar()->addMenu(tr("&View"));
@@ -408,39 +402,6 @@ void MainWindow::createMenus()
 	help_menu->addAction(help_action);
 	help_menu->addSeparator();
     help_menu->addAction(about_action);
-}
-
-void MainWindow::editMasterSettings()
-{
-/*
-    MasterSettingsDialog master_settings;
-    master_settings.setMasterURI(QString(qt_node->getMasterURI().c_str()));
-    master_settings.setHostIP(QString(qt_node->getHostIP().c_str()));
-
-    if(master_settings.exec())
-    {
-
-        qt_node->stop();
-
-        if(!master_settings.disconnectPushed())
-        {
-
-            bool use_env_vars = master_settings.useEnvironmentalVariables();
-            if(!use_env_vars)
-            {
-                qt_node->setMasterURI(master_settings.getMasterURI());
-                qt_node->setHostIP(master_settings.getHostIP());
-            }
-
-            bool success = qt_node->init(use_env_vars);
-
-            main_tab->setMasterStatus(success);
-        }
-        else
-            main_tab->setMasterStatus(false);
-
-    }
-*/
 }
 
 void MainWindow::editRobotConfigFile()

@@ -64,9 +64,6 @@ void MainTab::createWidgets()
 	robot_list_label = new QLabel(tr("Robot List"));
 	robot_list_label->setFont(font);
 
-    ros_master_label = new QLabel(tr("ROS Master: "));
-    ros_master_label->setFont(font);
-
 	robot_list_scrollarea = new QScrollArea;
 	robot_list_scrollarea->setWidgetResizable(true);
 	robot_list_widget = new QWidget;

@@ -101,7 +101,6 @@ class MainTab : public QWidget
 		QVBoxLayout *main_tab_layout;
 
 		QLabel *robot_list_label;
-        QLabel *ros_master_label;
 
 		QScrollArea *robot_list_scrollarea;
 		QWidget *robot_list_widget;

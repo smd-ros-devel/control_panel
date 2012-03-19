@@ -53,7 +53,6 @@ QT_END_NAMESPACE
 #include "main_tab.h"
 #include "robot_tab.h"
 #include "robot_config_file_dialog.h"
-#include "master_settings_dialog.h"
 #include "globals.h"
 
 
@@ -98,7 +97,6 @@ class MainWindow : public QMainWindow
 		void editRobotConfigFile();
         void editTopics();
         void setMaxVelocity();
-        void editMasterSettings();
 		void fullScreenChanged(bool checked);
 		void help();
         void loadSelectedRobots(const QStringList &robot_list, bool auto_connect);
@@ -144,7 +142,6 @@ class MainWindow : public QMainWindow
         // Menu action items
         QAction *new_robot_action;
         QAction *exit_action;
-        QAction *master_settings_action;
 		QAction *configuration_file_action;
         QAction *topics_action;
         QAction *set_velocity_action;
