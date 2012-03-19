@@ -169,6 +169,19 @@ class ControlsTab : public QWidget
 
     public:
         ControlsTab(QWidget *parent = 0);
+
+    public slots:
+        void addControl();
+        void editControl(QTreeWidgetItem *item = 0);
+        void removeControl();
+
+    private:
+        enum ControlType
+        {
+            Teleop = 1001
+        };
+        QTreeWidget *controls_treewidget;
+        QComboBox *controls_combobox;
 };
 
 /**

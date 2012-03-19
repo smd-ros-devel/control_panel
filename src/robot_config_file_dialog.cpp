@@ -1198,13 +1198,21 @@ void JointsTab::storeToConfig(struct RobotJoints *robot_joints)
 ControlsTab::ControlsTab(QWidget *parent) : QWidget(parent)
 {
     QLabel *controls_label = new QLabel(tr("Controls"));
+
     QStringList controls_list;
     controls_list << "Teleoperation (Twist.msg)";
-    QComboBox *controls_combobox = new QComboBox;
-    controls_combobox->addItems(controls_list);
-    QPushButton *add_button = new QPushButton(tr("Add"));
 
-    QScrollArea *controls_scrollarea = new QScrollArea;
+    controls_combobox = new QComboBox;
+    controls_combobox->addItems(controls_list);
+
+    QPushButton *add_button = new QPushButton(tr("Add"));
+    connect(add_button, SIGNAL(clicked()), this, SLOT(addControl()));
+
+    QStringList column_list;
+    column_list << tr("Control") << tr("Values");
+
+    controls_treewidget = new QTreeWidget;
+    controls_treewidget->setHeaderLabels(column_list);
 
     QHBoxLayout *controls_hlayout = new QHBoxLayout;
     controls_hlayout->addWidget(controls_label, 0, Qt::AlignLeft);
@@ -1214,8 +1222,47 @@ ControlsTab::ControlsTab(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *controls_layout = new QVBoxLayout;
     controls_layout->addLayout(controls_hlayout);
-    controls_layout->addWidget(controls_scrollarea);
+    controls_layout->addWidget(controls_treewidget);
     setLayout(controls_layout);
+}
+
+void ControlsTab::addControl()
+{
+    QTreeWidgetItem *item;
+    ControlType type = ControlType(controls_combobox->currentIndex() + 1001);
+
+    QString type_str;
+    if(type == Teleop)
+        type_str = "Teleoperation";
+    else
+    {
+        std::cerr << "ERROR -- Unknown control type '" << type
+                  << "' encountered while adding control." << std::endl;
+        return;
+    }
+
+    if(type == Teleop)
+    {
+        bool ok;
+        QString topic_name = QInputDialog::getText(this, QString("Add %1").arg(type_str),
+            tr("Topic Name"), QLineEdit::Normal, QString(), &ok);
+
+        if(ok && !topic_name.isEmpty())
+        {
+            item = new QTreeWidgetItem(QStringList() << type_str << topic_name);
+            controls_treewidget->addTopLevelItem(item);
+        }
+    }
+}
+
+void ControlsTab::editControl(QTreeWidgetItem *item)
+{
+
+}
+
+void ControlsTab::removeControl()
+{
+
 }
 
 //////////////////////////// Services Tab ///////////////////////////////
