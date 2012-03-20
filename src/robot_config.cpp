@@ -33,6 +33,7 @@
  * \author Scott K Logan, Matt Richard
  */
 #include "control_panel/robot_config.h"
+#include <QTextStream>
 #include <iostream>
 
 RobotConfig::RobotConfig()
@@ -92,6 +93,46 @@ int RobotConfig::loadFrom(QFile *file, bool getComponents)
 	return 0; // OK
 }
 
+QFile * RobotConfig::exportData(QFile *file)
+{
+	QDomDocument doc("");
+
+	QDomElement root = doc.createElement("robot");
+	doc.appendChild(root);
+
+	QDomText txt;
+	QDomElement e;
+
+	/* Basic Elements */
+	e = doc.createElement("robotName");
+	txt = doc.createTextNode(robotName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("system");
+	txt = doc.createTextNode(system);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("driveSystem");
+	txt = doc.createTextNode(driveSystem);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("imageFile");
+	txt = doc.createTextNode(imageFilePath);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	root.appendChild(getSensors(doc));
+
+	QTextStream stream;
+	stream.setDevice(file);
+	doc.save(stream, 2);
+
+	return file;
+}
+
 void RobotConfig::processElement(QDomElement e, bool getComponents)
 {
 	if(e.tagName() == "robotName")
@@ -105,8 +146,8 @@ void RobotConfig::processElement(QDomElement e, bool getComponents)
 		if(!e.isNull() && !e.text().isEmpty())
 		{
 			imageFilePath = e.text();
-			if(imageFilePath[0] != '/')
-				imageFilePath.prepend(":images/");
+			if(imageFilePath[0] != '/' && imageFilePath[0] != ':')
+				imageFilePath.prepend(":/images/");
 			image.load(imageFilePath);
 		}
 	}
@@ -172,6 +213,26 @@ void RobotConfig::processSensors(QDomElement e)
 	}
 }
 
+QDomElement RobotConfig::getSensors(QDomDocument &doc)
+{
+	QDomElement root = doc.createElement("sensors");
+
+	for(unsigned int i = 0; i < sensors.cameras.size(); i++)
+		root.appendChild(getCamera(doc, sensors.cameras[i]));
+	for(unsigned int i = 0; i < sensors.lasers.size(); i++)
+		root.appendChild(getLaser(doc, sensors.lasers[i]));
+	for(unsigned int i = 0; i < sensors.gps.size(); i++)
+		root.appendChild(getGPS(doc, sensors.gps[i]));
+	for(unsigned int i = 0; i < sensors.compass.size(); i++)
+		root.appendChild(getCompass(doc, sensors.compass[i]));
+	for(unsigned int i = 0; i < sensors.imu.size(); i++)
+		root.appendChild(getIMU(doc, sensors.imu[i]));
+	for(unsigned int i = 0; i < sensors.range.size(); i++)
+		root.appendChild(getRange(doc, sensors.range[i]));
+
+	return root;
+}
+
 void RobotConfig::addCamera(QDomElement e)
 {
 	struct RobotCamera new_cam;
@@ -190,6 +251,23 @@ void RobotConfig::addCamera(QDomElement e)
 	sensors.cameras.insert(sensors.cameras.begin(), new_cam);
 }
 
+QDomElement RobotConfig::getCamera(QDomDocument &doc, struct RobotCamera &cam)
+{
+	QDomElement root = doc.createElement("camera");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(cam.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(cam.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 void RobotConfig::addLaser(QDomElement e)
 {
 	struct RobotLaser new_laser;
@@ -206,6 +284,23 @@ void RobotConfig::addLaser(QDomElement e)
 		n = n.nextSibling();
 	}
 	sensors.lasers.insert(sensors.lasers.begin(), new_laser);
+}
+
+QDomElement RobotConfig::getLaser(QDomDocument &doc, struct RobotLaser &laser)
+{
+	QDomElement root = doc.createElement("laser");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(laser.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(laser.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
 }
 
 void RobotConfig::addGPS(QDomElement e)
@@ -234,6 +329,44 @@ void RobotConfig::addGPS(QDomElement e)
 	sensors.gps.insert(sensors.gps.begin(), new_gps);
 }
 
+QDomElement RobotConfig::getGPS(QDomDocument &doc, struct RobotGPS &gps)
+{
+	QDomElement root = doc.createElement("gps");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(gps.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(gps.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	if(gps.longitude)
+	{
+		e = doc.createElement("longitude");
+		root.appendChild(e);
+	}
+	if(gps.latitude)
+	{
+		e = doc.createElement("latitude");
+		root.appendChild(e);
+	}
+	if(gps.altitude)
+	{
+		e = doc.createElement("altitude");
+		root.appendChild(e);
+	}
+	if(gps.covariance)
+	{
+		e = doc.createElement("positionCovariance");
+		root.appendChild(e);
+	}
+
+	return root;
+}
+
 void RobotConfig::addCompass(QDomElement e)
 {
 	struct RobotCompass new_compass;
@@ -250,6 +383,23 @@ void RobotConfig::addCompass(QDomElement e)
 		n = n.nextSibling();
 	}
 	sensors.compass.insert(sensors.compass.begin(), new_compass);
+}
+
+QDomElement RobotConfig::getCompass(QDomDocument &doc, struct RobotCompass &compass)
+{
+	QDomElement root = doc.createElement("compass");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(compass.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(compass.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
 }
 
 void RobotConfig::addIMU(QDomElement e)
@@ -286,6 +436,64 @@ void RobotConfig::addIMU(QDomElement e)
 	sensors.imu.insert(sensors.imu.begin(), new_imu);
 }
 
+QDomElement RobotConfig::getIMU(QDomDocument &doc, struct RobotIMU &imu)
+{
+	QDomElement root = doc.createElement("gps");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(imu.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(imu.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	if(imu.roll)
+	{
+		e = doc.createElement("roll");
+		root.appendChild(e);
+	}
+	if(imu.pitch)
+	{
+		e = doc.createElement("pitch");
+		root.appendChild(e);
+	}
+	if(imu.yaw)
+	{
+		e = doc.createElement("yaw");
+		root.appendChild(e);
+	}
+	if(imu.angularVelocity)
+	{
+		e = doc.createElement("angularVelocity");
+		root.appendChild(e);
+	}
+	if(imu.linearAcceleration)
+	{
+		e = doc.createElement("linearAcceleration");
+		root.appendChild(e);
+	}
+	if(imu.hideAttitude)
+	{
+		e = doc.createElement("hideAttitude");
+		root.appendChild(e);
+	}
+	if(imu.hideHeading)
+	{
+		e = doc.createElement("hideHeading");
+		root.appendChild(e);
+	}
+	if(imu.hideLabels)
+	{
+		e = doc.createElement("hideLabels");
+		root.appendChild(e);
+	}
+
+	return root;
+}
+
 void RobotConfig::addRange(QDomElement e)
 {
 	struct RobotRange new_range;
@@ -303,6 +511,24 @@ void RobotConfig::addRange(QDomElement e)
 	}
 	sensors.range.insert(sensors.range.begin(), new_range);
 }
+
+QDomElement RobotConfig::getRange(QDomDocument &doc, struct RobotRange &range)
+{
+	QDomElement root = doc.createElement("range");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(range.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(range.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 /////////////////////////// End Sensors /////////////////////////////
 
 
@@ -314,9 +540,7 @@ void RobotConfig::processJoints(QDomElement e)
     while(!n.isNull())
     {
         e = n.toElement();
-        if(e.tagName() == "joint")
-            addJoint(e);
-        else if(e.tagName() == "topicName")
+        if(e.tagName() == "topicName")
             joint_states.topicName = e.text();
         else if(e.tagName() == "position")
             joint_states.position = true;
@@ -324,10 +548,43 @@ void RobotConfig::processJoints(QDomElement e)
             joint_states.velocity = true;
         else if(e.tagName() == "effort")
             joint_states.effort = true;
+        else if(e.tagName() == "joint")
+            addJoint(e);
         else
             std::cerr << "WARNING: Unknown joints tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
     }
+}
+
+QDomElement RobotConfig::getJoints(QDomDocument &doc)
+{
+	QDomElement root = doc.createElement("joints");
+
+	QDomElement e = doc.createElement("topicName");
+	QDomText txt = doc.createTextNode(joint_states.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	if(joint_states.position)
+	{
+		e = doc.createElement("position");
+		root.appendChild(e);
+	}
+	if(joint_states.velocity)
+	{
+		e = doc.createElement("velocity");
+		root.appendChild(e);
+	}
+	if(joint_states.effort)
+	{
+		e = doc.createElement("effort");
+		root.appendChild(e);
+	}
+
+	for(unsigned int i = 0; i < joint_states.joints.size(); i++)
+		root.appendChild(getJoint(doc, joint_states.joints[i]));
+
+	return root;
 }
 
 void RobotConfig::addJoint(QDomElement e)
@@ -348,6 +605,23 @@ void RobotConfig::addJoint(QDomElement e)
     joint_states.joints.push_back(new_joint);
     //joint_states.joints.insert(joint_states.joints.begin(), new_joint);
     joint_states.used = true;
+}
+
+QDomElement RobotConfig::getJoint(QDomDocument &doc, struct RobotJoint &joint)
+{
+	QDomElement root = doc.createElement("joint");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(joint.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("displayName");
+	txt = doc.createTextNode(joint.displayName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
 }
 ////////////////////////// End Joints //////////////////////////////
 

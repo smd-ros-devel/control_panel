@@ -516,8 +516,9 @@ struct RobotConfig : public QObject
 		/* set all to defaults */
 		void defaults();
 
-		/* load from QFile */
+		/* load from / export to QFile */
 		int loadFrom(QFile *, bool = false);
+		QFile * exportData(QFile*);
 
 		/* proper name */
 		QString getRobotName();
@@ -526,30 +527,52 @@ struct RobotConfig : public QObject
 		/* process a core configuration element */
 		void processElement(QDomElement, bool);
 
-		/* process data */
-		void processSensors(QDomElement);
+        /* process data */
+        void processSensors(QDomElement);
+	QDomElement getSensors(QDomDocument &);
         void processJoints(QDomElement);
+	QDomElement getJoints(QDomDocument &);
         void processProcessedData(QDomElement);
-		void processDiagnostics(QDomElement);
-		void processCommands(QDomElement);
-		void processControls(QDomElement);
+	QDomElement getProcessedData(QDomDocument &);
+        void processDiagnostics(QDomElement);
+	QDomElement getDiagnostics(QDomDocument &);
+        void processCommands(QDomElement);
+	QDomElement getCommands(QDomDocument &);
+        void processControls(QDomElement);
+	QDomElement getControls(QDomDocument &);
 
-		void addCamera(QDomElement);
-		void addLaser(QDomElement);
-		void addGPS(QDomElement);
-		void addCompass(QDomElement);
-		void addIMU(QDomElement);
-		void addRange(QDomElement);
+        void addCamera(QDomElement);
+	QDomElement getCamera(QDomDocument &, struct RobotCamera &);
+        void addLaser(QDomElement);
+	QDomElement getLaser(QDomDocument &, struct RobotLaser &);
+        void addGPS(QDomElement);
+	QDomElement getGPS(QDomDocument &, struct RobotGPS &);
+        void addCompass(QDomElement);
+	QDomElement getCompass(QDomDocument &, struct RobotCompass &);
+        void addIMU(QDomElement);
+	QDomElement getIMU(QDomDocument &, struct RobotIMU &);
+        void addRange(QDomElement);
+	QDomElement getRange(QDomDocument &, struct RobotRange &);
         void addJoint(QDomElement);
+	QDomElement getJoint(QDomDocument &, struct RobotJoint &);
         void addImage(QDomElement);
+	QDomElement getImage(QDomDocument &, struct RobotImage &);
         void addDisparityImage(QDomElement);
+	QDomElement getDisparityImage(QDomDocument &, struct RobotDisparityImage &);
         void addMap(QDomElement);
+	QDomElement getMap(QDomDocument &, struct RobotMap &);
         void addOdometry(QDomElement);
-		void addTemperature(QDomElement);
-		void addVoltage(QDomElement);
-		void addBatteryLevel(QDomElement);
-		void addCommandCustom(QDomElement);
-		void addDrive(QDomElement);
+	QDomElement getOdometry(QDomDocument &, struct RobotOdometry &);
+        void addTemperature(QDomElement);
+	QDomElement getTemperature(QDomDocument &, struct RobotTemperature &);
+        void addVoltage(QDomElement);
+	QDomElement getVoltage(QDomDocument &, struct RobotVoltage &);
+        void addBatteryLevel(QDomElement);
+	QDomElement getBatteryLevel(QDomDocument &, struct RobotBatteryLevel &);
+        void addCommandCustom(QDomElement);
+	QDomElement getCommandCustom(QDomDocument &, struct RobotCommandCustom &);
+        void addDrive(QDomElement);
+	QDomElement getDrive(QDomDocument &, struct RobotDrive &);
 };
 
 #endif // CONTROL_PANEL_ROBOT_CONFIG_H

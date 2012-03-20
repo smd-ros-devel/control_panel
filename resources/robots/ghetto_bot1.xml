@@ -11,7 +11,11 @@
       <topicName>usb_cam/image_raw</topicName>
     </camera>
     <imu>
+     <name>IMU</name>
      <topicName>imu/data</topicName>
+     <roll/>
+     <pitch/>
+     <yaw/>
     </imu>
   </sensors>
 

@@ -1394,7 +1394,7 @@ RobotConfigFileDialog::RobotConfigFileDialog(
 
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
                                       QDialogButtonBox::Save);
-	//connect(button_box, SIGNAL(accepted()), this, SLOT(saveConfig()));
+	connect(button_box, SIGNAL(accepted()), this, SLOT(saveConfig()));
 	connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
 
     // Create dialog layout
@@ -1415,6 +1415,7 @@ void RobotConfigFileDialog::saveConfig()
 
     robot_config->defaults();
 
+    robot_config->configFilePath = file_name;
     general_tab->storeToConfig(robot_config);
     sensors_tab->storeToConfig(&robot_config->sensors);
     processed_data_tab->storeToConfig(&robot_config->processedData);
@@ -1422,6 +1423,16 @@ void RobotConfigFileDialog::saveConfig()
     //controls_tab->storeToConfig(&robot_config->controls);
     //services_tab->storeToConfig(&robot_config->commands);
     //diagnostics_tab->storeToConfig(&robot_config->diagnostics);
+
+    QFile file(robot_config->configFilePath);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        std::cerr << "ERROR: Could not open " << robot_config->configFilePath.toStdString( ) << " for writing!" << std::endl;
+        return;
+    }
+    else
+        robot_config->exportData(&file);
+    file.close();
 
     accept();
 }
