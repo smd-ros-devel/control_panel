@@ -87,6 +87,7 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
     QLabel *namespace_label = new QLabel(tr("Namespace"));
     namespace_lineedit = new QLineEdit(robot_config->nameSpace);
 
+    // General tab layout
     QHBoxLayout *image_file_hlayout = new QHBoxLayout;
     image_file_hlayout->addWidget(image_file_lineedit);
     image_file_hlayout->addWidget(browse_button);
@@ -108,7 +109,7 @@ GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
 void GeneralTab::findImageFile()
 {
     QString path;
-    if(image_file_lineedit->text() != "")
+    if(!image_file_lineedit->text().isEmpty())
     {
         QFileInfo file(image_file_lineedit->text());
         if(file.exists())
@@ -127,6 +128,8 @@ void GeneralTab::findImageFile()
 
 void GeneralTab::storeToConfig(struct RobotConfig *robot_config)
 {
+    std::cout << "Storing general info to robot configuration struct" << std::endl;
+
     robot_config->robotName = robot_name_lineedit->text();
     robot_config->system = system_combobox->currentText();
     robot_config->driveSystem = drive_system_lineedit->text();
@@ -610,71 +613,74 @@ void SensorsTab::removeSensor()
 
 void SensorsTab::storeToConfig(struct RobotSensors *robot_sensors)
 {
-    QTreeWidgetItemIterator it(sensors_treewidget);
-    while(*it)
+    std::cout << "Storing sensors to robot configuration struct" << std::endl;
+
+    QTreeWidgetItem *item;
+    /* Loop through all top level items */
+    for(int i = 0; i < sensors_treewidget->topLevelItemCount(); i++)
     {
-        if((*it)->type() == Camera)
+        item = sensors_treewidget->topLevelItem(i);
+
+        if(item->type() == Camera)
         {
             struct RobotCamera temp_camera;
-            temp_camera.name = (*it)->child(0)->text(1);
-            temp_camera.topicName = (*it)->child(1)->text(1);
+            temp_camera.name = item->child(0)->text(1);
+            temp_camera.topicName = item->child(1)->text(1);
 
             robot_sensors->cameras.push_back(temp_camera);
         }
-        else if((*it)->type() == Compass)
+        else if(item->type() == Compass)
         {
             /* @todo Store compass to configuration file */
         }
-        else if((*it)->type() == Gps)
+        else if(item->type() == Gps)
         {
             struct RobotGPS temp_gps;
-            temp_gps.name = (*it)->child(0)->text(1);
-            temp_gps.topicName = (*it)->child(1)->text(1);
-            temp_gps.latitude = checkStateToBool((*it)->child(2)->checkState(1));
-            temp_gps.longitude = checkStateToBool((*it)->child(3)->checkState(1));
-            temp_gps.altitude = checkStateToBool((*it)->child(4)->checkState(1));
+            temp_gps.name = item->child(0)->text(1);
+            temp_gps.topicName = item->child(1)->text(1);
+            temp_gps.latitude = checkStateToBool(item->child(2)->checkState(1));
+            temp_gps.longitude = checkStateToBool(item->child(3)->checkState(1));
+            temp_gps.altitude = checkStateToBool(item->child(4)->checkState(1));
 
             robot_sensors->gps.push_back(temp_gps);
         }
-        else if((*it)->type() == Imu)
+        else if(item->type() == Imu)
         {
             struct RobotIMU temp_imu;
-            temp_imu.name = (*it)->child(0)->text(1);
-            temp_imu.topicName = (*it)->child(1)->text(1);
-            temp_imu.roll = checkStateToBool((*it)->child(2)->checkState(1));
-            temp_imu.pitch = checkStateToBool((*it)->child(3)->checkState(1));
-            temp_imu.yaw = checkStateToBool((*it)->child(4)->checkState(1));
-            temp_imu.angularVelocity = checkStateToBool((*it)->child(5)->checkState(1));
-            temp_imu.linearAcceleration = checkStateToBool((*it)->child(6)->checkState(1));
-            temp_imu.hideAttitude = !checkStateToBool((*it)->child(7)->checkState(1));
-            temp_imu.hideHeading = !checkStateToBool((*it)->child(8)->checkState(1));
-            temp_imu.hideLabels = !checkStateToBool((*it)->child(9)->checkState(1));
+            temp_imu.name = item->child(0)->text(1);
+            temp_imu.topicName = item->child(1)->text(1);
+            temp_imu.roll = checkStateToBool(item->child(2)->checkState(1));
+            temp_imu.pitch = checkStateToBool(item->child(3)->checkState(1));
+            temp_imu.yaw = checkStateToBool(item->child(4)->checkState(1));
+            temp_imu.angularVelocity = checkStateToBool(item->child(5)->checkState(1));
+            temp_imu.linearAcceleration = checkStateToBool(item->child(6)->checkState(1));
+            temp_imu.hideAttitude = !checkStateToBool(item->child(7)->checkState(1));
+            temp_imu.hideHeading = !checkStateToBool(item->child(8)->checkState(1));
+            temp_imu.hideLabels = !checkStateToBool(item->child(9)->checkState(1));
 
             robot_sensors->imu.push_back(temp_imu);
         }
-        else if((*it)->type() == Laser)
+        else if(item->type() == Laser)
         {
             struct RobotLaser temp_laser;
-            temp_laser.name = (*it)->child(0)->text(1);
-            temp_laser.topicName = (*it)->child(1)->text(1);
+            temp_laser.name = item->child(0)->text(1);
+            temp_laser.topicName = item->child(1)->text(1);
 
             robot_sensors->lasers.push_back(temp_laser);
         }
-        else if((*it)->type() == Range)
+        else if(item->type() == Range)
         {
             struct RobotRange temp_range;
-            temp_range.name = (*it)->child(0)->text(1);
-            temp_range.topicName = (*it)->child(1)->text(1);
+            temp_range.name = item->child(0)->text(1);
+            temp_range.topicName = item->child(1)->text(1);
 
             robot_sensors->range.push_back(temp_range);
         }
         else
         {
-            std::cerr << "ERROR -- Unknown sensor type '" << (*it)->type()
+            std::cerr << "ERROR -- Unknown sensor type '" << item->type()
                       << "' encountered when storing sensors to config file." << std::endl;
         }
-
-        it++;
     }
 }
 
@@ -1003,55 +1009,58 @@ void ProcessedDataTab::removeProcessedData()
 
 void ProcessedDataTab::storeToConfig(struct RobotProcessedData *robot_processed_data)
 {
-    QTreeWidgetItemIterator it(processed_data_treewidget);
-    while(*it)
+    std::cout << "Storing processed data to robot configuration struct" << std::endl;
+
+    QTreeWidgetItem *item;
+    /* Loop through top level items and store to config struct */
+    for(int i = 0; i < processed_data_treewidget->topLevelItemCount(); i++)
     {
-        if((*it)->type() == DisparityImage)
+        item = processed_data_treewidget->topLevelItem(i);
+
+        if(item->type() == DisparityImage)
         {
             struct RobotDisparityImage temp_disp_image;
-            temp_disp_image.name = (*it)->child(0)->text(1);
-            temp_disp_image.topicName = (*it)->child(1)->text(1);
+            temp_disp_image.name = item->child(0)->text(1);
+            temp_disp_image.topicName = item->child(1)->text(1);
 
             robot_processed_data->disparity_images.push_back(temp_disp_image);
         }
-        else if((*it)->type() == Map)
+        else if(item->type() == Map)
         {
             struct RobotMap temp_map;
-            temp_map.name = (*it)->child(0)->text(1);
-            temp_map.topicName = (*it)->child(1)->text(1);
+            temp_map.name = item->child(0)->text(1);
+            temp_map.topicName = item->child(1)->text(1);
 
             robot_processed_data->maps.push_back(temp_map);
         }
-        else if((*it)->type() == Odometry)
+        else if(item->type() == Odometry)
         {
             struct RobotOdometry temp_odom;
-            temp_odom.name = (*it)->child(0)->text(1);
-            temp_odom.topicName = (*it)->child(1)->text(1);
-            temp_odom.position = checkStateToBool((*it)->child(2)->checkState(1));
-            temp_odom.orientation = checkStateToBool((*it)->child(3)->checkState(1));
-            temp_odom.linearVelocity = checkStateToBool((*it)->child(4)->checkState(1));
-            temp_odom.angularVelocity = checkStateToBool((*it)->child(5)->checkState(1));
-            temp_odom.hideAttitude = !checkStateToBool((*it)->child(6)->checkState(1));
-            temp_odom.hideHeading = !checkStateToBool((*it)->child(7)->checkState(1));
-            temp_odom.hideLabels = !checkStateToBool((*it)->child(8)->checkState(1));
+            temp_odom.name = item->child(0)->text(1);
+            temp_odom.topicName = item->child(1)->text(1);
+            temp_odom.position = checkStateToBool(item->child(2)->checkState(1));
+            temp_odom.orientation = checkStateToBool(item->child(3)->checkState(1));
+            temp_odom.linearVelocity = checkStateToBool(item->child(4)->checkState(1));
+            temp_odom.angularVelocity = checkStateToBool(item->child(5)->checkState(1));
+            temp_odom.hideAttitude = !checkStateToBool(item->child(6)->checkState(1));
+            temp_odom.hideHeading = !checkStateToBool(item->child(7)->checkState(1));
+            temp_odom.hideLabels = !checkStateToBool(item->child(8)->checkState(1));
 
             robot_processed_data->odometry.push_back(temp_odom);
         }
-        else if((*it)->type() == ProcessedImage)
+        else if(item->type() == ProcessedImage)
         {
             struct RobotCamera temp_image;
-            temp_image.name = (*it)->child(0)->text(1);
-            temp_image.topicName = (*it)->child(1)->text(1);
+            temp_image.name = item->child(0)->text(1);
+            temp_image.topicName = item->child(1)->text(1);
 
             robot_processed_data->images.push_back(temp_image);
         }
         else
         {
-            std::cerr << "ERROR -- Unknown sensor type '" << (*it)->type()
+            std::cerr << "ERROR -- Unknown processed data type '" << item->type()
                       << "' encountered when storing sensors to config file." << std::endl;
         }
-
-        it++;
     }
 }
 
@@ -1175,6 +1184,8 @@ void JointsTab::removeJoint()
 
 void JointsTab::storeToConfig(struct RobotJoints *robot_joints)
 {
+    std::cout << "Storing joints to robot configuration struct" << std::endl;
+
     robot_joints->topicName = topic_name_lineedit->text();
     robot_joints->position = position_checkbox->isChecked();
     robot_joints->velocity = velocity_checkbox->isChecked();
@@ -1190,6 +1201,8 @@ void JointsTab::storeToConfig(struct RobotJoints *robot_joints)
 
         robot_joints->joints.push_back(temp_joint);
         robot_joints->used = true;
+
+        it++;
     }
 }
 
@@ -1412,6 +1425,9 @@ void RobotConfigFileDialog::saveConfig()
 
     if(file_name.isNull())
         return;
+
+    if(!file_name.endsWith(QString(".xml")))
+        file_name.append(".xml");
 
     robot_config->defaults();
 

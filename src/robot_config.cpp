@@ -438,7 +438,7 @@ void RobotConfig::addIMU(QDomElement e)
 
 QDomElement RobotConfig::getIMU(QDomDocument &doc, struct RobotIMU &imu)
 {
-	QDomElement root = doc.createElement("gps");
+	QDomElement root = doc.createElement("imu");
 
 	QDomElement e = doc.createElement("name");
 	QDomText txt = doc.createTextNode(imu.name);
