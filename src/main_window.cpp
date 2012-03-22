@@ -714,19 +714,20 @@ void MainWindow::openTabInWindow()
 
 void MainWindow::newRobotConfigFile()
 {
-	/**
-	 * TODO:
-	 * Where do we put the new configuration?
-	 **/
-	RobotConfig *new_robot_config = new RobotConfig;
+	struct RobotConfig *new_robot_config = new RobotConfig;
 
 	RobotConfigFileDialog new_robot_dialog(new_robot_config);
 	new_robot_dialog.setWindowTitle("New Robot Configuration File");
 
 	if(new_robot_dialog.exec())
-	{
+    {
+        main_tab->insertRobot(new_robot_config);
 
-	}
+        /* @todo Store robot config path in a QStringList and set a flag so
+                 we know to save that path when the Control Panel closes. */
+    }
+
+    delete new_robot_config;
 }
 
 /******************************************************************************

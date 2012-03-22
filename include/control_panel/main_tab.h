@@ -77,6 +77,8 @@ class MainTab : public QWidget
          */
         QStringList getSelectedRobots();
 
+        void insertRobot(struct RobotConfig *config, bool sorted = true);
+
         /**
          * \brief Returns the number of RobotWidgets that are selected.
          */

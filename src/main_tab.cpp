@@ -135,6 +135,32 @@ QStringList MainTab::getSelectedRobots()
     return robot_list;
 }
 
+void MainTab::insertRobot(struct RobotConfig *config, bool sorted)
+{
+    bool found = false;
+    int i;
+
+    robot_widget = new RobotWidget;
+    robot_widget->setRobot(config);
+    connect(robot_widget, SIGNAL(singleRobotSelected(const QStringList &, bool)),
+            this, SIGNAL(loadRobots(const QStringList &, bool)));
+
+    if(sorted)
+    {
+        // Find the correct position to insert the robot
+        for(i = 0; i < robot_list_layout->count() - 1 && !found; i++)
+            if(((RobotWidget *)robot_list_layout->itemAt(i)->widget())->getRobotName() > config->robotName)
+                found = true;
+
+        if(found) // Found a position to insert the robot
+            robot_list_layout->insertWidget(i - 1, robot_widget);
+        else // Insert robot at end of list
+            robot_list_layout->insertWidget(i, robot_widget);
+    }
+    else // Insert robot at end of list
+        robot_list_layout->insertWidget(robot_list_layout->count() - 1, robot_widget);
+}
+
 int MainTab::numSelected()
 {
     int count = 0;
