@@ -76,24 +76,15 @@ BatteryDisplay::BatteryDisplay(QWidget *parent) : QGraphicsView(parent)
 	setBatteryLevel(0.0);
 }
 
-int BatteryDisplay::getBatteryLevel() const
-{
-	return battery_level;
-}
-
 void BatteryDisplay::setBatteryLevel(float level)
 {
 	// Set battery level and update display
 	battery_level = level;
-	updateBatteryDisplay();
-}
-
-void BatteryDisplay::updateBatteryDisplay()
-{
 	battery_level_item->setRect(0, 0, 90 * (battery_level / 100.0) + 5,
 		scene->height());
 
 	battery_text_item->setPlainText(QString("%1%").arg(battery_level));
+	// Center text
 	battery_text_item->setPos((scene->width() / 2.0) -
 		(battery_text_item->boundingRect().width() / 2.0),
 		(scene->height() - battery_text_item->boundingRect().height()) / 2.0);

@@ -44,34 +44,67 @@ QT_END_NAMESPACE
 
 #include "artificial_horizon.h"
 
-struct Attitude
-{
-    double roll;  // -180 to 180 degrees
-    double pitch; //  -90 to  90 degrees
-    //double altitude;
-};
-
-
+/**
+ * \class AttitudeIndicator
+ * \brief A graphical display of a robot's roll and pitch.
+ */
 class AttitudeIndicator : public QGraphicsView
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        AttitudeIndicator(QWidget *parent = 0);
-        double getRoll() const;
-        double getPitch() const;
-        void setRoll(double angle);
-        void setPitch(double angle);
-        void setAttitude(double roll_angle, double pitch_angle);
+	public:
+		/**
+		 * \brief Contructor. Creates the scene and view.
+		 *
+		 * \param parent The parent widget.
+		 */
+		AttitudeIndicator(QWidget *parent = 0);
 
-    private:
-        void updateAttitudeIndicator();
+		/**
+		 * \brief Returns the current roll
+		 */
+		double getRoll() const { return roll; }
 
-        QGraphicsScene *scene;
-        QGraphicsPixmapItem *crosshair_item;
-        QGraphicsPixmapItem *cover_item;
-        ArtificialHorizon *artificial_horizon_item;
-        Attitude attitude_data;
+		/**
+		 * \brief Returns the current pitch
+		 */
+		double getPitch() const { return pitch; }
+
+		/**
+		 * \brief Sets the roll and updates the display.
+		 *
+		 * \param angle New roll angle in degrees.
+		 */
+		void setRoll(double angle);
+
+		/**
+		 * \brief Sets the pitch and updates the display.
+		 *
+		 * \param angle New pitch angle in degrees.
+		 */
+		void setPitch(double angle);
+
+		/**
+		 * \brief Sets both the roll and pitch, then updates the display with these new values
+		 *
+		 * \param roll_angle  New roll angle in degrees.
+		 * \param pitch_angle New pitch angle in degrees.
+		 */
+		void setAttitude(double roll_angle, double pitch_angle);
+
+	private:
+		/**
+		 * \brief Updates the artificial horizon with the current values of roll and pitch.
+		 */
+		void updateAttitudeIndicator();
+
+		QGraphicsScene *scene;
+		QGraphicsPixmapItem *crosshair_item;
+		QGraphicsPixmapItem *cover_item;
+		ArtificialHorizon *artificial_horizon_item;
+
+		double roll;
+		double pitch;
 };
 
 #endif // CONTROL_PANEL_ATTITUDE_INDICATOR_H

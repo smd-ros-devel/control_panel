@@ -43,40 +43,88 @@ class QHBoxLayout;
 class QLabel;
 QT_END_NAMESPACE
 
-#include "control_panel/globals.h"
-
+/**
+ * \class GpsDisplay
+ * \brief Widget for displaying latitude, logitude, and altitude from a robot's GPS device.
+ */
 class GpsDisplay : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        GpsDisplay(QWidget *parent = 0);
-        GpsDisplay(const QString &name, bool show_lat = true,
-            bool show_long = true, bool show_alt = false, QWidget *parent = 0);
-        void zeroValues();
+	public:
+		/**
+		 * \brief Constructor. Assumes use of all GPS attributes (latitude, logitude, and altitude).
+		 *
+		 * \param parent The parent widget.
+		 */
+		GpsDisplay(QWidget *parent = 0);
 
-    public slots:
-        void updateGpsDisplay(double lat, double lon, double alt = 0.0);
+		/**
+		 * \brief Constructor. Allows for indication of what GPS attributes to display.
+		 *
+		 * \param name      The GPS device name to be displayed.
+		 * \param show_lat  Indicates whether the latitude label should be displayed.
+		 * \param show_long Indicates whether the longitude label should be displayed.
+		 * \param show_alt  Indicates whether the altitude label should be displayed.
+		 * \param parent    The parent widget.
+		 */
+		GpsDisplay(const QString &name, bool show_lat = true,
+			   bool show_long = true, bool show_alt = false,
+			   QWidget *parent = 0);
 
-    private:
-        void createWidget();
+		/**
+		 * \brief Returns the current value of latitude.
+		 */
+		double getLatitude() const { return latitude; }
 
-        QHBoxLayout *widget_layout;
+		/**
+		 * \brief Returns the current value of longitude.
+		 */
+		double getLongitude() const { return longitude; }
 
-        QString gps_name;
+		/**
+		 * \brief Returns the current value of altitude.
+		 */
+		double getAltitude() const { return altitude; }
 
-        bool use_lat;
-        bool use_long;
-        bool use_alt;
+		/**
+		 * \brief Zeros latitude, logitude, and altitude values.
+		 */
+		void zeroValues();
 
-        double latitude;
-        double longitude;
-        double altitude;
+	public slots:
+		/**
+		 * \brief SLOT that will update the latitude, longitude, and altitude labels.
+		 *
+		 * \param lat New latitude value.
+		 * \param lon New longitude value.
+		 * \param alt New altitude value, if used.
+		 */
+		void updateGpsDisplay(double lat, double lon, double alt = 0.0);
 
-        QLabel *name_label;
-        QLabel *latitude_label;
-        QLabel *longitude_label;
-        QLabel *altitude_label;
+	private:
+		/**
+		 * \brief Dynamically layouts the widget according to the flags set when the widget was created.
+		 */
+		void createWidget();
+
+		QHBoxLayout *widget_layout;
+
+		QString gps_name;
+
+		// Flags indicating what attributes the robot's GPS device has
+		bool use_lat;
+		bool use_long;
+		bool use_alt;
+
+		double latitude;
+		double longitude;
+		double altitude;
+
+		QLabel *name_label;
+		QLabel *latitude_label;
+		QLabel *longitude_label;
+		QLabel *altitude_label;
 };
 
 #endif // CONTROL_PANEL_GPS_DISPLAY_H

@@ -37,70 +37,54 @@
 
 ArtificialHorizon::ArtificialHorizon()
 {
-    setFlag(QGraphicsItem::ItemClipsToShape);
+	// Load artificial horizon image
+	QPixmap horizon_pixmap(
+		":/images/attitude_indicator/artificial_horizon.png");
 
-    QPixmap artificial_horizon_pixmap(":/images/attitude_indicator/artificial_horizon.png");
-
-    setPixmap(artificial_horizon_pixmap);
-
-    center_x = artificial_horizon_pixmap.width() / 2.0;
-    center_y = artificial_horizon_pixmap.height() / 2.0;
-    offset = 50;
-    scene_width = 100;
-    scene_height = 100;
-    roll = 0;
-    pitch = 0;
+	// Initialize variables
+	center_x = horizon_pixmap.width() / 2.0;
+	center_y = horizon_pixmap.height() / 2.0;
+	offset = 50;
+	scene_width = 100;
+	scene_height = 100;
+	roll = 0;
+	pitch = 0;
 
 
-    // Initialize artificial horizon
-    setTransformOriginPoint(center_x, center_y);
-    setPos(-1.0 * center_x + offset, -1.0 * center_y + offset);
+	// Set graphics pixmap item's properties
+	setPixmap(horizon_pixmap);
+	setFlag(QGraphicsItem::ItemClipsToShape);
+	setTransformOriginPoint(center_x, center_y);
+	setPos(-1.0 * center_x + offset, -1.0 * center_y + offset);
 }
 
-/******************************************************************************
-** Function:    boundingRect
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     QRectF - the bounding rectangle
-** Description:
-******************************************************************************/
 QRectF ArtificialHorizon::boundingRect() const
 {
-    return QRectF(center_x - offset, center_y - offset - pitch,
-                  scene_width, scene_height);
+	// Calculate bounding rectangle
+	return QRectF(center_x - offset, center_y - offset - pitch,
+		scene_width, scene_height);
 }
 
-/******************************************************************************
-** Function:    shape
-** Author:      Matt Richard
-** Parameters:  None
-** Returns:     QPainterPath - 
-** Description:
-******************************************************************************/
 QPainterPath ArtificialHorizon::shape() const
 {
-    QPainterPath path;
-    path.addEllipse(boundingRect());
+	// Clip to circle
+	QPainterPath path;
+	path.addEllipse(boundingRect());
 
-    return path;
+	return path;
 }
 
-/******************************************************************************
-** Function:    updateArtificialHorizon
-** Author:      Matt Richard
-** Parameters:  int roll_angle -
-**              int pitch angle - 
-** Returns:     void
-** Description: 
-******************************************************************************/
-void ArtificialHorizon::updateArtificialHorizon(int roll_angle, int pitch_angle)
+void ArtificialHorizon::updateArtificialHorizon(int roll_angle,
+	int pitch_angle)
 {
-    roll = roll_angle;
-    pitch = pitch_angle;
+	// Update roll and pitch
+	roll = roll_angle;
+	pitch = pitch_angle;
 
-    setPos(x(), -1.0 * center_y + offset + pitch);
+	// Translate pixmap (pitch)
+	setPos(x(), -1.0 * center_y + offset + pitch);
 
-    setTransformOriginPoint(center_x, center_y - pitch);
-
-    setRotation(roll);
+	// Update transformation point and rotate pixmap
+	setTransformOriginPoint(center_x, center_y - pitch);
+	setRotation(roll);
 }

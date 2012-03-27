@@ -50,6 +50,8 @@ QT_END_NAMESPACE
  */
 class BatteryDisplay : public QGraphicsView
 {
+	Q_OBJECT
+
 	public:
 		/**
 		 * \brief Contruct. Sets up the display
@@ -61,21 +63,16 @@ class BatteryDisplay : public QGraphicsView
 		/**
 		 * \brief Returns the current battery level
 		 */
-		int getBatteryLevel() const;
+		int getBatteryLevel() const { return battery_level; }
 
 		/**
-		 * \brief Sets the current battery level and updates the graphical display.
+		 * \brief Sets the current battery level and updates the graphics display.
 		 *
 		 * \param level New battery level.
 		 */
 		void setBatteryLevel(float level);
 
 	private:
-		/**
-		 * \brief Updates the display with the set battery level.
-		 */
-		void updateBatteryDisplay();
-
 		QGraphicsScene *scene;
 		QGraphicsRectItem *battery_level_item;
 		QGraphicsPixmapItem *battery_background_item;

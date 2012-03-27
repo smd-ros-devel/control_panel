@@ -37,23 +37,55 @@
 
 #include <QGraphicsPixmapItem>
 
+/**
+ * \class ArtificialHorizon
+ * \brief An artificial horizon graphic that is used in the attitude indicator.
+ */
 class ArtificialHorizon : public QGraphicsPixmapItem
 {
-    public:
-        ArtificialHorizon();
-        QRectF boundingRect() const;
-        QPainterPath shape() const;
-        void updateArtificialHorizon(int roll_angle, int pitch_angle);
+	public:
+		/**
+		 * \brief Constructor. Loads and sets the pixmap for the graphics item.
+		 */
+		ArtificialHorizon();
 
-    private:
-        float center_x;
-        float center_y;
-        int offset;
-        int scene_width;
-        int scene_height;
+		/**
+		 * \brief Overloaded function that returns the item's bounding rectangle.
+		 */
+		QRectF boundingRect() const;
 
-        int roll;
-        int pitch;
+		/**
+		 * \brief Overloaded function that clips the item's shape to a circle.
+		 */
+		QPainterPath shape() const;
+
+		/**
+		 * \brief Updates roll and pitch and then translates and rotates the graphics item accordingly.
+		 *
+		 * \param roll_angle  The new roll in degrees.
+		 * \param pitch_angle The new pitch in degrees.
+		 */
+		void updateArtificialHorizon(int roll_angle, int pitch_angle);
+
+		/**
+		 * \brief Returns the current pitch.
+		 */
+		int getPitch() const { return pitch; }
+
+		/**
+		 * \brief Returns the current roll.
+		 */
+		int getRoll() const { return roll; }
+
+	private:
+		float center_x; // x-axis center of loaded pixmap
+		float center_y; // y-axis center of loaded pixmap
+		int offset;     // Pixmap offset
+		int scene_width;
+		int scene_height;
+
+		int roll;
+		int pitch;
 };
 
 #endif // CONTROL_PANEL_ARTIFICIAL_HORIZON_H

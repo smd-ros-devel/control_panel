@@ -30,160 +30,148 @@
 /**
  * \file   gps_display.cpp
  * \date   Jan 20, 2012
- * A\author Matt Richard
+ * \author Matt Richard
  */
 #include <QtGui>
 #include "control_panel/widgets/gps_display.h"
+#include "control_panel/globals.h"
 
-/**
- * This constructor assumes use of all labels
- **/
-GpsDisplay::GpsDisplay(QWidget *parent)
+GpsDisplay::GpsDisplay(QWidget *parent) : QWidget(parent)
 {
-    gps_name = "GPS";
+	gps_name = "GPS";
 
-    use_lat = true;
-    use_long = true;
-    use_alt = true;
+	// Assume use of all labels
+	use_lat = true;
+	use_long = true;
+	use_alt = true;
 
-    createWidget();
+	createWidget();
 }
 
-/**
- * Allows only certain labels to be displayed
- **/
 GpsDisplay::GpsDisplay(const QString &name, bool show_lat, bool show_long,
-    bool show_alt, QWidget *parent) : QWidget(parent)
+	bool show_alt, QWidget *parent) : QWidget(parent)
 {
-    if(name == "")
-        gps_name = "GPS";
-    else
-        gps_name = name;
+	if(name.isEmpty())
+		gps_name = "GPS";
+	else
+		gps_name = name;
 
-    use_lat = show_lat;
-    use_long = show_long;
-    use_alt = show_alt;
+	use_lat = show_lat;
+	use_long = show_long;
+	use_alt = show_alt;
 
-    createWidget();
+	createWidget();
 }
 
-/**
- * Initializes widgets and creates layout
- **/
 void GpsDisplay::createWidget()
 {
-    // counter for the grid layout
-    int rows = 0;
+	// counter for the grid layout
+	int rows = 0;
 
-    // initialize priavte variables
-    zeroValues();
+	// initialize priavte variables
+	zeroValues();
 
-    widget_layout = new QHBoxLayout;
-    //widget_layout->addStretch();
+	widget_layout = new QHBoxLayout;
 
-    // Grid layout for labels
-    QGridLayout *gps_gridlayout = new QGridLayout;
+	// Grid layout for labels
+	QGridLayout *gps_gridlayout = new QGridLayout;
 
-    if(use_lat || use_long || use_alt)
-    {
-        name_label = new QLabel(gps_name);
+	// Only display the GPS name if any attributes will be displayed
+	if(use_lat || use_long || use_alt)
+	{
+		name_label = new QLabel(gps_name);
 
-        gps_gridlayout->addWidget(name_label, rows, 0, 1, 0);
-        rows++;
+		gps_gridlayout->addWidget(name_label, rows, 0, 1, 0);
+		rows++;
 
-        gps_gridlayout->setColumnMinimumWidth(1, 8);
-    }
+		gps_gridlayout->setColumnMinimumWidth(1, 8);
+	}
 
-    // Create latitude label and add to layout
-    if(use_lat)
-    {
-        QLabel *lat_str = new QLabel("Latitude:");
-        latitude_label = new QLabel;
+	// Create latitude label and add to layout
+	if(use_lat)
+	{
+		latitude_label = new QLabel;
 
-        gps_gridlayout->addWidget(lat_str, rows, 0, Qt::AlignLeft);
-        gps_gridlayout->addWidget(latitude_label, rows, 1, Qt::AlignLeft);
-        rows++;
-    }
+		gps_gridlayout->addWidget(new QLabel(tr("Latitude: ")), rows, 0, Qt::AlignLeft);
+		gps_gridlayout->addWidget(latitude_label, rows, 1, Qt::AlignRight);
+		rows++;
+	}
 
-    // Create longitude label and add to layout
-    if(use_long)
-    {
-        QLabel *long_str = new QLabel("Longitude:");
-        longitude_label = new QLabel;
+	// Create longitude label and add to layout
+	if(use_long)
+	{
+		longitude_label = new QLabel;
 
-        gps_gridlayout->addWidget(long_str, rows, 0, Qt::AlignLeft);
-        gps_gridlayout->addWidget(longitude_label, rows, 1, Qt::AlignLeft);
-        rows++;
-    }
+		gps_gridlayout->addWidget(new QLabel(tr("Longitude: ")), rows, 0, Qt::AlignLeft);
+		gps_gridlayout->addWidget(longitude_label, rows, 1, Qt::AlignRight);
+		rows++;
+	}
 
-    // Create altitude label and add to layout
-    if(use_alt)
-    {
-        QLabel *alt_str = new QLabel("Altitude:");
-        altitude_label = new QLabel;
+	// Create altitude label and add to layout
+	if(use_alt)
+	{
+		altitude_label = new QLabel;
 
-        gps_gridlayout->addWidget(alt_str, rows, 0, Qt::AlignLeft);
-        gps_gridlayout->addWidget(altitude_label, rows, 1, Qt::AlignLeft);
-        rows++;
-    }
+		gps_gridlayout->addWidget(new QLabel(tr("Altitude: ")), rows, 0, Qt::AlignLeft);
+		gps_gridlayout->addWidget(altitude_label, rows, 1, Qt::AlignLeft);
+		rows++;
+	}
 
-    widget_layout->addLayout(gps_gridlayout);
-    //widget_layout->addStretch();
-
-    setLayout(widget_layout);
+	widget_layout->addLayout(gps_gridlayout);
+	setLayout(widget_layout);
 }
 
-/**
- * Zeros all private data variables
- **/
 void GpsDisplay::zeroValues()
 {
-    latitude = 0.0;
-    longitude = 0.0;
-    altitude = 0.0;
+	// Zero private variables
+	latitude = 0.0;
+	longitude = 0.0;
+	altitude = 0.0;
 }
 
 void GpsDisplay::updateGpsDisplay(double lat, double lon, double alt)
 {
-    char direction;
+	char direction; // N, S, E, or W
 
-    latitude = lat;
-    longitude = lon;
-    altitude = alt;
+	latitude = lat;
+	longitude = lon;
+	altitude = alt;
 
-    // Update latitude
-    if(use_lat)
-    {
-        // Check latitude direction
-        if(lat >= 0)
-            direction = 'N';
-        else
-        {
-            direction = 'S';
-            lat *= -1;
-        }
+	// Update latitude
+	if(use_lat)
+	{
+		// Check latitude direction
+		if(latitude >= 0)
+			direction = 'N';
+		else
+		{
+			direction = 'S';
+			latitude *= -1; // Set latitude to be positive
+		}
 
-        latitude_label->setText(QString("%1 ").arg(lat, 0, 'f', 3) +
-            Globals::DegreesSymbol + direction);
-    }
+		latitude_label->setText(QString("%1 ").arg(latitude, 0, 'f', 3) +
+			Globals::DegreesSymbol + direction);
+	}
 
-    // Update longitude
-    if(use_long)
-    {
-        // Check longitude direction
-        if(lon >= 0)
-            direction = 'E';
-        else
-        {
-            direction = 'W';
-            lon *= -1;
-        }
 
-        longitude_label->setText(QString("%1 ").arg(lon, 0, 'f', 3) +
-            Globals::DegreesSymbol + direction);
-    }
+	// Update longitude
+	if(use_long)
+	{
+		// Check longitude direction
+		if(longitude >= 0)
+			direction = 'E';
+		else
+		{
+			direction = 'W';
+			lon *= -1; // Set longitude to be positive
+		}
 
-    // Update altitude
-    if(use_alt)
-        altitude_label->setText(QString("%1 ").arg(alt, 0, 'f', 3) + 'm');
+		longitude_label->setText(QString("%1 ").arg(longitude, 0, 'f', 3) +
+			Globals::DegreesSymbol + direction);
+	}
+
+
+	// Update altitude
+	if(use_alt)
+		altitude_label->setText(QString("%1 m").arg(altitude, 0, 'f', 3));
 }

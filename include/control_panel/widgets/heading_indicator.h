@@ -49,18 +49,35 @@ QT_END_NAMESPACE
  */
 class HeadingIndicator : public QGraphicsView
 {
-    public:
-        HeadingIndicator(QWidget *parent = 0);
-        double getYaw() const;
-        void setYaw(double angle);
+	Q_OBJECT
 
+	public:
+		/**
+		 * \brief Constructor. 
+		 *
+		 * \param parent The parent widget.
+		 */
+		HeadingIndicator(QWidget *parent = 0);
 
-    private:
-        QGraphicsScene *scene;
-        QGraphicsPixmapItem *background_item;
-        QGraphicsPixmapItem *indicator_item;
-        QGraphicsPixmapItem *cover_item;
-        double yaw;
+		/**
+		 * \brief Returns the current yaw value.
+		 */
+		double getYaw() const { return yaw; }
+
+		/**
+		 * \brief Updates the yaw and rotates the heading indicator.
+		 *
+		 * \param angle New yaw angle in degrees.
+		 */
+		void setYaw(double angle);
+
+	private:
+		QGraphicsScene *scene;
+		QGraphicsPixmapItem *background_item;
+		QGraphicsPixmapItem *indicator_item;
+		QGraphicsPixmapItem *cover_item;
+
+		double yaw; // Robot's yaw in degrees
 };
 
 #endif // CONTROL_PANEL_HEADING_INDICATOR_H
