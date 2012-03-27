@@ -53,123 +53,125 @@ QT_END_NAMESPACE
 #include "main_tab.h"
 #include "robot_tab.h"
 #include "robot_config_file_dialog.h"
-#include "globals.h"
 
 
 /**
  * \class MainWindow
- * \brief Control Panel main window, which manages the menus and tabs.
+ * \brief Control Panel main window. This manages the menus and tabs.
  */
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        /**
-         * \brief Constructor. Initializes QtNode and sets up the menus and tab widget.
-         *
-         * \param argc Command line argument count to be passed into QtNode
-         * \param argv Command line argument vector to be passed into QtNode
-         */
-        MainWindow(int argc, char **argv);
+	public:
+		/**
+		 * \brief Constructor. Initializes QtNode and sets up the menus and tab widget.
+		 *
+		 * \param argc Command line argument count to be passed into QtNode
+		 * \param argv Command line argument vector to be passed into QtNode
+		 */
+		MainWindow(int argc, char **argv);
 
-        /**
-         * \brief Reads the program's saved settings
-         */
-        void readSettings();
+		/**
+		 * \brief Reads the program's saved settings
+		 */
+		void readSettings();
 
-        /**
-         * \brief Writes the program's settings when the program is closing.
-         */
-        void writeSettings();
+		/**
+		 * \brief Writes the program's settings when the program is closing.
+		 */
+		void writeSettings();
 
-    protected:
-        void closeEvent(QCloseEvent *event);
+	protected:
+		void closeEvent(QCloseEvent *event);
 		QMenu *createPopupMenu();
 		void contextMenuEvent(QContextMenuEvent *event);
 
-    private slots:
+	private slots:
 		void about();
-        void callRobotService();
-        void callService();
-        //void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
+		void callRobotService();
+		void callService();
+		//void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
 		void editRobotConfigFile();
-        void editTopics();
-        void setMaxVelocity();
+		void editTopics();
+		void setMaxVelocity();
 		void fullScreenChanged(bool checked);
 		void help();
-        void loadSelectedRobots(const QStringList &robot_list, bool auto_connect);
+		void loadSelectedRobots(const QStringList &robot_list, bool auto_connect);
 		void newRobotConfigFile();
 		void openTabInWindow();
 		//void openWidgetInWindow();
 		//void updateJoystickAxis(int axis, double value);
 		//void updateJoystickButton(int axis, bool state);
 		void startConnection();
-        void stopConnection();
+		void stopConnection();
 		void tabChanged(int index);
 		void toggleRC(QAction *action);
 		void updateTabIcon(int status, const QString &robot_name);
-        void startRviz();
-        void startRxconsole();
-        void startRxgraph();
-        void startDynamicReconfigure();
+		void startRuntimeMonitor();
+		void startRviz();
+		void startRxconsole();
+		void startRxgraph();
+		void startDynamicReconfigure();
 
-    private:
-        void createMenuActions();
-        void createMenus();
+	private:
+		void createMenuActions();
+		void createMenus();
 		void createTab();
 
-        QtNode *qt_node;
+		QtNode *qt_node;
 
-        QTabWidget *tab_widget;
+		QTabWidget *tab_widget;
 		MainTab *main_tab;
 
-        QString robot_directory;
+		QString robot_directory;
 
+		/* Icons to display on a robot's tab for indicating connection status */
 		QIcon robot_disconnected_icon;
 		QIcon robot_connecting_icon;
 		QIcon robot_connected_icon;
 
-        // Menu items
-        QMenu *file_menu;
-        QMenu *edit_menu;
+		// Menu items
+		QMenu *file_menu;
+		QMenu *edit_menu;
 		QMenu *view_menu;
-        QMenu *connections_menu;
-        QMenu *tools_menu;
-        QMenu *help_menu;
+		QMenu *connections_menu;
+		QMenu *tools_menu;
+		QMenu *help_menu;
 
-        // Menu action items
-        QAction *new_robot_action;
-        QAction *exit_action;
+		// Menu action items
+		QAction *new_robot_action;
+		QAction *exit_action;
 		QAction *configuration_file_action;
-        QAction *topics_action;
-        QAction *set_velocity_action;
+		QAction *topics_action;
+		QAction *set_velocity_action;
 		QAction *gestures_action;
 		QAction *show_menu_bar_action;
 		QAction *full_screen_action;
 		QAction *tab_in_window_action;
 		QAction *widget_in_window_action;
 		QAction *system_diagnostics_action;
-        QAction *connect_action;
-        QAction *disconnect_action;
+		QAction *connect_action;
+		QAction *disconnect_action;
 		QAction *manual_mode_action;
 		QAction *semiautonomous_mode_action;
 		QAction *autonomous_mode_action;
-        QAction *disable_rc_action;
+		QAction *disable_rc_action;
 		QAction *keyboard_rc_action;
 		QAction *joystick_rc_action;
-        QAction *call_robot_service_action;
-        QAction *call_service_action;
-        QAction *rviz_action;
-        QAction *rxconsole_action;
-        QAction *rxgraph_action;
-        QAction *dynamic_reconfigure_action;
+		QAction *call_robot_service_action;
+		QAction *call_service_action;
+		QAction *runtime_monitor_action;
+		QAction *rviz_action;
+		QAction *rxconsole_action;
+		QAction *rxgraph_action;
+		QAction *dynamic_reconfigure_action;
 		QAction *help_action;
-        QAction *about_action;
+		QAction *about_action;
 
-        // Keyboard shortcut actions
-        //QAction *close_tab_action;
+		// Keyboard shortcut actions
+		//QAction *close_tab_action;
 
 		QActionGroup *robot_mode_actiongroup;
 		QActionGroup *robot_rc_actiongroup;

@@ -34,27 +34,28 @@
  */
 #include <QtGui>
 #include "control_panel/main_window.h"
+#include "control_panel/globals.h"
 #include <stdio.h>
 
 
 MainWindow::MainWindow(int argc, char **argv)
 {
-    /* Initialize the control panel ROS node */
-    qt_node = new QtNode(argc, argv, "control_panel");
-    if(!qt_node->init())
-    {
-        exit(1); // Could not connect to the ROS master, so exit.
-    }
+	/* Initialize the control panel ROS node */
+	qt_node = new QtNode(argc, argv, "control_panel");
+	if(!qt_node->init())
+	{
+		exit(1); // Could not connect to the ROS master, so exit.
+	}
 
-    // Load tab connection status icons
+	// Load tab connection status icons
 	robot_disconnected_icon.addFile(":/images/status_lights/status_light_grey.png");
 	robot_connecting_icon.addFile(":/images/status_lights/status_light_yellow.png");
 	robot_connected_icon.addFile(":/images/status_lights/status_light_green.png");
 
 
 	// Create the menu
-    createMenuActions();
-    createMenus();
+	createMenuActions();
+	createMenus();
 
 	// Create the Tab Widget
 	tab_widget = new QTabWidget(this);
@@ -64,11 +65,11 @@ MainWindow::MainWindow(int argc, char **argv)
 	main_tab = new MainTab(robot_directory);
 	tab_widget->addTab(main_tab, "Main");
 
-    // Keyboard shortcut actions
-    /* This action doesn't work because robot_tab uses the w key */
-    //close_tab_action = new QAction(tab_widget);
-    //close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
-    //connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
+	// Keyboard shortcut actions
+	/* This action doesn't work because robot_tab uses the w key */
+	//close_tab_action = new QAction(tab_widget);
+	//close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+	//connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
 
 
 	// Connections
@@ -80,78 +81,78 @@ MainWindow::MainWindow(int argc, char **argv)
 		this, SLOT(closeTab(int)));
 
 	// Main window settings
-    readSettings();
+	readSettings();
 	setCentralWidget(tab_widget);
-    setWindowTitle("SRS Control Panel");
-    setFocusPolicy(Qt::StrongFocus);
+	setWindowTitle("SRS Control Panel");
+	setFocusPolicy(Qt::StrongFocus);
 }
 
 void MainWindow::readSettings()
 {
-    printf("Reading settings\n");
+	printf("Reading settings\n");
 
-    QSettings settings;
-    if(settings.value("maximized", false).toBool())
-        showMaximized();
+	QSettings settings;
+	if(settings.value("maximized", false).toBool())
+		showMaximized();
 }
 
 void MainWindow::writeSettings()
 {
-    printf("Saving settings\n");
+	printf("Saving settings\n");
 
-    QSettings settings;
-    settings.setValue("maximized", isMaximized());
+	QSettings settings;
+	settings.setValue("maximized", isMaximized());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    int button_pushed;
-    RobotTab *tab;
-    bool robot_connected = false;
+	int button_pushed;
+	RobotTab *tab;
+	bool robot_connected = false;
 
-    // Check if any robots are currently connected
-    for(int i = 1; i < tab_widget->count() && !robot_connected; i++)
-    {
-        tab = (RobotTab *)tab_widget->widget(i);
+	// Check if any robots are currently connected
+	for(int i = 1; i < tab_widget->count() && !robot_connected; i++)
+	{
+		tab = (RobotTab *)tab_widget->widget(i);
 
-        if(tab->robotConnected())
-            robot_connected = true;
-    }
+		if(tab->robotConnected())
+			robot_connected = true;
+	}
 
-    // Verify the user wants to exit the program if there is a robot connect
-    if(robot_connected)
-    {
-        button_pushed = QMessageBox::warning(this, tr("Disconnect warning"),
-            tr("One or more robots are currently connected.\n") +
-            tr("Disconnect from robot(s) and close Control Panel?"),
-            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+	// Verify the user wants to exit the program if there is a robot connect
+	if(robot_connected)
+	{
+		button_pushed = QMessageBox::warning(this, tr("Disconnect warning"),
+			tr("One or more robots are currently connected.\n") +
+			tr("Disconnect from robot(s) and close Control Panel?"),
+			QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
-        if(button_pushed != QMessageBox::Yes)
-        {
-            event->ignore();
-            return;
-        }
-    }
+		if(button_pushed != QMessageBox::Yes)
+		{
+			event->ignore();
+			return;
+		}
+	}
 
 
 	printf("Closing SRS Control Panel\n");
-    printf("Disconnecting from all robots\n");
+	printf("Disconnecting from all robots\n");
 
-    // Disconnect from all connected robots
-    while(tab_widget->count() > 1)
-    {
-        tab = (RobotTab *)tab_widget->widget(1);
+	// Disconnect from all connected robots
+	while(tab_widget->count() > 1)
+	{
+		tab = (RobotTab *)tab_widget->widget(1);
 
-        if(tab->robotConnected())
-            tab->disconnectRobot();
+		if(tab->robotConnected())
+			tab->disconnectRobot();
 
-        tab_widget->removeTab(1);
-        delete tab;
-    }
+		tab_widget->removeTab(1);
+		delete tab;
+	}
 
-    writeSettings();
+	writeSettings();
 
-    event->accept();
+	event->accept();
 }
 
 /******************************************************************************
@@ -209,27 +210,27 @@ void MainWindow::createMenuActions()
 	connect(new_robot_action, SIGNAL(triggered()),
 		this, SLOT(newRobotConfigFile()));
 
-    exit_action = new QAction(tr("E&xit"), this);
-    exit_action->setShortcuts(QKeySequence::Quit);
-    connect(exit_action, SIGNAL(triggered()), this, SLOT(close()));
+	exit_action = new QAction(tr("E&xit"), this);
+	exit_action->setShortcuts(QKeySequence::Quit);
+	connect(exit_action, SIGNAL(triggered()), this, SLOT(close()));
 
 
 	/**
 	** Edit Menu Actions
 	**/
 	configuration_file_action = new QAction(tr("Robot Configuration &File"), this);
-    configuration_file_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
+	configuration_file_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
 	connect(configuration_file_action, SIGNAL(triggered()),
 		this, SLOT(editRobotConfigFile()));
 
-    topics_action = new QAction(tr("&Topic Names"), this);
+	topics_action = new QAction(tr("&Topic Names"), this);
 	topics_action->setEnabled(false);
-    //connect(topics_action, SIGNAL(triggered()), this, SLOT(editTopicNames()));
+	//connect(topics_action, SIGNAL(triggered()), this, SLOT(editTopicNames()));
 
-    set_velocity_action = new QAction(tr("Set Velocity Scale"), this);
-    set_velocity_action->setEnabled(false);
-    set_velocity_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
-    connect(set_velocity_action, SIGNAL(triggered()), SLOT(setMaxVelocity()));
+	set_velocity_action = new QAction(tr("Set Velocity Scale"), this);
+	set_velocity_action->setEnabled(false);
+	set_velocity_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
+	connect(set_velocity_action, SIGNAL(triggered()), SLOT(setMaxVelocity()));
 
 
 	/**
@@ -244,7 +245,6 @@ void MainWindow::createMenuActions()
 	full_screen_action = new QAction(tr("&Full Screen"), this);
 	full_screen_action->setShortcut(Qt::Key_F11);
 	full_screen_action->setCheckable(true);
-    //full_screen_action->setShortcutContext(Qt::ApplicationShortcut);
 	connect(full_screen_action, SIGNAL(toggled(bool)), 
 		this, SLOT(fullScreenChanged(bool)));
 
@@ -261,16 +261,16 @@ void MainWindow::createMenuActions()
 	/**
 	** Connections Menu Actions
 	**/
-    connect_action = new QAction(tr("&Connect"), this);
+	connect_action = new QAction(tr("&Connect"), this);
 	connect_action->setEnabled(false);
 	connect_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_C));
 	connect(connect_action, SIGNAL(triggered()),
 		this, SLOT(startConnection()));
 
-    disconnect_action = new QAction(tr("&Disconnect"), this);
-    disconnect_action->setEnabled(false);
+	disconnect_action = new QAction(tr("&Disconnect"), this);
+	disconnect_action->setEnabled(false);
 	disconnect_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_D));
-    connect(disconnect_action, SIGNAL(triggered()),
+	connect(disconnect_action, SIGNAL(triggered()),
 		this, SLOT(stopConnection()));
 
 
@@ -291,49 +291,52 @@ void MainWindow::createMenuActions()
 	robot_mode_actiongroup->setEnabled(false);
 
 
-    disable_rc_action = new QAction(tr("&Disable RC"), this);
-    disable_rc_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
-    disable_rc_action->setCheckable(true);
+	disable_rc_action = new QAction(tr("&Disable RC"), this);
+	disable_rc_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
+	disable_rc_action->setCheckable(true);
 
 	keyboard_rc_action = new QAction(tr("&Keyboard RC"), this);
-    keyboard_rc_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_K));
+	keyboard_rc_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_K));
 	keyboard_rc_action->setCheckable(true);
 
 	joystick_rc_action = new QAction(tr("&Joystick RC"), this);
-    joystick_rc_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_J));
+	joystick_rc_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_J));
 	joystick_rc_action->setCheckable(true);
 
 	robot_rc_actiongroup = new QActionGroup(this);
-    robot_rc_actiongroup->addAction(disable_rc_action);
+	robot_rc_actiongroup->addAction(disable_rc_action);
 	robot_rc_actiongroup->addAction(keyboard_rc_action);
 	robot_rc_actiongroup->addAction(joystick_rc_action);
-    disable_rc_action->setChecked(true);
+	disable_rc_action->setChecked(true);
 	keyboard_rc_action->setChecked(false);
 	robot_rc_actiongroup->setEnabled(false);
 	connect(robot_rc_actiongroup, SIGNAL(triggered(QAction *)),
 		this, SLOT(toggleRC(QAction *)));
 
-    call_robot_service_action = new QAction(tr("Call Robot's Service"), this);
-    call_robot_service_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
-    call_robot_service_action->setEnabled(false);
-    connect(call_robot_service_action, SIGNAL(triggered()), this, SLOT(callRobotService()));
+	call_robot_service_action = new QAction(tr("Call Robot's Service"), this);
+	call_robot_service_action->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
+	call_robot_service_action->setEnabled(false);
+	connect(call_robot_service_action, SIGNAL(triggered()), this, SLOT(callRobotService()));
 
 
-    /* Tools Menu Actions */
-    call_service_action = new QAction(tr("Call Service"), this);
-    connect(call_service_action, SIGNAL(triggered()), this, SLOT(callService()));
+	/* Tools Menu Actions */
+	call_service_action = new QAction(tr("Call Service"), this);
+	connect(call_service_action, SIGNAL(triggered()), this, SLOT(callService()));
 
-    rviz_action = new QAction(tr("R&viz"), this);
-    connect(rviz_action, SIGNAL(triggered()), this, SLOT(startRviz()));
+	runtime_monitor_action = new QAction(tr("Runtime &Monitor"), this);
+	connect(runtime_monitor_action, SIGNAL(triggered()), this, SLOT(startRuntimeMonitor()));
 
-    rxconsole_action = new QAction(tr("Rx&console"), this);
-    connect(rxconsole_action, SIGNAL(triggered()), this, SLOT(startRxconsole()));
+	rviz_action = new QAction(tr("R&viz"), this);
+	connect(rviz_action, SIGNAL(triggered()), this, SLOT(startRviz()));
 
-    rxgraph_action = new QAction(tr("Rx&graph"), this);
-    connect(rxgraph_action, SIGNAL(triggered()), this, SLOT(startRxgraph()));
+	rxconsole_action = new QAction(tr("Rx&console"), this);
+	connect(rxconsole_action, SIGNAL(triggered()), this, SLOT(startRxconsole()));
 
-    dynamic_reconfigure_action = new QAction(tr("Dynamic &Reconfigure"), this);
-    connect(dynamic_reconfigure_action, SIGNAL(triggered()), this, SLOT(startDynamicReconfigure()));
+	rxgraph_action = new QAction(tr("Rx&graph"), this);
+	connect(rxgraph_action, SIGNAL(triggered()), this, SLOT(startRxgraph()));
+
+	dynamic_reconfigure_action = new QAction(tr("Dynamic &Reconfigure"), this);
+	connect(dynamic_reconfigure_action, SIGNAL(triggered()), this, SLOT(startDynamicReconfigure()));
 
 
 	/* Help Menu Actions */
@@ -342,8 +345,8 @@ void MainWindow::createMenuActions()
 	help_action->setEnabled(false);
 	connect(help_action, SIGNAL(triggered()), this, SLOT(help()));
 
-    about_action = new QAction(tr("&About SRS Control Panel"), this);
-    connect(about_action, SIGNAL(triggered()), this, SLOT(about()));
+	about_action = new QAction(tr("&About SRS Control Panel"), this);
+	connect(about_action, SIGNAL(triggered()), this, SLOT(about()));
 }
 
 /******************************************************************************
@@ -356,16 +359,16 @@ void MainWindow::createMenuActions()
 void MainWindow::createMenus()
 {
 	// Create file menu
-    file_menu = menuBar()->addMenu(tr("&File"));
+	file_menu = menuBar()->addMenu(tr("&File"));
 	file_menu->addAction(new_robot_action);
 	file_menu->addSeparator();
-    file_menu->addAction(exit_action);
+	file_menu->addAction(exit_action);
 
 	// Create edit menu
-    edit_menu = menuBar()->addMenu(tr("&Edit"));
+	edit_menu = menuBar()->addMenu(tr("&Edit"));
 	edit_menu->addAction(configuration_file_action);
-    //edit_menu->addAction(topics_action);
-    edit_menu->addAction(set_velocity_action);
+	//edit_menu->addAction(topics_action);
+	edit_menu->addAction(set_velocity_action);
 
 	// Create view menu
 	view_menu = menuBar()->addMenu(tr("&View"));
@@ -375,81 +378,82 @@ void MainWindow::createMenus()
 	//view_menu->addAction(tab_in_window_action);
 
 	// Create connections menu
-    connections_menu = menuBar()->addMenu(tr("&Connections"));
+	connections_menu = menuBar()->addMenu(tr("&Connections"));
 	connections_menu->addAction(connect_action);
-    connections_menu->addAction(disconnect_action);
+	connections_menu->addAction(disconnect_action);
 	//connections_menu->addSeparator()->setText(tr("Robot Mode"));
 	//connections_menu->addAction(manual_mode_action);
 	//connections_menu->addAction(semiautonomous_mode_action);
 	//connections_menu->addAction(autonomous_mode_action);
 	connections_menu->addSeparator()->setText(tr("RC Mode"));
-    connections_menu->addAction(disable_rc_action);
+	connections_menu->addAction(disable_rc_action);
 	connections_menu->addAction(keyboard_rc_action);
 	connections_menu->addAction(joystick_rc_action);
-    connections_menu->addSeparator();
-    connections_menu->addAction(call_robot_service_action);
+	connections_menu->addSeparator();
+	connections_menu->addAction(call_robot_service_action);
 
-    // Create tools menu
-    tools_menu = menuBar()->addMenu(tr("&Tools"));
-    tools_menu->addAction(call_service_action);
-    tools_menu->addAction(rviz_action);
-    tools_menu->addAction(rxconsole_action);
-    tools_menu->addAction(rxgraph_action);
-    tools_menu->addAction(dynamic_reconfigure_action);
+	// Create tools menu
+	tools_menu = menuBar()->addMenu(tr("&Tools"));
+	tools_menu->addAction(call_service_action);
+	tools_menu->addAction(runtime_monitor_action);
+	tools_menu->addAction(rviz_action);
+	tools_menu->addAction(rxconsole_action);
+	tools_menu->addAction(rxgraph_action);
+	tools_menu->addAction(dynamic_reconfigure_action);
 
 	// Create help menu
-    help_menu = menuBar()->addMenu(tr("&Help"));
+	help_menu = menuBar()->addMenu(tr("&Help"));
 	help_menu->addAction(help_action);
 	help_menu->addSeparator();
-    help_menu->addAction(about_action);
+	help_menu->addAction(about_action);
 }
 
 void MainWindow::editRobotConfigFile()
 {
-    QString selected_robot;
-    bool robot_loaded = false;
-    RobotConfig *robot_config;
+	QString selected_robot;
+	bool robot_loaded = false;
+	RobotConfig *robot_config;
 
-    /* Make sure only one robot is selected. */
-    if(main_tab->numSelected() < 1)
-    {
-        QMessageBox::information(this, tr("No Robot Selected"),
-            tr("Please select a robot to edit."));
-        return;
-    }
-    if(main_tab->numSelected() > 1)
-    {
-        QMessageBox::information(this, tr("Multiple Robots Selected"),
-            tr("Please select only one robot to edit."));
-        return;
-    }
+	/* Make sure only one robot is selected. */
+	if(main_tab->numSelected() < 1)
+	{
+		QMessageBox::information(this, tr("No Robot Selected"),
+			tr("Please select a robot to edit."));
+		return;
+	}
+	if(main_tab->numSelected() > 1)
+	{
+		QMessageBox::information(this, tr("Multiple Robots Selected"),
+			tr("Please select only one robot to edit."));
+		return;
+	}
 
-    selected_robot = main_tab->getFirstSelectedRobot();
+	selected_robot = main_tab->getFirstSelectedRobot();
 
-    /* Check if the robot is already loaded */
-    for(int i = 1; i < tab_widget->count() && !robot_loaded; i++)
-        if(selected_robot == tab_widget->tabText(i))
-            robot_loaded = true;
+	/* Check if the robot is already loaded */
+	for(int i = 1; i < tab_widget->count() && !robot_loaded; i++)
+		if(selected_robot == tab_widget->tabText(i))
+			robot_loaded = true;
 
-    if(robot_loaded)
-    {
-        QMessageBox::information(this, tr("Robot Already Loaded"),
-            tr("The selected robot is already loaded. Please close the") +
-            tr("selected robot's tab to edit the robot's configuration file."));
-        return;
-    }
+	if(robot_loaded)
+	{
+		QMessageBox::information(this, tr("Robot Already Loaded"),
+			tr("The selected robot is already loaded. Please close the") +
+			tr("selected robot's tab to edit the robot's configuration file."));
+		return;
+	}
 
-    robot_config = new RobotConfig;
+	robot_config = new RobotConfig;
 
-    /* Load selected robot's configuration file */
-    QFile robot_file(selected_robot);
-    if(!robot_file.open(QIODevice::ReadOnly) ||
-        robot_config->loadFrom(&robot_file, true))
-    {
-        std::cerr << "Error while loading robot configuration for editing for "
-                  << selected_robot.toStdString() << std::endl;
-        return;
-    }
+	/* Load selected robot's configuration file */
+	QFile robot_file(selected_robot);
+	if(!robot_file.open(QIODevice::ReadOnly) ||
+		robot_config->loadFrom(&robot_file, true))
+	{
+		std::cerr << "Error while loading robot configuration for editing for "
+			  << selected_robot.toStdString() << std::endl;
+		return;
+	}
 
 	RobotConfigFileDialog edit_robot_dialog(robot_config);
 	edit_robot_dialog.setWindowTitle("Edit Robot Configuration File");
@@ -459,39 +463,39 @@ void MainWindow::editRobotConfigFile()
 
 	}
 
-    main_tab->deselectAllRobots();
+	main_tab->deselectAllRobots();
 }
 
 void MainWindow::editTopics()
 {
 	/* @todo Create a dialog allowing the user to edit the topic names over
-             which each node is publishing or subscribing to for a connected robot. */
+		 which each node is publishing or subscribing to for a connected robot. */
 }
 
 void MainWindow::setMaxVelocity()
 {
-    bool ok;
-    double scale;
-    RobotTab *tab;
+	bool ok;
+	double scale;
+	RobotTab *tab;
 
-    // Return if tab is the main tab
-    if(tab_widget->currentIndex() == 0)
-        return;
+	// Return if tab is the main tab
+	if(tab_widget->currentIndex() == 0)
+		return;
 
-    tab = (RobotTab *)tab_widget->currentWidget();
+	tab = (RobotTab *)tab_widget->currentWidget();
 
-    // Make sure the robot has a control node
-    if(tab->node_manager->control_node)
-    {
-        // Prompt user for new scale
-        scale = QInputDialog::getDouble(this, tr("Set Velocity Scale"),
-            tr("Scale:"), tab->node_manager->control_node->getScale(),
-            0.00, 1.00, 2, &ok);
+	// Make sure the robot has a control node
+	if(tab->node_manager->control_node)
+	{
+		// Prompt user for new scale
+		scale = QInputDialog::getDouble(this, tr("Set Velocity Scale"),
+			tr("Scale:"), tab->node_manager->control_node->getScale(),
+			0.00, 1.00, 2, &ok);
 
-        // Set scale
-        if(ok)
-            tab->node_manager->control_node->setScale(scale);
-    }
+		// Set scale
+		if(ok)
+			tab->node_manager->control_node->setScale(scale);
+	}
 }
 
 void MainWindow::help()
@@ -515,8 +519,8 @@ void MainWindow::about()
 	QMessageBox::about(this, tr("About SRS Control Panel"),
 		tr("<h1>Shared Robotics Systems<br/>") +
 		tr("Control Panel</h1>") +
-        tr("<b>Version 4.1</b>") +
-        tr("<p>TODO: Add Control Panel information here.</p>"));
+		tr("<b>Version 4.1</b>") +
+		tr("<p>TODO: Add Control Panel information here.</p>"));
 }
 
 void MainWindow::loadSelectedRobots(const QStringList &robot_list,
@@ -556,8 +560,8 @@ void MainWindow::loadSelectedRobots(const QStringList &robot_list,
 				index_inserted = tab_widget->addTab(tab, robot_disconnected_icon,
 					robot_config->getRobotName());
 
-                connect(tab, SIGNAL(connectionStatusChanged(int, const QString &)),
-                    this, SLOT(updateTabIcon(int, const QString &)));
+				connect(tab, SIGNAL(connectionStatusChanged(int, const QString &)),
+					this, SLOT(updateTabIcon(int, const QString &)));
 
 				// Connect to robot if specified by user
 				if(auto_connect)
@@ -578,7 +582,7 @@ void MainWindow::loadSelectedRobots(const QStringList &robot_list,
 	// Set the current tab to the last robot loaded
 	tab_widget->setCurrentIndex(index_inserted);
 
-    main_tab->deselectAllRobots();
+	main_tab->deselectAllRobots();
 }
 
 /******************************************************************************
@@ -595,7 +599,7 @@ void MainWindow::startConnection()
 	int curr_index = tab_widget->currentIndex();
 	RobotTab *curr_tab;
 
-    // Check if the current tab is the Main Tab.
+	// Check if the current tab is the Main Tab.
 	if(curr_index != 0)
 	{
 		curr_tab = (RobotTab *)tab_widget->currentWidget();
@@ -607,7 +611,7 @@ void MainWindow::startConnection()
 
 			connect_action->setEnabled(false);
 			disconnect_action->setEnabled(true);
-            call_robot_service_action->setEnabled(true);
+			call_robot_service_action->setEnabled(true);
 		}
 	}
 }
@@ -638,7 +642,7 @@ void MainWindow::stopConnection()
 
 			disconnect_action->setEnabled(false);
 			connect_action->setEnabled(true);
-            call_robot_service_action->setEnabled(false);
+			call_robot_service_action->setEnabled(false);
 		}
 	}
 }
@@ -653,7 +657,7 @@ void MainWindow::stopConnection()
  *****************************************************************************/
 void MainWindow::closeTab(int index)
 {
-    int button_pushed;
+	int button_pushed;
 	RobotTab *tab;
 
 	// Check if the tab is main tab or not
@@ -692,20 +696,20 @@ void MainWindow::closeTab(int index)
  *****************************************************************************/
 void MainWindow::fullScreenChanged(bool checked)
 {
-    static bool prev_maximized = isMaximized();
+	static bool prev_maximized = isMaximized();
 
 	if(checked)
-    {
-        prev_maximized = isMaximized();
+	{
+		prev_maximized = isMaximized();
 		showFullScreen();
-    }
+	}
 	else
-    {
-        if(prev_maximized)
-            showMaximized();
-        else
-		    showNormal();
-    }
+	{
+		if(prev_maximized)
+			showMaximized();
+		else
+			showNormal();
+	}
 }
 
 void MainWindow::openTabInWindow()
@@ -720,14 +724,14 @@ void MainWindow::newRobotConfigFile()
 	new_robot_dialog.setWindowTitle("New Robot Configuration File");
 
 	if(new_robot_dialog.exec())
-    {
-        main_tab->insertRobot(new_robot_config);
+	{
+		main_tab->insertRobot(new_robot_config);
 
-        /* @todo Store robot config path in a QStringList and set a flag so
-                 we know to save that path when the Control Panel closes. */
-    }
+		/* @todo Store robot config path in a QStringList and set a flag so
+			 we know to save that path when the Control Panel closes. */
+	}
 
-    delete new_robot_config;
+	delete new_robot_config;
 }
 
 /******************************************************************************
@@ -852,7 +856,7 @@ void MainWindow::tabChanged(int index)
 	disconnect_action->setEnabled(false);
 	configuration_file_action->setEnabled(true);
 	robot_rc_actiongroup->setEnabled(false);
-    call_robot_service_action->setEnabled(false);
+	call_robot_service_action->setEnabled(false);
 
 	// Check if the current tab is the Main Tab.
 	if(index != 0)
@@ -860,20 +864,20 @@ void MainWindow::tabChanged(int index)
 		tab = (RobotTab *)tab_widget->currentWidget();
 
 		if(tab->robotConnected())
-        {
+		{
 			disconnect_action->setEnabled(true);
-            call_robot_service_action->setEnabled(true);
-        }
+			call_robot_service_action->setEnabled(true);
+		}
 		else
 			connect_action->setEnabled(true);
 
 		configuration_file_action->setEnabled(false);
 		robot_rc_actiongroup->setEnabled(true);
 
-        if(tab->node_manager->control_node)
-            set_velocity_action->setEnabled(true);
-        else
-            set_velocity_action->setEnabled(false);
+		if(tab->node_manager->control_node)
+			set_velocity_action->setEnabled(true);
+		else
+			set_velocity_action->setEnabled(false);
 	}
 }
 
@@ -887,7 +891,7 @@ void MainWindow::tabChanged(int index)
 void MainWindow::toggleRC(QAction *action)
 {
 	RobotTab *tab;
-    QString mode;
+	QString mode;
 
 	// Check if current tab is not the Main Tab.
 	if(tab_widget->currentIndex() != 0)
@@ -895,15 +899,15 @@ void MainWindow::toggleRC(QAction *action)
 		// Get current tab widget
 		tab = (RobotTab *)tab_widget->currentWidget();
 
-        if(action == disable_rc_action)
-            tab->setRCMode(Globals::Disabled);
+		if(action == disable_rc_action)
+			tab->setRCMode(Globals::Disabled);
 		else if(action == keyboard_rc_action)
-            tab->setRCMode(Globals::Keyboard);
-	    else if(action == joystick_rc_action)
-            tab->setRCMode(Globals::Joystick);
-        else
-            printf("ERROR -- Unknown RC action\n");
-    }
+			tab->setRCMode(Globals::Keyboard);
+		else if(action == joystick_rc_action)
+			tab->setRCMode(Globals::Joystick);
+		else
+			printf("ERROR -- Unknown RC action\n");
+	}
 }
 
 /******************************************************************************
@@ -933,7 +937,7 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 	// Load status light icon
 	if(status == Globals::Disconnected)
 		tab_widget->setTabIcon(i, robot_disconnected_icon);
-    else if(status == Globals::Connecting)
+	else if(status == Globals::Connecting)
 		tab_widget->setTabIcon(i, robot_connecting_icon);
 	else if(status == Globals::Connected)
 		tab_widget->setTabIcon(i, robot_connected_icon);
@@ -948,62 +952,74 @@ void MainWindow::updateTabIcon(int status, const QString &robot_name)
 
 void MainWindow::callRobotService()
 {
-    if(tab_widget->currentIndex() != 0)
-        ((RobotTab *)tab_widget->currentWidget())->callService();
+	if(tab_widget->currentIndex() != 0)
+		((RobotTab *)tab_widget->currentWidget())->callService();
 }
 
 void MainWindow::callService()
 {
-    bool ok;
+	bool ok;
 
-    QString service_name = QInputDialog::getText(this, tr("Call Service"),
-        tr("Service Name"), QLineEdit::Normal, tr(""), &ok);
+	// Get service name to call
+	QString service_name = QInputDialog::getText(this, tr("Call Service"),
+		tr("Service Name"), QLineEdit::Normal, tr(""), &ok);
 
-    if(ok && !service_name.isEmpty())
-        if(qt_node->service_node)
-            qt_node->service_node->callEmpty(service_name);
+	// Call service
+	if(ok && !service_name.isEmpty() && qt_node->service_node)
+		qt_node->service_node->callEmpty(service_name);
+}
+
+void MainWindow::startRuntimeMonitor()
+{
+	if(QProcess::startDetached("rosrun runtime_monitor monitor"))
+		printf("Runtime Monitor started successfully\n");
+	else
+	{
+		perror("Runtime Monitor failed to start. It may not be installed.\n");
+		/* @todo Use a QDialog to warn user of failure */
+	}
 }
 
 void MainWindow::startRviz()
 {
-    if(QProcess::startDetached("rosrun rviz rviz"))
-        printf("rviz started successfully\n");
-    else
-    {
-        perror("rviz failed to start. It may not be installed.\n");
-        /* @todo Warn user of failure */
-    }
+	if(QProcess::startDetached("rosrun rviz rviz"))
+		printf("rviz started successfully\n");
+	else
+	{
+		perror("rviz failed to start. It may not be installed.\n");
+		/* @todo Warn user of failure */
+	}
 }
 
 void MainWindow::startRxconsole()
 {
-    if(QProcess::startDetached("rxconsole"))
-        printf("rxconsole started successfully\n");
-    else
-    {
-        perror("rxconsole failed to start. It may not be installed.\n");
-        /* @todo Warn user of failure */
-    }
+	if(QProcess::startDetached("rxconsole"))
+		printf("rxconsole started successfully\n");
+	else
+	{
+		perror("rxconsole failed to start. It may not be installed.\n");
+		/* @todo Warn user of failure */
+	}
 }
 
 void MainWindow::startRxgraph()
 {
-    if(QProcess::startDetached("rxgraph"))
-        printf("rxgraph started successfully\n");
-    else
-    {
-        perror("rxgraph failed to start. It may not be installed.\n");
-        /* @todo Display a QMessageBox warning the user that rxgraph was not executed successfully */
-    }
+	if(QProcess::startDetached("rxgraph"))
+		printf("rxgraph started successfully\n");
+	else
+	{
+		perror("rxgraph failed to start. It may not be installed.\n");
+		/* @todo Display a QMessageBox warning the user that rxgraph was not executed successfully */
+	}
 }
 
 void MainWindow::startDynamicReconfigure()
 {
-    if(QProcess::startDetached("rosrun dynamic_reconfigure reconfigure_gui"))
-        printf("reconfigure_gui started successfully\n");
-    else
-    {
-        perror("reconfigure_gui failed to start. It may not be installed.\n");
-        /* @todo Display a QMessageBox warning the user that reconfigure_gui was not executed successfully */
-    }
+	if(QProcess::startDetached("rosrun dynamic_reconfigure reconfigure_gui"))
+		printf("reconfigure_gui started successfully\n");
+	else
+	{
+		perror("reconfigure_gui failed to start. It may not be installed.\n");
+		/* @todo Display a QMessageBox warning the user that reconfigure_gui was not executed successfully */
+	}
 }

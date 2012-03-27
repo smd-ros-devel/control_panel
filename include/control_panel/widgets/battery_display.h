@@ -38,28 +38,50 @@
 #include <QGraphicsView>
 
 QT_BEGIN_NAMESPACE
-class QGraphicsRectItem;
 class QGraphicsPixmapItem;
-class QGraphicsTextItem;
+class QGraphicsRectItem;
 class QGraphicsScene;
+class QGraphicsTextItem;
 QT_END_NAMESPACE
 
+/**
+ * \class BatteryDisplay
+ * \brief Graphical battery display for indicating a robots battery level
+ */
 class BatteryDisplay : public QGraphicsView
 {
-    public:
-        BatteryDisplay(QWidget *parent = 0);
-        int getBatteryLevel() const;
-        void setBatteryLevel(float level);
+	public:
+		/**
+		 * \brief Contruct. Sets up the display
+		 *
+		 * \param parent The parent widget
+		 */
+		BatteryDisplay(QWidget *parent = 0);
 
-    private:
-        void updateBatteryDisplay();
+		/**
+		 * \brief Returns the current battery level
+		 */
+		int getBatteryLevel() const;
 
-        QGraphicsScene *scene;
-        QGraphicsRectItem *battery_level_item;
-        QGraphicsPixmapItem *battery_background_item;
-        QGraphicsPixmapItem *battery_foreground_item;
-        QGraphicsTextItem *battery_text_item;
-        float battery_level;
+		/**
+		 * \brief Sets the current battery level and updates the graphical display.
+		 *
+		 * \param level New battery level.
+		 */
+		void setBatteryLevel(float level);
+
+	private:
+		/**
+		 * \brief Updates the display with the set battery level.
+		 */
+		void updateBatteryDisplay();
+
+		QGraphicsScene *scene;
+		QGraphicsRectItem *battery_level_item;
+		QGraphicsPixmapItem *battery_background_item;
+		QGraphicsPixmapItem *battery_foreground_item;
+		QGraphicsTextItem *battery_text_item;
+		float battery_level;
 };
 
 #endif // CONTROL_PANEL_BATTERY_DISPLAY_H
