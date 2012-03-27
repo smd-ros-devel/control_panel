@@ -205,10 +205,15 @@ void MainWindow::createMenuActions()
 	/**
 	** File Menu Actions
 	**/
-	new_robot_action = new QAction(tr("&New Robot Configuration File"), this);
+	new_robot_action = new QAction(tr("&New Robot Config"), this);
 	new_robot_action->setShortcut(QKeySequence::New);
 	connect(new_robot_action, SIGNAL(triggered()),
 		this, SLOT(newRobotConfigFile()));
+
+	open_config_action = new QAction(tr("&Open Robot Config"), this);
+	open_config_action->setShortcut(QKeySequence::Open);
+	connect(open_config_action, SIGNAL(triggered()),
+		this, SLOT(openRobotConfig()));
 
 	exit_action = new QAction(tr("E&xit"), this);
 	exit_action->setShortcuts(QKeySequence::Quit);
@@ -361,6 +366,7 @@ void MainWindow::createMenus()
 	// Create file menu
 	file_menu = menuBar()->addMenu(tr("&File"));
 	file_menu->addAction(new_robot_action);
+	file_menu->addAction(open_config_action);
 	file_menu->addSeparator();
 	file_menu->addAction(exit_action);
 
@@ -732,6 +738,18 @@ void MainWindow::newRobotConfigFile()
 	}
 
 	delete new_robot_config;
+}
+
+void MainWindow::openRobotConfig()
+{
+	QString file_name = QFileDialog::getOpenFileName(this,
+		tr("Open Robot Configuration File"), QDir::homePath(),
+		tr("Images (*.xml)"));
+
+	if(!file_name.isEmpty())
+	{
+		/* @todo Add robot to main window */
+	}
 }
 
 /******************************************************************************

@@ -101,6 +101,7 @@ class MainWindow : public QMainWindow
 		void loadSelectedRobots(const QStringList &robot_list, bool auto_connect);
 		void newRobotConfigFile();
 		void openTabInWindow();
+		void openRobotConfig();
 		//void openWidgetInWindow();
 		//void updateJoystickAxis(int axis, double value);
 		//void updateJoystickButton(int axis, bool state);
@@ -142,6 +143,7 @@ class MainWindow : public QMainWindow
 
 		// Menu action items
 		QAction *new_robot_action;
+		QAction *open_config_action;
 		QAction *exit_action;
 		QAction *configuration_file_action;
 		QAction *topics_action;
