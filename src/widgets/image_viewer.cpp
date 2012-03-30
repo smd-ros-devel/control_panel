@@ -31,10 +31,7 @@
  * \file   image_viewer.cpp
  * \date   Jan 4, 2012
  * \author Matt Richard
- * \brief  A graphics view widget for displaying a robots video, LiDAR, and map feeds.
- *
- * The view allows for a grip to be overlayed on top of the image, zooming in and out,
- * and moving the image around.
+ * \brief  A graphics view widget for displaying a robots video, LiDAR, and maps.
  */
 #include <QtGui>
 #include "control_panel/widgets/image_viewer.h"
@@ -42,35 +39,37 @@
 ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 {
 	grid_visible = false;
-    grid_interval = 20;
-    grid_pen.setColor(Qt::blue);
-    grid_pen.setWidth(1);
+	grid_interval = 20;
+	grid_pen.setColor(Qt::blue);
+	grid_pen.setWidth(1);
 	scale_factor = 1.0;
-    show_odom = false;
+	show_odom = false;
 
 	image_item = new QGraphicsPixmapItem(image_pixmap);
 	image_item->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
-
+	/* Loading text item */
 	QFont font;
 	font.setPointSize(18);
-
 	text_item = new QGraphicsTextItem(tr("Loading..."));
 	text_item->setFont(font);
 	text_item->setDefaultTextColor(Qt::white);
-    text_item->setVisible(false);
-   
-    robot_pos_item = new QGraphicsEllipseItem(QRectF(0, 0, 6, 6));
-    robot_pos_item->setVisible(false);
-    robot_pos_item->setBrush(QBrush(Qt::red));
-    robot_pos_item->setPen(Qt::NoPen);
+	text_item->setVisible(false);
 
+	/* Position of a robot on the display map */
+	robot_pos_item = new QGraphicsEllipseItem(QRectF(0, 0, 6, 6));
+	robot_pos_item->setVisible(false);
+	robot_pos_item->setBrush(QBrush(Qt::red));
+	robot_pos_item->setPen(Qt::NoPen);
+
+	/* Create the scene */
 	scene = new QGraphicsScene(this);
 	scene->setBackgroundBrush(Qt::black);
 	scene->addItem(text_item);
 	scene->addItem(image_item);
-    scene->addItem(robot_pos_item);
+	scene->addItem(robot_pos_item);
 
+	/* Set graphics view properties */
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
@@ -78,38 +77,28 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 	setScene(scene);
 	setDragMode(QGraphicsView::ScrollHandDrag);
 	setResizeAnchor(QGraphicsView::AnchorViewCenter);
-    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
-}
-
-QPixmap ImageViewer::getImagePixmap() const
-{
-	return image_pixmap;
-}
-
-bool ImageViewer::gridVisible() const
-{
-	return grid_visible;
+	setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
 
 void ImageViewer::setGridLineInterval(int pixels)
 {
-    if(pixels > 0)
-	    grid_interval = pixels;
+	if(pixels > 0)
+		grid_interval = pixels;
 }
 
 void ImageViewer::setImagePixmap(const QPixmap &pixmap, int interval)
 {
-    if(interval > 0)
-        grid_interval = interval;
+	if(interval > 0)
+		grid_interval = interval;
 
 	image_pixmap = pixmap;
-
 	image_item->setPixmap(image_pixmap);
 
-    scene->setSceneRect(scene->itemsBoundingRect());
+	//scene->setSceneRect(scene->itemsBoundingRect());
+	scene->setSceneRect(image_item->boundingRect());
 
-    if(scale_factor == 1.0)
-        centerOn(image_item);
+	if(scale_factor == 1.0)
+		centerOn(image_item);
 }
 
 void ImageViewer::setImageVisible(bool visible)
@@ -124,14 +113,14 @@ void ImageViewer::setImageVisible(bool visible)
 		(scene->height() - text_item->boundingRect().height()) / 2.0);
 
 	image_item->setPixmap(image_pixmap);
-    image_item->setVisible(visible);
+	image_item->setVisible(visible);
 }
 
 void ImageViewer::setScale(int factor)
 {
 	scale_factor = (float)factor / 100.0;
 
-    resetMatrix();
+	resetMatrix();
 
 	scale(scale_factor, scale_factor);
 }
@@ -143,46 +132,45 @@ void ImageViewer::showGrid(bool show)
 
 void ImageViewer::showOdometry(bool show)
 {
-    show_odom = show;
-    robot_pos_item->setVisible(show);
-    robot_pos_item->setPos(
+	show_odom = show;
+	robot_pos_item->setVisible(show);
+	robot_pos_item->setPos(
         (scene->width() / 2.0) - (robot_pos_item->boundingRect().width() / 2.0),
         (scene->height() / 2.0) - (robot_pos_item->boundingRect().height() / 2.0));
 }
 
 void ImageViewer::setRobotPosition(double x_pos, double y_pos)
 {
-    if(show_odom)
-    {
-        double centerx = (image_item->boundingRect().width() -
-            robot_pos_item->boundingRect().width()) / 2.0;
-        double centery = (image_item->boundingRect().height() -
-            robot_pos_item->boundingRect().height()) / 2.0;
-        //double center = std::min(centerx, centery);
-        robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
-    }
+	if(show_odom)
+	{
+		double centerx = (image_item->boundingRect().width() -
+			robot_pos_item->boundingRect().width()) / 2.0;
+		double centery = (image_item->boundingRect().height() -
+			robot_pos_item->boundingRect().height()) / 2.0;
+		robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
+	}
 }
 
 void ImageViewer::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if(grid_visible)
-    {
-        double left = (int)rect.left() - ((int)rect.left() % grid_interval);
-        double top = (int)rect.top() - ((int)rect.top() % grid_interval) +
-            ((int)scene->height() % grid_interval);
+	if(grid_visible)
+	{
+		double left = (int)rect.left() - ((int)rect.left() % grid_interval);
+		double top = (int)rect.top() - ((int)rect.top() % grid_interval) +
+			((int)scene->height() % grid_interval);
 
-        QVarLengthArray<QLineF, 100> lines_x;
-        for(double x = left; x < rect.right(); x += grid_interval)
-            lines_x.append(QLineF(x, rect.top(), x, rect.bottom() - 1));
+		QVarLengthArray<QLineF, 100> lines_x;
+		for(double x = left; x < rect.right(); x += grid_interval)
+			lines_x.append(QLineF(x, rect.top(), x, rect.bottom() - 1));
 
-        QVarLengthArray<QLineF, 100> lines_y;
-        for(double y = top; y < rect.bottom(); y += grid_interval)
-            lines_y.append(QLineF(rect.left(), y, rect.right(), y));
+		QVarLengthArray<QLineF, 100> lines_y;
+		for(double y = top; y < rect.bottom(); y += grid_interval)
+			lines_y.append(QLineF(rect.left(), y, rect.right(), y));
 
-        painter->setPen(grid_pen);
-        painter->drawLines(lines_x.data(), lines_x.size());
-        painter->drawLines(lines_y.data(), lines_y.size());
-    }
+		painter->setPen(grid_pen);
+		painter->drawLines(lines_x.data(), lines_x.size());
+		painter->drawLines(lines_y.data(), lines_y.size());
+	}
 }
 
 void ImageViewer::wheelEvent(QWheelEvent *event)
@@ -196,5 +184,5 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
 
 	emit scaleChanged((int)(scale_factor * 100));
 
-	event->accept();
+	//event->accept();
 }
