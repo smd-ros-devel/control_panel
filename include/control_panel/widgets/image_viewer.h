@@ -62,28 +62,105 @@ class ImageViewer : public QGraphicsView
 
 	public:
 		/**
-		 * \brief
+		 * \brief Contructor. Creates the items, scene, and graphics view.
 		 *
 		 * \param parent The parent widget.
 		 */
 		ImageViewer(QWidget *parent = 0);
+
+		/**
+		 * \brief Returns the current pixmap.
+		 */
 		QPixmap getImagePixmap() const { return image_pixmap; }
+
+		/**
+		 * \brief Returns true if the grid is visible, otherwise returns false
+		 */
 		bool gridVisible() const { return grid_visible; }
+
+		/**
+		 * \brief Sets the interval for which each grid line is drawn.
+		 *
+		 * \param pixels The number of pixels between each grid line. Default is 20 pixels.
+		 */
 		void setGridLineInterval(int pixels);
+
+		/**
+		 * \brief Sets the pixmap to be drawn, and an optional grid line interval.
+		 *
+		 * \param pixamp   The new pixmap to display.
+		 * \param interval The pixel interval for which to draw each grid line.
+		 *                 If interval is less than 0, the previous interval will be used.
+		 */
 		void setImagePixmap(const QPixmap &pixmap, int interval = -1);
+
+		/**
+		 * \brief Sets the view state of the image pixmap.
+		 *
+		 * \param visible If true, the image pixmap will be visible, otherwise the image will be hidden.
+		 */
 		void setImageVisible(bool visible);
+
+		/**
+		 * \brief Draws a red circle on the graphics scene at (x_pos, y_pos).
+		 *
+		 * This fuction is used for displaying a robots position on a map.
+		 * x_pos and y_pos will be translated into the scenes coordinates.
+		 *
+		 * \param x_pos The position of the robot on the x-axis
+		 * \param y_pos 
+		 */
 		void setRobotPosition(double x_pos, double y_pos);
 
 	public slots:
+		/**
+		 * \brief SLOT. Sets the scale of the scene. Used for zooming.
+		 *
+		 * \param factor The scale factor. Must be a value between 25 and 400, inclusive.
+		 */
 		void setScale(int factor);
+
+		/**
+		 * \brief SLOT. Sets whether the grid should be drawn or not.
+		 *
+		 * \param show If true, the grid will be drawn, otherwise the grid will not be drawn.
+		 */
 		void showGrid(bool show);
+
+		/**
+		 * \brief SLOT. Sets whether the position of a robot should be drawn on the scene or not.
+		 *
+		 * \param show If true, the postion of the robot will be display, otherwise the position will not be drawn.
+		 */
 		void showOdometry(bool show);
 
 	signals:
+		/**
+		 * \brief SIGNAL. Emitted when the scale of the scene is changed.
+		 *
+		 * \param factor The new scale of the scene.
+		 */
 		void scaleChanged(int factor);
 
 	protected:
+		/**
+		 * \brief Reimplemented from QGraphicsView. Draws the grid.
+		 *
+		 * If grid_visible is true, the grid lines will be drawn at every
+		 * grid_interval pixels.
+		 *
+		 * \param painter The painter to draw the grid.
+		 * \param rect    The viewable area of the scene in the viewport.
+		 */
 		void drawForeground(QPainter *painter, const QRectF &rect);
+
+		/**
+		 * \brief Reimplemented from QGraphicsView.
+		 *
+		 * Scales the scene according to how far the mouse wheel is scrolled.
+		 *
+		 * \param event The wheel event.
+		 */
 		void wheelEvent(QWheelEvent *event);
 
 	private:

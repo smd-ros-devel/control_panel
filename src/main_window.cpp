@@ -205,12 +205,12 @@ void MainWindow::createMenuActions()
 	/**
 	** File Menu Actions
 	**/
-	new_robot_action = new QAction(tr("&New Robot Config"), this);
+	new_robot_action = new QAction(tr("&New Robot Config..."), this);
 	new_robot_action->setShortcut(QKeySequence::New);
 	connect(new_robot_action, SIGNAL(triggered()),
 		this, SLOT(newRobotConfigFile()));
 
-	open_config_action = new QAction(tr("&Open Robot Config"), this);
+	open_config_action = new QAction(tr("&Open Robot Config..."), this);
 	open_config_action->setShortcut(QKeySequence::Open);
 	connect(open_config_action, SIGNAL(triggered()),
 		this, SLOT(openRobotConfig()));
@@ -223,7 +223,7 @@ void MainWindow::createMenuActions()
 	/**
 	** Edit Menu Actions
 	**/
-	configuration_file_action = new QAction(tr("Robot Configuration &File"), this);
+	configuration_file_action = new QAction(tr("&Edit Robot Config..."), this);
 	configuration_file_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
 	connect(configuration_file_action, SIGNAL(triggered()),
 		this, SLOT(editRobotConfigFile()));
@@ -232,7 +232,7 @@ void MainWindow::createMenuActions()
 	topics_action->setEnabled(false);
 	//connect(topics_action, SIGNAL(triggered()), this, SLOT(editTopicNames()));
 
-	set_velocity_action = new QAction(tr("Set Velocity Scale"), this);
+	set_velocity_action = new QAction(tr("Set &Velocity Scale"), this);
 	set_velocity_action->setEnabled(false);
 	set_velocity_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
 	connect(set_velocity_action, SIGNAL(triggered()), SLOT(setMaxVelocity()));
@@ -461,7 +461,7 @@ void MainWindow::editRobotConfigFile()
 		return;
 	}
 
-	RobotConfigFileDialog edit_robot_dialog(robot_config);
+	RobotConfigFileDialog edit_robot_dialog(robot_config, this);
 	edit_robot_dialog.setWindowTitle("Edit Robot Configuration File");
 
 	if(edit_robot_dialog.exec())
@@ -470,6 +470,7 @@ void MainWindow::editRobotConfigFile()
 	}
 
 	main_tab->deselectAllRobots();
+	//setFocus(); // Focus is lost, so grab focus
 }
 
 void MainWindow::editTopics()
@@ -726,7 +727,7 @@ void MainWindow::newRobotConfigFile()
 {
 	struct RobotConfig *new_robot_config = new RobotConfig;
 
-	RobotConfigFileDialog new_robot_dialog(new_robot_config);
+	RobotConfigFileDialog new_robot_dialog(new_robot_config, this);
 	new_robot_dialog.setWindowTitle("New Robot Configuration File");
 
 	if(new_robot_dialog.exec())

@@ -104,10 +104,11 @@ void ImageViewer::setImagePixmap(const QPixmap &pixmap, int interval)
 void ImageViewer::setImageVisible(bool visible)
 {
 	if(visible)
-		image_pixmap.fill(Qt::transparent);
+		image_pixmap.fill(Qt::transparent); // Transparent is used initially so the Loading text can be seen
 	else
-		image_pixmap.fill(Qt::black);
-	
+		image_pixmap.fill(Qt::black); // Hides the Loading text
+
+	// Show the Loading text and center the item in the scene
 	text_item->setVisible(visible);
 	text_item->setPos((scene->width() - text_item->boundingRect().width()) / 2.0,
 		(scene->height() - text_item->boundingRect().height()) / 2.0);
@@ -120,6 +121,7 @@ void ImageViewer::setScale(int factor)
 {
 	scale_factor = (float)factor / 100.0;
 
+	// this->scale( ) scales the scene from its previous scale, so reset the scale to 1.0
 	resetMatrix();
 
 	scale(scale_factor, scale_factor);
@@ -135,18 +137,21 @@ void ImageViewer::showOdometry(bool show)
 	show_odom = show;
 	robot_pos_item->setVisible(show);
 	robot_pos_item->setPos(
-        (scene->width() / 2.0) - (robot_pos_item->boundingRect().width() / 2.0),
-        (scene->height() / 2.0) - (robot_pos_item->boundingRect().height() / 2.0));
+		(scene->width() - robot_pos_item->boundingRect().width()) / 2.0,
+		(scene->height() - robot_pos_item->boundingRect().height()) / 2.0);
 }
 
 void ImageViewer::setRobotPosition(double x_pos, double y_pos)
 {
 	if(show_odom)
 	{
+		// Find the center of the image compared to the center of the circle item (the robots position)
 		double centerx = (image_item->boundingRect().width() -
 			robot_pos_item->boundingRect().width()) / 2.0;
 		double centery = (image_item->boundingRect().height() -
 			robot_pos_item->boundingRect().height()) / 2.0;
+
+		// Offset the circle item to indicate the robots position
 		robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
 	}
 }
@@ -155,18 +160,22 @@ void ImageViewer::drawForeground(QPainter *painter, const QRectF &rect)
 {
 	if(grid_visible)
 	{
+		// Find the top left postion of the scene.
 		double left = (int)rect.left() - ((int)rect.left() % grid_interval);
 		double top = (int)rect.top() - ((int)rect.top() % grid_interval) +
 			((int)scene->height() % grid_interval);
 
+		// Create the vertical lines
 		QVarLengthArray<QLineF, 100> lines_x;
 		for(double x = left; x < rect.right(); x += grid_interval)
 			lines_x.append(QLineF(x, rect.top(), x, rect.bottom() - 1));
 
+		// Create the horizonal lines
 		QVarLengthArray<QLineF, 100> lines_y;
 		for(double y = top; y < rect.bottom(); y += grid_interval)
 			lines_y.append(QLineF(rect.left(), y, rect.right(), y));
 
+		// Draw lines
 		painter->setPen(grid_pen);
 		painter->drawLines(lines_x.data(), lines_x.size());
 		painter->drawLines(lines_y.data(), lines_y.size());
@@ -177,6 +186,7 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
 {
 	scale_factor += (float)event->delta() / 1000.0;
 
+	// Clamp the scale factor
 	if(scale_factor < 0.25)
 		scale_factor = 0.25;
 	else if(scale_factor > 4.0)
@@ -184,5 +194,5 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
 
 	emit scaleChanged((int)(scale_factor * 100));
 
-	//event->accept();
+	event->accept();
 }
