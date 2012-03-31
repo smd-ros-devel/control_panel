@@ -101,6 +101,13 @@ void ImageViewer::setImagePixmap(const QPixmap &pixmap, int interval)
 		centerOn(image_item);
 }
 
+void ImageViewer::setMapPixmap(const QPixmap &pixmap, double origin_x, double origin_y, int interval)
+{
+	map_origin = QPointF(origin_x, origin_y);
+
+	setImagePixmap(pixmap, interval);
+}
+
 void ImageViewer::setImageVisible(bool visible)
 {
 	if(visible)
@@ -152,7 +159,9 @@ void ImageViewer::setRobotPosition(double x_pos, double y_pos)
 			robot_pos_item->boundingRect().height()) / 2.0;
 
 		// Offset the circle item to indicate the robots position
-		robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
+		//robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
+		robot_pos_item->setPos(map_origin.x() + (x_pos / 0.05),
+			image_item->boundingRect().height() - (map_origin.y() + (y_pos / 0.05)));
 	}
 }
 

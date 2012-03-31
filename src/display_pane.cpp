@@ -34,6 +34,7 @@
  */
 #include <QtGui>
 #include "control_panel/display_pane.h"
+#include "math.h"
 
 
 DisplayPane::DisplayPane(QWidget *parent)
@@ -208,7 +209,15 @@ void DisplayPane::setImage(const QImage &new_image, int grid_interval)
 	// Check if the image display is off
 	if(!image_off)
 		image_viewer->setImagePixmap(QPixmap::fromImage(new_image),
-            grid_interval);
+			grid_interval);
+}
+
+void DisplayPane::setMap(const QImage &new_image, double origin_x,
+	double origin_y, float resolution)
+{
+	if(!image_off)
+		image_viewer->setMapPixmap(QPixmap::fromImage(new_image),
+			abs(origin_x) / resolution, abs(origin_y) / resolution, (int)(1.0 / resolution));
 }
 
 /******************************************************************************

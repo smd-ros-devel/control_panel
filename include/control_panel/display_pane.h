@@ -74,6 +74,8 @@ class DisplayPane : public QWidget
     public slots:
         void connectionStatusChanged(int new_status);
 		void setImage(const QImage &new_image, int grid_interval = -1);
+		void setMap(const QImage &new_image, double origin_x,
+			double origin_y, float resolution = -1.0);
         void sourceChanged(int index);
         void showPosition(bool show);
         void setPosition(const QVector3D &pos);

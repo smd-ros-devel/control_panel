@@ -97,8 +97,8 @@ RobotTab::RobotTab(RobotConfig *new_robot_config, QWidget *parent) :
         connect(node_manager->disparity_image_node, SIGNAL(disparityImageReceived(const QImage &)),
             processed_data_display, SLOT(setImage(const QImage &)));
     if(node_manager->map_node)
-        connect(node_manager->map_node, SIGNAL(mapReceived(const QImage &)),
-            processed_data_display, SLOT(setImage(const QImage &)));
+        connect(node_manager->map_node, SIGNAL(mapReceived(const QImage &, double, double, float)),
+            processed_data_display, SLOT(setMap(const QImage &, double, double, float)));
     if(node_manager->diagnostic_node && !robot_config->diagnostics.batteryLevel.empty())
 		connect(node_manager->diagnostic_node, SIGNAL(diagnosticDataReceived(const QString &, const QString &)),
 			this, SLOT(processDiagnostic(const QString &, const QString &)));

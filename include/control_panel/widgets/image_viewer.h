@@ -94,6 +94,8 @@ class ImageViewer : public QGraphicsView
 		 */
 		void setImagePixmap(const QPixmap &pixmap, int interval = -1);
 
+		void setMapPixmap(const QPixmap &pixmap, double origin_x, double origin_y, int interval = -1);
+
 		/**
 		 * \brief Sets the view state of the image pixmap.
 		 *
@@ -108,7 +110,7 @@ class ImageViewer : public QGraphicsView
 		 * x_pos and y_pos will be translated into the scenes coordinates.
 		 *
 		 * \param x_pos The position of the robot on the x-axis
-		 * \param y_pos 
+		 * \param y_pos The position of the robot on the y-axis
 		 */
 		void setRobotPosition(double x_pos, double y_pos);
 
@@ -176,6 +178,8 @@ class ImageViewer : public QGraphicsView
 		int grid_interval;
 		QPen grid_pen;
 		float scale_factor;
+
+		QPointF map_origin;
 };
 
 #endif // CONTROL_PANEL_IMAGE_VIEWER_H

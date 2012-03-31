@@ -78,5 +78,6 @@ void MapNode::mapCallback(const nav_msgs::OccupancyGridConstPtr &msg)
         }
     }
 
-    emit mapReceived(buffer);
+    emit mapReceived(buffer, msg->info.origin.position.x,
+	msg->info.origin.position.y, msg->info.resolution);
 }

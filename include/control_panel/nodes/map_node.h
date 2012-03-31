@@ -60,7 +60,7 @@ class MapNode : public QObject
 		std::string getTopic() const { return topic_name; }
 
 	signals:
-        void mapReceived(const QImage &buffer);
+        void mapReceived(const QImage &buffer, double origin_x, double origin_y, float res);
 
 	private:
 		std::string topic_name;
