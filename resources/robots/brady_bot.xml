@@ -1,0 +1,34 @@
+<robot>
+  <robotName>Brady Bot</robotName>
+  <system>UGV</system>
+  <driveSystem>Four wheeled two casters</driveSystem>
+  <imageFile>brady_bot.jpg</imageFile>
+  <nameSpace>brady_bot</nameSpace>
+
+  <sensors>
+    <camera>
+      <name>Color Video</name>
+      <topicName>camera/image_raw</topicName>
+    </camera>
+    <laser>
+      <name>Laser Scan</name>
+      <topicName>base_scan</topicName>
+    </laser>
+    <gps>
+      <name>DGPS</name>
+      <topicName>gps</topicName>
+      <latitude />
+      <longitude />
+    </gps>
+    <imu>
+      <name>Heading</name>
+      <topicName>imu/data</topicName>
+    </imu>
+  </sensors>
+
+  <controls>
+    <drive>
+      <topicName>cmd_vel</topicName>
+    </drive>
+  </controls>
+</robot>

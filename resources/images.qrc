@@ -30,5 +30,6 @@
         <file>images/erratic.png</file>
         <file>images/little_boy.jpg</file>
         <file>images/fat_man.jpg</file>
+        <file>images/brady_bot.jpg</file>
     </qresource>
 </RCC>

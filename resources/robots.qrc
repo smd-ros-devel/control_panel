@@ -10,7 +10,7 @@
         <file>robots/ghetto_bot1.xml</file>
         <file>robots/little_boy.xml</file>
         <file>robots/nao.xml</file>
-        <file>robots/penumbra.xml</file>
+        <file>robots/brady_bot.xml</file>
         <file>robots/pr2.xml</file>
         <file>robots/smp1.xml</file>
         <file>robots/test_robot.xml</file>
