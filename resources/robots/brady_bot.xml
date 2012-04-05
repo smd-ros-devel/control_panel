@@ -10,20 +10,6 @@
       <name>Color Video</name>
       <topicName>camera/image_raw</topicName>
     </camera>
-    <laser>
-      <name>Laser Scan</name>
-      <topicName>base_scan</topicName>
-    </laser>
-    <gps>
-      <name>DGPS</name>
-      <topicName>gps</topicName>
-      <latitude />
-      <longitude />
-    </gps>
-    <imu>
-      <name>Heading</name>
-      <topicName>imu/data</topicName>
-    </imu>
   </sensors>
 
   <controls>
