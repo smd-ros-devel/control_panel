@@ -61,8 +61,8 @@ class OdometryNode : public QObject
 
 	signals:
 		void odometryDataReceived(const QVector3D &position,
-            const QQuaternion &orientation, const QVector3D &linear_velocity,
-            const QVector3D &angular_velocity);
+			const QQuaternion &orientation, const QVector3D &linear_velocity,
+			const QVector3D &angular_velocity);
 
 	private:
 		std::string topic_name;

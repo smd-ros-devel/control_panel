@@ -47,50 +47,51 @@
 /**
  * \class LaserNode
  * \brief Recieves a sensor_msgs::LaserScan and converts it to a QImage.
- *
- * \author Matt Richard
  */
 class LaserNode : public QObject
 {
 	Q_OBJECT
 
 	public:
+		/**
+		 * \brief Constructor. Initializes the topic name and copys nh_ptr.
+		 */
 		LaserNode(ros::NodeHandle *nh_ptr);
 
-        /**
-         * \brief Subscribes to the set topic
-         */
+		/**
+		 * \brief Subscribes to the set topic
+		 */
 		void subscribe();
 
-        /**
-         * \brief Unsubscribes from the current topic.
-         */
-        void unsubscribe();
+		/**
+		 * \brief Unsubscribes from the current topic.
+		 */
+		void unsubscribe();
 
-        /**
-         * \brief ROS callback function for the incoming laser scan.
-         */
+		/**
+		 * \brief ROS callback function for the incoming laser scan.
+		 */
 		void laserCallback(const sensor_msgs::LaserScanConstPtr &msg);
 
-        /**
-         * \brief Sets the topic on which to receive a laser scan.
-         *
-         * \param topic The topic to subscribe to.
-         */
-        void setTopic(const std::string &topic) { topic_name = topic; }
+		/**
+		 * \brief Sets the topic on which to receive a laser scan.
+		 *
+		 * \param topic The topic to subscribe to.
+		 */
+		void setTopic(const std::string &topic) { topic_name = topic; }
 
-        /**
-         * \return Returns the set topic
-         */
+		/**
+		 * \brief Returns the set topic
+		 */
 		std::string getTopic() const { return topic_name; }
 
 	signals:
-        /**
-         * \brief Signal emitted after a laser scan has been received and converted
-         *
-         * \param buffer   The displayable laser scan image created
-         * \param interval The max range of the laser scan (meters)
-         */
+		/**
+		 * \brief Signal emitted after a laser scan has been received and converted
+		 *
+		 * \param buffer   The displayable laser scan image created
+		 * \param interval The max range of the laser scan (meters)
+		 */
 		void laserScanReceived(const QImage &buffer, int interval);
 
 	private:
@@ -98,8 +99,8 @@ class LaserNode : public QObject
 		ros::NodeHandle *nh;
 		ros::Subscriber laser_sub;
 
-        QRgb white;
-        QRgb red;
+		QRgb white;
+		QRgb red;
 };
 
 #endif // CONTROL_PANEL_LASER_NODE_H

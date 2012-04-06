@@ -61,7 +61,7 @@ class ImuNode : public QObject
 
 	signals:
 		void imuDataReceived(const QQuaternion &ori, const QVector3D &ang_vel,
-            const QVector3D &lin_accel);
+			const QVector3D &lin_accel);
 
 	private:
 		std::string topic_name;

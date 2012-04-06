@@ -60,16 +60,16 @@ class MapNode : public QObject
 		std::string getTopic() const { return topic_name; }
 
 	signals:
-        void mapReceived(const QImage &buffer, double origin_x, double origin_y, float res);
+		void mapReceived(const QImage &buffer, double origin_x, double origin_y, float res);
 
 	private:
 		std::string topic_name;
 		ros::NodeHandle *nh;
 		ros::Subscriber map_sub;
 
-        QRgb white;
-        QRgb black;
-        QRgb grey;
+		QRgb white;
+		QRgb black;
+		QRgb grey;
 };
 
 #endif // CONTROL_PANEL_MAP_NODE_H

@@ -52,47 +52,47 @@ class JointStateNode : public QObject
 	Q_OBJECT
 
 	public:
-        /**
-         * \brief Constructor. Initializes the topic name and copys the node handle pointer
-         */
+		/**
+		 * \brief Constructor. Initializes the topic name and copys the node handle pointer
+		 */
 		JointStateNode(ros::NodeHandle *nh_ptr);
 
-        /**
-         * \brief Returns the subscriber's topic
-         */
+		/**
+		 * \brief Returns the subscriber's topic
+		 */
 		std::string getTopic() const { return topic_name; }
 
-        /**
-         * \brief Callback function for when a sensor_msgs::JointState message is received
-         *
-         * \param msg sensor_msgs::JointState message received
-         */
+		/**
+		 * \brief Callback function for when a sensor_msgs::JointState message is received
+		 *
+		 * \param msg sensor_msgs::JointState message received
+		 */
 		void jointCallback(const sensor_msgs::JointStateConstPtr &msg);
 
-        /**
-         * \brief Sets the topic over which the subscriber should subscribe to.
-         */
+		/**
+		 * \brief Sets the topic over which the subscriber should subscribe to.
+		 */
 		void setTopic(const std::string &topic) { topic_name = topic; }
 
-        /**
-         * \brief Subscribes over the set topic
-         */
-        void subscribe();
+		/**
+		 * \brief Subscribes over the set topic
+		 */
+		void subscribe();
 
-        /**
-         * \brief Shutsdown the subscriber
-         */
-        void unsubscribe();
+		/**
+		 * \brief Shutsdown the subscriber
+		 */
+		void unsubscribe();
 
 	signals:
-        /**
-         * \brief Signal emitted after a message is received
-         *
-         * \param names The list of joint names
-         * \param pos   Positions of each joint
-         * \param vel   Velocities of each joint
-         * \param eff   Effort of each joint
-         */
+		/**
+		 * \brief Signal emitted after a message is received
+		 *
+		 * \param names The list of joint names
+		 * \param pos   Positions of each joint
+		 * \param vel   Velocities of each joint
+		 * \param eff   Effort of each joint
+		 */
 		void jointDataReceived(const QStringList &names, const std::vector<double> &pos,
                                const std::vector<double> &vel, const std::vector<double> &eff);
 

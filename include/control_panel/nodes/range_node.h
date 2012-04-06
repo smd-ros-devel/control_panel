@@ -48,23 +48,23 @@
  */
 class RangeNode : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        RangeNode(ros::NodeHandle *nh_ptr);
-        void subscribe();
-        std::string getTopic() const { return topic_name; }
-        void rangeCallback(const sensor_msgs::RangeConstPtr &msg);
-        void setTopic(const std::string &topic) { topic_name = topic; }
-        void unsubscribe();
+	public:
+		RangeNode(ros::NodeHandle *nh_ptr);
+		std::string getTopic() const { return topic_name; }
+		void rangeCallback(const sensor_msgs::RangeConstPtr &msg);
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		void subscribe();
+		void unsubscribe();
 
-    signals:
-        void rangeReceived(float value, bool in_range);
+	signals:
+		void rangeReceived(float value, bool in_range);
 
-    private:
-        ros::NodeHandle *nh;
-        ros::Subscriber range_sub;
-        std::string topic_name;
+	private:
+		ros::NodeHandle *nh;
+		ros::Subscriber range_sub;
+		std::string topic_name;
 };
 
 #endif // CONTROL_PANEL_RANGE_NODE_H

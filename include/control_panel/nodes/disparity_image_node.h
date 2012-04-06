@@ -312,55 +312,55 @@ const unsigned char color_table[768] =
  */
 class DisparityImageNode : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        /**
-         * \brief Initializes the topic name and copys the node handle pointer
-         */
-        DisparityImageNode(ros::NodeHandle *nh_ptr);
+	public:
+		/**
+		 * \brief Initializes the topic name and copys the node handle pointer
+		 */
+		DisparityImageNode(ros::NodeHandle *nh_ptr);
 
-        /**
-         * \brief Converts the received disparity image into a QImage
-         *
-         * \param msg The received stereo_msgs::DisparityImage to convert
-         */
-        void disparityCallback(const stereo_msgs::DisparityImageConstPtr &msg);
+ 		/**
+		 * \brief Converts the received disparity image into a QImage
+		 *
+		 * \param msg The received stereo_msgs::DisparityImage to convert
+		 */
+		void disparityCallback(const stereo_msgs::DisparityImageConstPtr &msg);
 
-        /**
-         * \brief Returns the subscribers topic name
-         */
-        std::string getTopic() const { return topic_name; }
+		/**
+		 * \brief Returns the subscribers topic name
+		 */
+		std::string getTopic() const { return topic_name; }
 
-        /**
-         * \brief Sets the topic name to topic
-         *
-         * \param topic The new topic name to subscribe over
-         */
-        void setTopic(const std::string &topic) { topic_name = topic; }
+		/**
+		 * \brief Sets the topic name to topic
+		 *
+		 * \param topic The new topic name to subscribe over
+		 */
+		void setTopic(const std::string &topic) { topic_name = topic; }
 
-        /**
-         * \brief Subscribes to the set topic name
-         */
-        void subscribe();
+		/**
+		 * \brief Subscribes over the set topic name
+		 */
+		void subscribe();
 
-        /**
-         * \brief Shuts down the disparity subscriber
-         */
-        void unsubscribe();
+		/**
+		 * \brief Shuts down the disparity image subscriber
+		 */
+		void unsubscribe();
 
-    signals:
-        /**
-         * \brief Signal emitted once a stereo_msgs::DisparityImage has been coverted
-         *
-         * \param image The QImage created from the disparity image.
-         */
-        void disparityImageReceived(const QImage &image);
+	signals:
+		/**
+		 * \brief Signal emitted once a stereo_msgs::DisparityImage has been coverted
+		 *
+		 * \param image The QImage created from the disparity image.
+		 */
+		void disparityImageReceived(const QImage &image);
 
-    private:
-        std::string topic_name;
-        ros::NodeHandle *nh;
-        ros::Subscriber disparity_sub;
+	private:
+		std::string topic_name;
+		ros::NodeHandle *nh;
+		ros::Subscriber disparity_sub;
 };
 
 #endif // CONTROL_PANEL_DISPARITY_IMAGE_NODE_H
