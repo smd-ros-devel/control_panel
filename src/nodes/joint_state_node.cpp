@@ -52,11 +52,11 @@ void JointStateNode::unsubscribe()
 
 void JointStateNode::jointCallback(const sensor_msgs::JointState::ConstPtr &msg)
 {
-    QStringList name_list;
+	QStringList name_list;
 
-    // Store all joint names in a QStringList
-    for(unsigned int i = 0; i < msg->name.size(); i++)
-        name_list << msg->name[i].c_str();
+	// Store all joint names in a QStringList
+	for(unsigned int i = 0; i < msg->name.size(); i++)
+		name_list << msg->name[i].c_str();
 
-    emit jointDataReceived(name_list, msg->position, msg->velocity, msg->effort);
+	emit jointDataReceived(name_list, msg->position, msg->velocity, msg->effort);
 }

@@ -64,17 +64,17 @@ void ControlNode::publish()
 
 void ControlNode::setScale(double s)
 {
-    if(s > 1.0)
-        scale = 1.0;
-    else if(s < 0.0)
-        scale = 0.0;
-    else
-        scale = s;
+	if(s > 1.0)
+		scale = 1.0;
+	else if(s < 0.0)
+		scale = 0.0;
+	else
+		scale = s;
 }
 
 void ControlNode::unadvertise()
 {
-    control_pub.shutdown();
+	control_pub.shutdown();
 }
 
 /******************************************************************************
@@ -103,12 +103,12 @@ void ControlNode::setTwist(const geometry_msgs::Twist &twist)
 void ControlNode::setTwist(double lx, double ly, double lz,double ax, 
 	double ay, double az)
 {
-    setLinearX(lx);
-    setLinearY(ly);
-    setLinearZ(lz);
-    setAngularX(ax);
-    setAngularY(ay);
-    setAngularZ(az);
+	setLinearX(lx);
+	setLinearY(ly);
+	setLinearZ(lz);
+	setAngularX(ax);
+	setAngularY(ay);
+	setAngularZ(az);
 }
 
 /******************************************************************************

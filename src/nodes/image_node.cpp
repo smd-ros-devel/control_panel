@@ -73,8 +73,8 @@ void ImageNode::imageCallback(const sensor_msgs::ImageConstPtr &msg)
 		QImage buffer((unsigned char *)cv_ptr->image.data, cv_ptr->image.cols,
 			cv_ptr->image.rows, QImage::Format_RGB888);
 
-        emit frameReceived(buffer.rgbSwapped());
-    }
+		emit frameReceived(buffer.rgbSwapped());
+	}
 	else if(msg->encoding == enc::TYPE_32FC1)
 	{
 		cv_ptr = cv_bridge::toCvShare(msg, enc::TYPE_32FC1);
@@ -88,7 +88,7 @@ void ImageNode::imageCallback(const sensor_msgs::ImageConstPtr &msg)
 		QImage buffer((unsigned char *)depth_img.data, depth_img.cols,
 			depth_img.rows, QImage::Format_RGB888);
 
-        emit frameReceived(buffer.rgbSwapped());
+ 		emit frameReceived(buffer.rgbSwapped());
 	}
 	else
 		ROS_WARN("Unrecognized image encoding: %s\n", msg->encoding.c_str());

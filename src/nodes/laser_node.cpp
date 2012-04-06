@@ -40,54 +40,54 @@ LaserNode::LaserNode(ros::NodeHandle *nh_ptr)
 
 	nh = nh_ptr;
 
-    white = qRgb(255, 255, 255);
-    red = qRgb(255, 0, 0);
+	white = qRgb(255, 255, 255);
+	red = qRgb(255, 0, 0);
 }
 
 void LaserNode::subscribe()
 {
-    laser_sub = nh->subscribe(topic_name, 1, &LaserNode::laserCallback, this);
+	laser_sub = nh->subscribe(topic_name, 1, &LaserNode::laserCallback, this);
 }
 
 void LaserNode::unsubscribe()
 {
-    laser_sub.shutdown();
+	laser_sub.shutdown();
 }
 
 void LaserNode::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
 {
-    int scale = 40; // scale size of image
-    double x, y;
+	int scale = 40; // scale size of image
+	double x, y;
 
-    int robot_pos = msg->range_max * scale;
-    int height = robot_pos * (1.0 - cos(msg->angle_max));
+	int robot_pos = msg->range_max * scale;
+	int height = robot_pos * (1.0 - cos(msg->angle_max));
 
-    QImage buffer(2.0 * robot_pos, height, QImage::Format_RGB888);
-    buffer.fill(Qt::black);
+	QImage buffer(2.0 * robot_pos, height, QImage::Format_RGB888);
+	buffer.fill(Qt::black);
 
-    double curr_angle = msg->angle_min + Globals::PI_OVER_TWO;
-    // Convert from polar to x,y coordinates and create the image
-    for(unsigned int i = 0; i < msg->ranges.size(); i++)
-    {
-        // Make sure the range is valid
-        if(msg->ranges[i] > msg->range_min && msg->ranges[i] < (msg->range_max - 0.1))
-        {
-            /* x = r * cos(theta) */
-            x = msg->ranges[i] * cos(curr_angle);
-            /* y = r * sin(theta) */
-            y = msg->ranges[i] * sin(curr_angle);
+ 	double curr_angle = msg->angle_min + Globals::PI_OVER_TWO;
+	// Convert from polar to x,y coordinates and create the image
+	for(unsigned int i = 0; i < msg->ranges.size(); i++)
+	{
+		// Make sure the range is valid
+		if(msg->ranges[i] > msg->range_min && msg->ranges[i] < (msg->range_max - 0.1))
+		{
+			/* x = r * cos(theta) */
+			x = msg->ranges[i] * cos(curr_angle);
+			/* y = r * sin(theta) */
+			y = msg->ranges[i] * sin(curr_angle);
 
-            // draw the laser value on the image
-            buffer.setPixel(x * scale + (robot_pos - 1), (robot_pos - 1) - y * scale, white);
-        }
-        curr_angle += msg->angle_increment;
-    }
+			// draw the laser value on the image
+			buffer.setPixel(x * scale + (robot_pos - 1), (robot_pos - 1) - y * scale, white);
+		}
+		curr_angle += msg->angle_increment;
+	}
 
 
-    // Draw the robots position on the image
-    for(int i = robot_pos - 1; i > robot_pos - 6; i--)
-        for(int j = robot_pos - 3; j < robot_pos + 3; j++)
-            buffer.setPixel(j, i, red);
+	// Draw the robots position on the image
+	for(int i = robot_pos - 1; i > robot_pos - 6; i--)
+		for(int j = robot_pos - 3; j < robot_pos + 3; j++)
+			buffer.setPixel(j, i, red);
 
-    emit laserScanReceived(buffer, scale);
+	emit laserScanReceived(buffer, scale);
 }

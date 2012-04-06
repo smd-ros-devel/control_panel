@@ -40,9 +40,9 @@ MapNode::MapNode(ros::NodeHandle *nh_ptr)
 
 	nh = nh_ptr;
 
-    white = qRgb(255, 255, 255);
-    black = qRgb(0, 0, 0);
-    grey = qRgb(50, 50, 50);
+	white = qRgb(255, 255, 255);
+	black = qRgb(0, 0, 0);
+	grey = qRgb(50, 50, 50);
 }
 
 void MapNode::subscribe()
@@ -57,27 +57,27 @@ void MapNode::unsubscribe()
 
 void MapNode::mapCallback(const nav_msgs::OccupancyGridConstPtr &msg)
 {
-    unsigned int i = 0;
+	unsigned int i = 0;
 
-    QImage buffer(msg->info.width, msg->info.height, QImage::Format_RGB888);
-    buffer.fill(grey);
+	QImage buffer(msg->info.width, msg->info.height, QImage::Format_RGB888);
+	buffer.fill(grey);
 
-    for(unsigned int y = 0; y < msg->info.height; y++)
-    {
-        for(unsigned int x = 0; x < msg->info.width; x++)
-        {
-            // Find (x,y) index into map data array
-            i = x + (msg->info.height - y - 1) * msg->info.width;
+	for(unsigned int y = 0; y < msg->info.height; y++)
+	{
+		for(unsigned int x = 0; x < msg->info.width; x++)
+		{
+			// Find (x,y) index into map data array
+			i = x + (msg->info.height - y - 1) * msg->info.width;
 
-            if(msg->data[i] == 0) // occupancy [0, 0.1)
-                buffer.setPixel(x, y, white);
-            else if(msg->data[i] == +100) // occupancy (0.65, 1]
-                buffer.setPixel(x, y, black);
-            //else // occupancy [0.1, 0.65]
-            //    buffer.setPixel(x, y, grey);
-        }
-    }
+			if(msg->data[i] == 0) // occupancy [0, 0.1)
+				buffer.setPixel(x, y, white);
+			else if(msg->data[i] == +100) // occupancy (0.65, 1]
+				buffer.setPixel(x, y, black);
+			//else // occupancy [0.1, 0.65]
+			//    buffer.setPixel(x, y, grey);
+		}
+	}
 
-    emit mapReceived(buffer, msg->info.origin.position.x,
-	msg->info.origin.position.y, msg->info.resolution);
+	emit mapReceived(buffer, msg->info.origin.position.x,
+		msg->info.origin.position.y, msg->info.resolution);
 }

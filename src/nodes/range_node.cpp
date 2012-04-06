@@ -36,34 +36,34 @@
 
 RangeNode::RangeNode(ros::NodeHandle *nh_ptr)
 {
-    topic_name = Globals::DEFAULT_RANGE_TOPIC;
+	topic_name = Globals::DEFAULT_RANGE_TOPIC;
 
-    nh = nh_ptr;
+	nh = nh_ptr;
 }
 
 void RangeNode::subscribe()
 {
-    range_sub = nh->subscribe(topic_name, 1, &RangeNode::rangeCallback, this);
+	range_sub = nh->subscribe(topic_name, 1, &RangeNode::rangeCallback, this);
 }
 
 void RangeNode::rangeCallback(const sensor_msgs::RangeConstPtr &msg)
 {
-    bool valid = true;
+	bool valid = true;
 
-    if(msg->range != msg->range)
-    {
-        ROS_ERROR("NaN detected in Range message");
-        return;
-    }
+	if(msg->range != msg->range)
+	{
+		ROS_ERROR("NaN detected in Range message");
+		return;
+	}
 
-    // Check if the range value is valid
-    if(msg->range < msg->min_range || msg->range > msg->max_range)
-        valid = false;
+	// Check if the range value is valid
+	if(msg->range < msg->min_range || msg->range > msg->max_range)
+		valid = false;
 
-    emit rangeReceived(msg->range, valid);
+	emit rangeReceived(msg->range, valid);
 }
 
 void RangeNode::unsubscribe()
 {
-    range_sub.shutdown();
+	range_sub.shutdown();
 }

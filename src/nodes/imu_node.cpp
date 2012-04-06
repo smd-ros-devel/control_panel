@@ -53,31 +53,31 @@ void ImuNode::unsubscribe()
 
 void ImuNode::imuCallback(const sensor_msgs::ImuConstPtr &msg)
 {
-    // Check for any NaN values
-    if(msg->orientation.w != msg->orientation.w ||
-       msg->orientation.x != msg->orientation.x ||
-       msg->orientation.y != msg->orientation.y ||
-       msg->orientation.z != msg->orientation.z ||
-       msg->angular_velocity.x != msg->angular_velocity.x ||
-       msg->angular_velocity.y != msg->angular_velocity.y ||
-       msg->angular_velocity.z != msg->angular_velocity.z ||
-       msg->linear_acceleration.x != msg->linear_acceleration.x ||
-       msg->linear_acceleration.y != msg->linear_acceleration.y ||
-       msg->linear_acceleration.z != msg->linear_acceleration.z)
-    {
-        ROS_ERROR("NaN detected in Imu message");
-        return;
-    }
+	// Check for any NaN values
+	if(msg->orientation.w != msg->orientation.w ||
+	   msg->orientation.x != msg->orientation.x ||
+	   msg->orientation.y != msg->orientation.y ||
+	   msg->orientation.z != msg->orientation.z ||
+	   msg->angular_velocity.x != msg->angular_velocity.x ||
+	   msg->angular_velocity.y != msg->angular_velocity.y ||
+	   msg->angular_velocity.z != msg->angular_velocity.z ||
+	   msg->linear_acceleration.x != msg->linear_acceleration.x ||
+	   msg->linear_acceleration.y != msg->linear_acceleration.y ||
+	   msg->linear_acceleration.z != msg->linear_acceleration.z)
+	{
+		ROS_ERROR("NaN detected in Imu message");
+		return;
+	}
 
 	emit imuDataReceived(
-        QQuaternion(msg->orientation.w,
-                    msg->orientation.x,
-                    msg->orientation.y,
-                    msg->orientation.z),
-        QVector3D(msg->angular_velocity.x,
-                  msg->angular_velocity.y,
-                  msg->angular_velocity.z),
-        QVector3D(msg->linear_acceleration.x,
-                  msg->linear_acceleration.y,
-                  msg->linear_acceleration.z));
+		QQuaternion(msg->orientation.w,
+			msg->orientation.x,
+			msg->orientation.y,
+			msg->orientation.z),
+		QVector3D(msg->angular_velocity.x,
+			msg->angular_velocity.y,
+			msg->angular_velocity.z),
+		QVector3D(msg->linear_acceleration.x,
+			msg->linear_acceleration.y,
+			msg->linear_acceleration.z));
 }
