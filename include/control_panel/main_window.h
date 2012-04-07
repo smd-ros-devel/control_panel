@@ -53,7 +53,7 @@ QT_END_NAMESPACE
 #include "main_tab.h"
 #include "robot_tab.h"
 #include "robot_config_file_dialog.h"
-
+#include "velocity_scale_dialog.h"
 
 /**
  * \class MainWindow

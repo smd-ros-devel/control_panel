@@ -40,6 +40,7 @@ ControlNode::ControlNode(ros::NodeHandle *nh_ptr)
 {
 	topic_name = Globals::DEFAULT_CONTROL_TOPIC;
 
+	// Initialize twist message
 	twist_msg.linear.x = 0.0;
 	twist_msg.linear.y = 0.0;
 	twist_msg.linear.z = 0.0;
@@ -47,7 +48,8 @@ ControlNode::ControlNode(ros::NodeHandle *nh_ptr)
 	twist_msg.angular.y = 0.0;
 	twist_msg.angular.z = 0.0;
 
-	scale = 0.5;
+	lin_scale = 0.5;
+	ang_scale = 0.5;
 
 	nh = nh_ptr;
 }
@@ -62,14 +64,24 @@ void ControlNode::publish()
 	control_pub.publish(twist_msg);
 }
 
-void ControlNode::setScale(double s)
+void ControlNode::setScale(double lin, double ang)
 {
-	if(s > 1.0)
-		scale = 1.0;
-	else if(s < 0.0)
-		scale = 0.0;
+	// Set linear scale, clamping the value if necessary
+	if(lin > 1.0)
+		lin_scale = 1.0;
+	else if(lin < 0.0)
+		lin_scale = 0.0;
 	else
-		scale = s;
+		lin_scale = lin;
+
+	// Set angular scale, clamping the value if necessary
+	if(ang > 1.0)
+		ang_scale = 1.0;
+	else if(ang < 0.0)
+		ang_scale = 0.0;
+	else
+		ang_scale = ang;
+
 }
 
 void ControlNode::unadvertise()

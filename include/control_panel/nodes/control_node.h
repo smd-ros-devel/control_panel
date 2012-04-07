@@ -93,9 +93,14 @@ class ControlNode : public QObject
 		double getLinearZ() const { return twist_msg.linear.z; }
 
 		/**
-		 * \brief Returns the scale that each Twist message attribute is multiplied by
+		 * \brief Retruns the value each Twist message angular attribute is scaled by
 		 */
-		double getScale() const { return scale; }
+		double getAngularScale() const { return ang_scale; }
+
+		/**
+		 * \brief Returns the value each Twist message linear attribute is scaled by
+		 */
+		double getLinearScale() const { return lin_scale; }
 
 		/**
 		 * \brief Returns the topic this node advertises over
@@ -112,49 +117,50 @@ class ControlNode : public QObject
 		 *
 		 * \param x The value to be set as angular x in the Twist message
 		 */
-		void setAngularX(double x) { if(validVelocity(x)) twist_msg.angular.x = x * scale; }
+		void setAngularX(double x) { if(validVelocity(x)) twist_msg.angular.x = x * ang_scale; }
 
 		/**
 		 * \brief Sets the angular y value of the Twist message if the parameter is a valid value
 		 *
 		 * \param y The value to be set as angular y in the Twist message
 		 */
-		void setAngularY(double y) { if(validVelocity(y)) twist_msg.angular.y = y * scale; }
+		void setAngularY(double y) { if(validVelocity(y)) twist_msg.angular.y = y * ang_scale; }
 
 		/**
 		 * \brief Sets the angular z value of the Twist message if the parameter is a valid value
 		 *
 		 * \param z The value to be set as angular z in the Twist message
 		 */
-		void setAngularZ(double z) { if(validVelocity(z)) twist_msg.angular.z = z * scale; }
+		void setAngularZ(double z) { if(validVelocity(z)) twist_msg.angular.z = z * ang_scale; }
 
 		/**
 		 * \brief Sets the linear x value of the Twist message if the parameter is a valid value
 		 *
 		 * \param x The value to be set as linear x in the Twist message
 		 */
-		void setLinearX(double x) { if(validVelocity(x)) twist_msg.linear.x = x * scale; }
+		void setLinearX(double x) { if(validVelocity(x)) twist_msg.linear.x = x * lin_scale; }
 
 		/**
 		 * \brief Sets the linear y value of the Twist message if the parameter is a valid value
 		 *
 		 * \param y The value to be set as linear y in the Twist message
 		 */
-		void setLinearY(double y) { if(validVelocity(y)) twist_msg.linear.y = y * scale; }
+		void setLinearY(double y) { if(validVelocity(y)) twist_msg.linear.y = y * lin_scale; }
 
 		/**
 		 * \brief Sets the linear z value of the Twist message if the parameter is a valid value
 		 *
 		 * \param z The value to be set as linear z in the Twist message
 		 */
-		void setLinearZ(double z) { if(validVelocity(z)) twist_msg.linear.z = z * scale; }
+		void setLinearZ(double z) { if(validVelocity(z)) twist_msg.linear.z = z * lin_scale; }
 
 		/**
 		 * \brief Sets the scale that the Twist message attributes should be multiplied by
 		 *
-		 * \param s The value all attributes of the Twist message should be multiplied by
+		 * \param lin The value all linear attributes of the Twist message should be scaled by
+		 * \param ang The value all angular attributes of the Twist message should be scaled by
 		 */
-		void setScale(double s);
+		void setScale(double lin, double ang);
 
 		/**
 		 * \brief Sets the topic for which this node should advertise and publish over
@@ -224,7 +230,8 @@ class ControlNode : public QObject
 		ros::NodeHandle *nh;
 		ros::Publisher control_pub;
 		geometry_msgs::Twist twist_msg;
-		double scale;
+		double lin_scale;
+		double ang_scale;
 };
 
 #endif // CONTROL_PANEL_CONTROL_NODE_H

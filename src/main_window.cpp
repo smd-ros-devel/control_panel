@@ -481,8 +481,6 @@ void MainWindow::editTopics()
 
 void MainWindow::setMaxVelocity()
 {
-	bool ok;
-	double scale;
 	RobotTab *tab;
 
 	// Return if tab is the main tab
@@ -494,14 +492,14 @@ void MainWindow::setMaxVelocity()
 	// Make sure the robot has a control node
 	if(tab->node_manager->control_node)
 	{
-		// Prompt user for new scale
-		scale = QInputDialog::getDouble(this, tr("Set Velocity Scale"),
-			tr("Scale:"), tab->node_manager->control_node->getScale(),
-			0.00, 1.00, 2, &ok);
+		// Get new linear and angular scale from user
+		VelocityScaleDialog vel_scale_dialog(this);
+		vel_scale_dialog.setLinearScale(tab->node_manager->control_node->getLinearScale());
+		vel_scale_dialog.setAngularScale(tab->node_manager->control_node->getAngularScale());
 
-		// Set scale
-		if(ok)
-			tab->node_manager->control_node->setScale(scale);
+		if(vel_scale_dialog.exec())
+			tab->node_manager->control_node->setScale(
+				vel_scale_dialog.getLinearScale(), vel_scale_dialog.getAngularScale());
 	}
 }
 
