@@ -6,6 +6,18 @@
   <nameSpace>smp1</nameSpace>
 
   <sensors>
+    <camera>
+      <name>Color Video</name>
+      <topicName>rgb/image_color</topicName>
+    </camera>
+    <camera>
+      <name>Greyscale Video</name>
+      <topicName>rgb/image_mono</topicName>
+    </camera>
+    <camera>
+      <name>Depth Image</name>
+      <topicName>depth/image_raw</topicName>
+    </camera>
   </sensors>
 
   <controls>

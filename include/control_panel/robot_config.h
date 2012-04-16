@@ -170,17 +170,17 @@ struct RobotSensors
  */
 struct RobotJoint
 {
-    public:
-        /* stored data */
-        QString name;
-        QString displayName;
+	public:
+		/* stored data */
+		QString name;
+		QString displayName;
 
-        /**
-         * \brief Contstructor. Initializes linked list and data
-         */
-        RobotJoint()
-            : name("unknown_joint"),
-              displayName("Unknown Joint") { }
+		/**
+		 * \brief Contstructor. Initializes linked list and data
+		 */
+		RobotJoint()
+			: name("unknown_joint"),
+			  displayName("Unknown Joint") { }
 };
 
 /**
@@ -500,12 +500,12 @@ struct RobotConfig : public QObject
 		QString driveSystem;
 		QString imageFilePath;
 		QImage image;
-        QString nameSpace;
+		QString nameSpace;
 
 		/* data */
 		struct RobotSensors sensors;
-        struct RobotJoints joint_states;
-        struct RobotProcessedData processedData;
+		struct RobotJoints joint_states;
+		struct RobotProcessedData processedData;
 		struct RobotDiagnostics diagnostics;
 		struct RobotCommands commands;
 		struct RobotControls controls;

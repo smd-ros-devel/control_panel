@@ -38,8 +38,8 @@
 NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	camera_node(NULL), image_node(NULL), control_node(NULL), command_node(NULL),
 	diagnostic_node(NULL), disparity_image_node(NULL), gps_node(NULL), imu_node(NULL),
-	joint_state_node(NULL), laser_node(NULL), map_node(NULL), odometry_node(NULL),
-	range_node(NULL)
+	joint_state_node(NULL), joint_trajectory_node(NULL), laser_node(NULL),
+	map_node(NULL), odometry_node(NULL), range_node(NULL)
 {
 	connected = false;
 	control_node_enabled = false;
@@ -86,6 +86,14 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		laser_node = new LaserNode(nh_ptr);
 	if(!robot_config->sensors.range.empty())
 		range_node = new RangeNode(nh_ptr);
+	/* TODO: Hack */
+	if(!strncmp(robot_config->robotName.toStdString().c_str(), "Armbot", 6))
+	{
+		joint_trajectory_node = new JointTrajectoryNode(nh_ptr);
+		joint_trajectory_node->setTopic("head_traj_controller/command");
+		joint_trajectory_node->addJoint("head_pan_joint");
+		joint_trajectory_node->advertise();
+	}
 }
 
 /******************************************************************************
@@ -311,9 +319,15 @@ RangeNode *NodeManager::addRangeNode()
 
 void NodeManager::joystickAxisChanged(int axis, double value)
 {
+	/* TODO: Hack */
+	static double l_shoulder = 0;
+	static double r_shoulder = 0;
+
 	if(connected)
 	{
 		// Joystick mapping here
+
+		// cmd_vel
 		if(axis == 0 && control_node)
 			control_node->setLinearY(value);
 		else if(axis == 1 && control_node)
@@ -322,6 +336,18 @@ void NodeManager::joystickAxisChanged(int axis, double value)
 			control_node->setAngularZ(value);
 		else if(axis == 3 && control_node)
 			control_node->setLinearZ(value);
+
+		// joints
+		else if((axis == 8 || axis == 9) && joint_trajectory_node)
+		{
+			if(axis == 8)
+				l_shoulder = value;
+			else
+				r_shoulder = value;
+			std::cout << "Sending joint trajectory: " << (l_shoulder - r_shoulder) * M_PI / 2 << std::endl;
+			joint_trajectory_node->setPosition("head_pan_joint", (l_shoulder - r_shoulder) * M_PI / 2);
+			joint_trajectory_node->publish();
+		}
 	}
 }
 

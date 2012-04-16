@@ -54,21 +54,21 @@ QT_END_NAMESPACE
  */
 class GeneralTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        GeneralTab(struct RobotConfig *robot_config, QWidget *parent = 0);
-        void storeToConfig(struct RobotConfig *robot_config);
+	public:
+		GeneralTab(struct RobotConfig *robot_config, QWidget *parent = 0);
+		void storeToConfig(struct RobotConfig *robot_config);
 
-    public slots:
-        void findImageFile();
+	public slots:
+		void findImageFile();
     
-    private:
-        QLineEdit *robot_name_lineedit;
-        QLineEdit *drive_system_lineedit;
-        QLineEdit *image_file_lineedit;
-        QLineEdit *namespace_lineedit;
-        QComboBox *system_combobox;
+	private:
+		QLineEdit *robot_name_lineedit;
+		QLineEdit *drive_system_lineedit;
+		QLineEdit *image_file_lineedit;
+		QLineEdit *namespace_lineedit;
+		QComboBox *system_combobox;
 };
 
 /**
@@ -77,30 +77,30 @@ class GeneralTab : public QWidget
  */
 class SensorsTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent = 0);
-        void storeToConfig(struct RobotSensors *robot_sensors);
+	public:
+		SensorsTab(struct RobotSensors *robot_sensors, QWidget *parent = 0);
+		void storeToConfig(struct RobotSensors *robot_sensors);
 
-    public slots:
-        void addSensor();
-        void editSensor(QTreeWidgetItem *item = 0);
-        void removeSensor();
+	public slots:
+		void addSensor();
+		void editSensor(QTreeWidgetItem *item = 0);
+		void removeSensor();
 
-    private:
-        enum SensorType
-        {
-            Camera = 1001, // 1000 and below are reserved so start at 1001
-            Compass,
-            Gps,
-            Imu,
-            Laser,
-            Range
-        };
+	private:
+		enum SensorType
+		{
+			Camera = 1001, // 1000 and below are reserved by Qt
+			Compass,
+			Gps,
+			Imu,
+			Laser,
+			Range
+		};
 
-        QTreeWidget *sensors_treewidget;
-        QComboBox *sensors_combobox;
+		QTreeWidget *sensors_treewidget;
+		QComboBox *sensors_combobox;
 };
 
 /**
@@ -109,29 +109,29 @@ class SensorsTab : public QWidget
  */
 class ProcessedDataTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
-                         QWidget *parent = 0);
-        void storeToConfig(struct RobotProcessedData *robot_processed_data);
+	public:
+		ProcessedDataTab(struct RobotProcessedData *robot_processed_data,
+			QWidget *parent = 0);
+		void storeToConfig(struct RobotProcessedData *robot_processed_data);
 
-    public slots:
-        void addProcessedData();
-        void editProcessedData(QTreeWidgetItem *item = 0);
-        void removeProcessedData();
+	public slots:
+		void addProcessedData();
+		void editProcessedData(QTreeWidgetItem *item = 0);
+		void removeProcessedData();
 
-    private:
-        enum ProcessedDataType
-        {
-            DisparityImage = 1001,
-            Map,
-            Odometry,
-            ProcessedImage
-        };
+	private:
+		enum ProcessedDataType
+		{
+			DisparityImage = 1001,
+			Map,
+			Odometry,
+			ProcessedImage
+		};
 
-        QTreeWidget *processed_data_treewidget;
-        QComboBox *processed_data_combobox;
+		QTreeWidget *processed_data_treewidget;
+		QComboBox *processed_data_combobox;
 };
 
 /**
@@ -140,23 +140,23 @@ class ProcessedDataTab : public QWidget
  */
 class JointsTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        JointsTab(struct RobotJoints *robot_joints, QWidget *parent = 0);
-        void storeToConfig(struct RobotJoints *robot_joints);
+	public:
+		JointsTab(struct RobotJoints *robot_joints, QWidget *parent = 0);
+		void storeToConfig(struct RobotJoints *robot_joints);
 
-    public slots:
-        void addJoint();
-        void editJoint(QTreeWidgetItem *item = 0);
-        void removeJoint();
+	public slots:
+		void addJoint();
+		void editJoint(QTreeWidgetItem *item = 0);
+		void removeJoint();
 
-    private:
-        QTreeWidget *joints_treewidget;
-        QLineEdit *topic_name_lineedit;
-        QCheckBox *position_checkbox;
-        QCheckBox *velocity_checkbox;
-        QCheckBox *effort_checkbox;
+	private:
+		QTreeWidget *joints_treewidget;
+		QLineEdit *topic_name_lineedit;
+		QCheckBox *position_checkbox;
+		QCheckBox *velocity_checkbox;
+		QCheckBox *effort_checkbox;
 };
 
 /**
@@ -165,23 +165,24 @@ class JointsTab : public QWidget
  */
 class ControlsTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        ControlsTab(QWidget *parent = 0);
+	public:
+		ControlsTab(struct RobotControls *robot_controls, QWidget *parent = 0);
+		void storeToConfig(struct RobotControls *robot_controls);
 
-    public slots:
-        void addControl();
-        void editControl(QTreeWidgetItem *item = 0);
-        void removeControl();
+	public slots:
+		void addControl();
+		void editControl(QTreeWidgetItem *item = 0);
+		void removeControl();
 
-    private:
-        enum ControlType
-        {
-            Teleop = 1001
-        };
-        QTreeWidget *controls_treewidget;
-        QComboBox *controls_combobox;
+	private:
+		enum ControlType
+		{
+			Teleop = 1001
+		};
+		QTreeWidget *controls_treewidget;
+		QComboBox *controls_combobox;
 };
 
 /**
@@ -190,19 +191,25 @@ class ControlsTab : public QWidget
  */
 class ServicesTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        ServicesTab(struct RobotCommands *robot_services,
-                    QWidget *parent = 0);
+	public:
+		ServicesTab(struct RobotCommands *robot_services,
+			QWidget *parent = 0);
+		void storeToConfig(struct RobotCommands *robot_commands);
 
-    public slots:
-        void addService();
-        void editService();
+	public slots:
+		void addService();
+		void editService(QTreeWidgetItem *item = 0);
+		void removeService();
 
-    private:
-        QTreeWidget *services_treewidget;
-        QComboBox *services_combobox;
+	private:
+		enum CommandType
+		{
+			Custom = 1001
+		};
+		QTreeWidget *services_treewidget;
+		QComboBox *services_combobox;
 };
 
 /**
@@ -211,10 +218,10 @@ class ServicesTab : public QWidget
  */
 class DiagnosticsTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        DiagnosticsTab(QWidget *parent = 0);
+	public:
+		DiagnosticsTab(QWidget *parent = 0);
 };
 
 /**
@@ -227,21 +234,21 @@ class RobotConfigFileDialog : public QDialog
 
 	public:
 		RobotConfigFileDialog(struct RobotConfig *new_robot_config,
-                              QWidget *parent = 0);
+			QWidget *parent = 0);
 
-    public slots:
-        void saveConfig();
+	public slots:
+		void saveConfig();
 
 	private:
-        QTabWidget *tab_widget;
-        GeneralTab *general_tab;
-        SensorsTab *sensors_tab;
-        ProcessedDataTab *processed_data_tab;
-        JointsTab *joints_tab;
-        ControlsTab *controls_tab;
-        ServicesTab *services_tab;
-        DiagnosticsTab *diagnostics_tab;
-        QDialogButtonBox *button_box;
+		QTabWidget *tab_widget;
+		GeneralTab *general_tab;
+		SensorsTab *sensors_tab;
+		ProcessedDataTab *processed_data_tab;
+		JointsTab *joints_tab;
+		ControlsTab *controls_tab;
+		ServicesTab *services_tab;
+		DiagnosticsTab *diagnostics_tab;
+		QDialogButtonBox *button_box;
 		struct RobotConfig *robot_config;
 };
 

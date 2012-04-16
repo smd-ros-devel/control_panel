@@ -40,16 +40,16 @@
 
 Qt::CheckState boolToCheckState(bool checked)
 {
-    if(checked)
-        return Qt::Checked;
-    return Qt::Unchecked;
+	if(checked)
+		return Qt::Checked;
+	return Qt::Unchecked;
 }
 
 bool checkStateToBool(Qt::CheckState state)
 {
-    if(state == Qt::Checked)
-        return true;
-    return false;
+	if(state == Qt::Checked)
+		return true;
+	return false;
 }
 
 
@@ -1173,99 +1173,120 @@ void JointsTab::editJoint(QTreeWidgetItem *item)
 
 void JointsTab::removeJoint()
 {
-    // Get currently selected item to remove
-    QTreeWidgetItem *item = joints_treewidget->currentItem();
+	// Get currently selected item to remove
+	QTreeWidgetItem *item = joints_treewidget->currentItem();
 
-    if(item == 0) // No item was selected
-        return;
+	if(item == 0) // No item was selected
+		return;
 
-    delete item;
+	delete item;
 }
 
 void JointsTab::storeToConfig(struct RobotJoints *robot_joints)
 {
-    std::cout << "Storing joints to robot configuration struct" << std::endl;
+	std::cout << "Storing joints to robot configuration struct" << std::endl;
 
-    robot_joints->topicName = topic_name_lineedit->text();
-    robot_joints->position = position_checkbox->isChecked();
-    robot_joints->velocity = velocity_checkbox->isChecked();
-    robot_joints->effort = effort_checkbox->isChecked();
-    robot_joints->used = false;
+	robot_joints->topicName = topic_name_lineedit->text();
+	robot_joints->position = position_checkbox->isChecked();
+	robot_joints->velocity = velocity_checkbox->isChecked();
+	robot_joints->effort = effort_checkbox->isChecked();
+	robot_joints->used = false;
 
-    QTreeWidgetItemIterator it(joints_treewidget);
-    while(*it)
-    {
-        struct RobotJoint temp_joint;
-        temp_joint.name = (*it)->text(0);
-        temp_joint.displayName = (*it)->text(1);
+	QTreeWidgetItemIterator it(joints_treewidget);
+	while(*it)
+	{
+		struct RobotJoint temp_joint;
+		temp_joint.name = (*it)->text(0);
+		temp_joint.displayName = (*it)->text(1);
 
-        robot_joints->joints.push_back(temp_joint);
-        robot_joints->used = true;
+		robot_joints->joints.push_back(temp_joint);
+		robot_joints->used = true;
 
-        it++;
-    }
+		it++;
+	}
 }
 
 ////////////////////////////// Controls Tab ////////////////////////////
 
-ControlsTab::ControlsTab(QWidget *parent) : QWidget(parent)
+ControlsTab::ControlsTab(struct RobotControls *robot_controls,
+	QWidget *parent) : QWidget(parent)
 {
-    QLabel *controls_label = new QLabel(tr("Controls"));
+	QLabel *controls_label = new QLabel(tr("Controls"));
 
-    QStringList controls_list;
-    controls_list << "Teleoperation (Twist.msg)";
+	QStringList controls_list;
+	controls_list << "Teleoperation (Twist.msg)";
 
-    controls_combobox = new QComboBox;
-    controls_combobox->addItems(controls_list);
+	controls_combobox = new QComboBox;
+	controls_combobox->addItems(controls_list);
 
-    QPushButton *add_button = new QPushButton(tr("Add"));
-    connect(add_button, SIGNAL(clicked()), this, SLOT(addControl()));
+	QPushButton *add_button = new QPushButton(tr("Add"));
+	connect(add_button, SIGNAL(clicked()), this, SLOT(addControl()));
 
-    QStringList column_list;
-    column_list << tr("Control") << tr("Values");
+	QPushButton *edit_button = new QPushButton(tr("Edit"));
+	connect(edit_button, SIGNAL(clicked()), this, SLOT(editControl()));
 
-    controls_treewidget = new QTreeWidget;
-    controls_treewidget->setHeaderLabels(column_list);
+	QPushButton *remove_button = new QPushButton(tr("Remove"));
+	connect(remove_button, SIGNAL(clicked()), this, SLOT(removeControl()));
 
-    QHBoxLayout *controls_hlayout = new QHBoxLayout;
-    controls_hlayout->addWidget(controls_label, 0, Qt::AlignLeft);
-    controls_hlayout->addStretch();
-    controls_hlayout->addWidget(controls_combobox, 0, Qt::AlignRight);
-    controls_hlayout->addWidget(add_button, 0, Qt::AlignRight);
+	QStringList column_list;
+	column_list << tr("Control") << tr("Values");
 
-    QVBoxLayout *controls_layout = new QVBoxLayout;
-    controls_layout->addLayout(controls_hlayout);
-    controls_layout->addWidget(controls_treewidget);
-    setLayout(controls_layout);
+	QList<QTreeWidgetItem *> controls_itemlist;
+	for(unsigned int i = 0; i < robot_controls->drive.size(); i++)
+		controls_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
+			(QStringList() << tr("Teleoperation") << robot_controls->drive[i].topicName)));
+
+	controls_treewidget = new QTreeWidget;
+	controls_treewidget->setHeaderLabels(column_list);
+	controls_treewidget->addTopLevelItems(controls_itemlist);
+
+	// Dialog layout
+	QHBoxLayout *button_hlayout = new QHBoxLayout;
+	button_hlayout->addStretch();
+	button_hlayout->addWidget(remove_button, 0, Qt::AlignRight);
+	button_hlayout->addSpacing(10);
+	button_hlayout->addWidget(edit_button, 0, Qt::AlignRight);
+
+	QHBoxLayout *controls_hlayout = new QHBoxLayout;
+	controls_hlayout->addWidget(controls_label, 0, Qt::AlignLeft);
+	controls_hlayout->addStretch();
+	controls_hlayout->addWidget(controls_combobox, 0, Qt::AlignRight);
+	controls_hlayout->addWidget(add_button, 0, Qt::AlignRight);
+
+	QVBoxLayout *controls_layout = new QVBoxLayout;
+	controls_layout->addLayout(controls_hlayout);
+	controls_layout->addWidget(controls_treewidget);
+	controls_layout->addLayout(button_hlayout);
+	setLayout(controls_layout);
 }
 
 void ControlsTab::addControl()
 {
-    QTreeWidgetItem *item;
-    ControlType type = ControlType(controls_combobox->currentIndex() + 1001);
+	QTreeWidgetItem *item;
+	ControlType type = ControlType(controls_combobox->currentIndex() + 1001);
 
-    QString type_str;
-    if(type == Teleop)
-        type_str = "Teleoperation";
-    else
-    {
-        std::cerr << "ERROR -- Unknown control type '" << type
-                  << "' encountered while adding control." << std::endl;
-        return;
-    }
+	QString type_str;
+	if(type == Teleop)
+		type_str = "Teleoperation";
+	else
+	{
+		std::cerr << "ERROR -- Unknown control type '" << type
+			<< "' encountered while adding control." << std::endl;
+		return;
+	}
 
-    if(type == Teleop)
-    {
-        bool ok;
-        QString topic_name = QInputDialog::getText(this, QString("Add %1").arg(type_str),
-            tr("Topic Name"), QLineEdit::Normal, QString(), &ok);
+	if(type == Teleop)
+	{
+		bool ok;
+		QString topic_name = QInputDialog::getText(this, QString("Add %1").arg(type_str),
+		tr("Topic Name"), QLineEdit::Normal, QString(), &ok);
 
-        if(ok && !topic_name.isEmpty())
-        {
-            item = new QTreeWidgetItem(QStringList() << type_str << topic_name);
-            controls_treewidget->addTopLevelItem(item);
-        }
-    }
+		if(ok && !topic_name.isEmpty())
+		{
+			item = new QTreeWidgetItem(QStringList() << type_str << topic_name);
+			controls_treewidget->addTopLevelItem(item);
+		}
+	}
 }
 
 void ControlsTab::editControl(QTreeWidgetItem *item)
@@ -1275,69 +1296,96 @@ void ControlsTab::editControl(QTreeWidgetItem *item)
 
 void ControlsTab::removeControl()
 {
+	// Get current selected item
+	QTreeWidgetItem *item = controls_treewidget->currentItem();
+
+	if(item == 0) // No item is selected
+		return;
+
+	delete item;
+}
+
+void ControlsTab::storeToConfig(struct RobotControls *robot_controls)
+{
 
 }
 
 //////////////////////////// Services Tab ///////////////////////////////
 
 ServicesTab::ServicesTab(struct RobotCommands *robot_services, 
-    QWidget *parent) : QWidget(parent)
+	QWidget *parent) : QWidget(parent)
 {
-    QLabel *services_label = new QLabel(tr("Services"));
-    QStringList services_list;
-    services_list << "Custom (Empty.srv)"
-                  << "Land (Empty.srv)"
-                  << "Takeoff (Empty.srv)";
-    services_combobox = new QComboBox;
-    services_combobox->addItems(services_list);
-    QPushButton *add_button = new QPushButton(tr("Add"));
-    connect(add_button, SIGNAL(clicked()), this, SLOT(addService()));
+	QLabel *services_label = new QLabel(tr("Services"));
+	QStringList services_list;
+	services_list << "Custom (Empty.srv)"
+		<< "Land (Empty.srv)"
+ 		<< "Takeoff (Empty.srv)";
+	services_combobox = new QComboBox;
+	services_combobox->addItems(services_list);
+
+	QPushButton *add_button = new QPushButton(tr("Add"));
+	connect(add_button, SIGNAL(clicked()), this, SLOT(addService()));
 
     
-    /* Add all services from robot configuration file */
-    QList<QTreeWidgetItem *> services_itemlist;
-    for(unsigned int i = 0; i < robot_services->custom.size(); i++)
-        services_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << robot_services->custom[i].name << robot_services->custom[i].topicName)));
+	/* Add all services from robot configuration file */
+	QList<QTreeWidgetItem *> services_itemlist;
+	for(unsigned int i = 0; i < robot_services->custom.size(); i++)
+		services_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
+			(QStringList() << robot_services->custom[i].name << robot_services->custom[i].topicName)));
 
-    QStringList column_list;
-    column_list << "Service Name" << "Topic Name";
+	QStringList column_list;
+	column_list << "Service Name" << "Topic Name";
 
-    /* Create tree widget */
-    services_treewidget = new QTreeWidget;
-    services_treewidget->setHeaderLabels(column_list);
-    services_treewidget->addTopLevelItems(services_itemlist);
+	/* Create tree widget */
+	services_treewidget = new QTreeWidget;
+	services_treewidget->setHeaderLabels(column_list);
+	services_treewidget->addTopLevelItems(services_itemlist);
 
-    /* Create services tab layout */
-    QHBoxLayout *services_hlayout = new QHBoxLayout;
-    services_hlayout->addWidget(services_label, 0, Qt::AlignLeft);
-    services_hlayout->addStretch();
-    services_hlayout->addWidget(services_combobox, 0, Qt::AlignRight);
-    services_hlayout->addWidget(add_button, 0, Qt::AlignRight);
+	/* Create services tab layout */
+	QHBoxLayout *services_hlayout = new QHBoxLayout;
+	services_hlayout->addWidget(services_label, 0, Qt::AlignLeft);
+	services_hlayout->addStretch();
+	services_hlayout->addWidget(services_combobox, 0, Qt::AlignRight);
+	services_hlayout->addWidget(add_button, 0, Qt::AlignRight);
 
-    QVBoxLayout *services_layout = new QVBoxLayout;
-    services_layout->addLayout(services_hlayout);
-    services_layout->addWidget(services_treewidget);
-    setLayout(services_layout);
+	QVBoxLayout *services_layout = new QVBoxLayout;
+	services_layout->addLayout(services_hlayout);
+	services_layout->addWidget(services_treewidget);
+	setLayout(services_layout);
 }
 
 void ServicesTab::addService()
 {
-    ComponentDialog add_service_dialog(this);
-    add_service_dialog.setNameLabelText(tr("Service Name"));
-    add_service_dialog.setWindowTitle("Add Service");
+	ComponentDialog add_service_dialog(this);
+	add_service_dialog.setNameLabelText(tr("Service Name"));
+	add_service_dialog.setWindowTitle("Add Service");
 
-    if(services_combobox->currentText().startsWith(QString("Takeoff")))
-        add_service_dialog.setName(tr("Takeoff"));
-    else if(services_combobox->currentText().startsWith(QString("Land")))
-        add_service_dialog.setName(tr("Land"));
+	if(services_combobox->currentText().startsWith(QString("Takeoff")))
+		add_service_dialog.setName(tr("Takeoff"));
+	else if(services_combobox->currentText().startsWith(QString("Land")))
+		add_service_dialog.setName(tr("Land"));
 
-    if(add_service_dialog.exec())
-        services_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << add_service_dialog.getName() << add_service_dialog.getTopicName())));
+	if(add_service_dialog.exec())
+		services_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
+			(QStringList() << add_service_dialog.getName() << add_service_dialog.getTopicName())));
 }
 
-void ServicesTab::editService()
+void ServicesTab::editService(QTreeWidgetItem *item)
+{
+
+}
+
+void ServicesTab::removeService()
+{
+	QTreeWidgetItem *item = services_treewidget->currentItem();
+
+	if(item == 0) // No item is selected
+		return;
+
+	delete item;
+}
+
+void ServicesTab::storeToConfig(struct RobotCommands *robot_commands)
 {
 
 }
@@ -1346,38 +1394,37 @@ void ServicesTab::editService()
 
 DiagnosticsTab::DiagnosticsTab(QWidget *parent) : QWidget(parent)
 {
-    QLabel *topic_name_label = new QLabel(tr("Topic Name"));
-    QLineEdit *topic_name_lineedit = new QLineEdit;
+	QLabel *topic_name_label = new QLabel(tr("Topic Name"));
+	QLineEdit *topic_name_lineedit = new QLineEdit;
 
-    QLabel *path_label = new QLabel(tr("Path"));
-    QLineEdit *path_lineedit = new QLineEdit;
+	QLabel *path_label = new QLabel(tr("Path"));
+	QLineEdit *path_lineedit = new QLineEdit;
 
-    QLabel *diagnostics_label = new QLabel(tr("Diagnostics"));
-    QStringList diagnostics_list;
-    diagnostics_list << "Battery Level"
-                     << "Diagnostic";
-    QComboBox *diagnostics_combobox = new QComboBox;
-    diagnostics_combobox->addItems(diagnostics_list);
-    QPushButton *add_button = new QPushButton(tr("Add"));
+	QLabel *diagnostics_label = new QLabel(tr("Diagnostics"));
+	QStringList diagnostics_list;
+	diagnostics_list << "Battery Level" << "Diagnostic";
+	QComboBox *diagnostics_combobox = new QComboBox;
+	diagnostics_combobox->addItems(diagnostics_list);
+	QPushButton *add_button = new QPushButton(tr("Add"));
 
-    QScrollArea *diagnostics_scrollarea = new QScrollArea;
+	QScrollArea *diagnostics_scrollarea = new QScrollArea;
 
-    QHBoxLayout *add_diagnostic_hlayout = new QHBoxLayout;
-    add_diagnostic_hlayout->addWidget(diagnostics_combobox);
-    add_diagnostic_hlayout->addWidget(add_button);
+	QHBoxLayout *add_diagnostic_hlayout = new QHBoxLayout;
+	add_diagnostic_hlayout->addWidget(diagnostics_combobox);
+	add_diagnostic_hlayout->addWidget(add_button);
 
-    QGridLayout *diagnostics_gridlayout = new QGridLayout;
-    diagnostics_gridlayout->addWidget(topic_name_label, 0, 0);
-    diagnostics_gridlayout->addWidget(topic_name_lineedit, 0, 1);
-    diagnostics_gridlayout->addWidget(path_label, 1, 0);
-    diagnostics_gridlayout->addWidget(path_lineedit, 1, 1);
-    diagnostics_gridlayout->addWidget(diagnostics_label, 2, 0);
-    diagnostics_gridlayout->addLayout(add_diagnostic_hlayout, 2, 1);
+	QGridLayout *diagnostics_gridlayout = new QGridLayout;
+	diagnostics_gridlayout->addWidget(topic_name_label, 0, 0);
+	diagnostics_gridlayout->addWidget(topic_name_lineedit, 0, 1);
+	diagnostics_gridlayout->addWidget(path_label, 1, 0);
+	diagnostics_gridlayout->addWidget(path_lineedit, 1, 1);
+	diagnostics_gridlayout->addWidget(diagnostics_label, 2, 0);
+	diagnostics_gridlayout->addLayout(add_diagnostic_hlayout, 2, 1);
     
-    QVBoxLayout *diagnosticstab_layout = new QVBoxLayout;
-    diagnosticstab_layout->addLayout(diagnostics_gridlayout);
-    diagnosticstab_layout->addWidget(diagnostics_scrollarea);
-    setLayout(diagnosticstab_layout);
+	QVBoxLayout *diagnosticstab_layout = new QVBoxLayout;
+	diagnosticstab_layout->addLayout(diagnostics_gridlayout);
+	diagnosticstab_layout->addWidget(diagnostics_scrollarea);
+	setLayout(diagnosticstab_layout);
 }
 
 
@@ -1387,68 +1434,69 @@ RobotConfigFileDialog::RobotConfigFileDialog(
 {
 	robot_config = new_robot_config;
 
-    general_tab = new GeneralTab(robot_config);
-    sensors_tab = new SensorsTab(&robot_config->sensors);
-    processed_data_tab = new ProcessedDataTab(&robot_config->processedData);
-    joints_tab = new JointsTab(&robot_config->joint_states);
-    controls_tab = new ControlsTab;
-    services_tab = new ServicesTab(&robot_config->commands);
-    diagnostics_tab = new DiagnosticsTab;
+	general_tab = new GeneralTab(robot_config);
+	sensors_tab = new SensorsTab(&robot_config->sensors);
+	processed_data_tab = new ProcessedDataTab(&robot_config->processedData);
+	joints_tab = new JointsTab(&robot_config->joint_states);
+	controls_tab = new ControlsTab(&robot_config->controls);
+	services_tab = new ServicesTab(&robot_config->commands);
+	diagnostics_tab = new DiagnosticsTab;
 
-    // Create tabs
-    tab_widget = new QTabWidget;
-    tab_widget->addTab(general_tab, tr("General"));
-    tab_widget->addTab(sensors_tab, tr("Sensors"));
-    tab_widget->addTab(processed_data_tab, tr("Processed Data"));
-    tab_widget->addTab(joints_tab, tr("Joints"));
-    tab_widget->addTab(controls_tab, tr("Controls"));
-    tab_widget->addTab(services_tab, tr("Services"));
-    tab_widget->addTab(diagnostics_tab, tr("Diagnostics"));
+	// Create tabs
+	tab_widget = new QTabWidget;
+	tab_widget->addTab(general_tab, tr("General"));
+	tab_widget->addTab(sensors_tab, tr("Sensors"));
+	tab_widget->addTab(processed_data_tab, tr("Processed Data"));
+	tab_widget->addTab(joints_tab, tr("Joints"));
+	tab_widget->addTab(controls_tab, tr("Controls"));
+	tab_widget->addTab(services_tab, tr("Services"));
+	tab_widget->addTab(diagnostics_tab, tr("Diagnostics"));
 
-    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
-                                      QDialogButtonBox::Save);
+	button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
+		QDialogButtonBox::Save);
 	connect(button_box, SIGNAL(accepted()), this, SLOT(saveConfig()));
 	connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
 
-    // Create dialog layout
-    QVBoxLayout *dialog_layout = new QVBoxLayout;
-    dialog_layout->setSizeConstraint(QLayout::SetNoConstraint);
-    dialog_layout->addWidget(tab_widget);
-    dialog_layout->addWidget(button_box);
+	// Create dialog layout
+	QVBoxLayout *dialog_layout = new QVBoxLayout;
+	dialog_layout->setSizeConstraint(QLayout::SetNoConstraint);
+	dialog_layout->addWidget(tab_widget);
+	dialog_layout->addWidget(button_box);
 	setLayout(dialog_layout);
 }
 
 void RobotConfigFileDialog::saveConfig()
 {
-    QString file_name = QFileDialog::getSaveFileName(this, tr("Save Robot Configuration File"),
-        QDir::homePath(), tr("XML files (*.xml)"));
+	QString file_name = QFileDialog::getSaveFileName(this, tr("Save Robot Configuration File"),
+		QDir::homePath(), tr("XML files (*.xml)"));
 
-    if(file_name.isNull())
-        return;
+	if(file_name.isNull())
+		return;
 
-    if(!file_name.endsWith(QString(".xml")))
-        file_name.append(".xml");
+	if(!file_name.endsWith(QString(".xml")))
+		file_name.append(".xml");
 
-    robot_config->defaults();
+	robot_config->defaults(); // Clear current robot config
 
-    robot_config->configFilePath = file_name;
-    general_tab->storeToConfig(robot_config);
-    sensors_tab->storeToConfig(&robot_config->sensors);
-    processed_data_tab->storeToConfig(&robot_config->processedData);
-    joints_tab->storeToConfig(&robot_config->joint_states);
-    //controls_tab->storeToConfig(&robot_config->controls);
-    //services_tab->storeToConfig(&robot_config->commands);
-    //diagnostics_tab->storeToConfig(&robot_config->diagnostics);
+	// Save all data to robot configuration file
+	robot_config->configFilePath = file_name;
+	general_tab->storeToConfig(robot_config);
+	sensors_tab->storeToConfig(&robot_config->sensors);
+	processed_data_tab->storeToConfig(&robot_config->processedData);
+	joints_tab->storeToConfig(&robot_config->joint_states);
+	controls_tab->storeToConfig(&robot_config->controls);
+	services_tab->storeToConfig(&robot_config->commands);
+	//diagnostics_tab->storeToConfig(&robot_config->diagnostics);
 
-    QFile file(robot_config->configFilePath);
-    if (!file.open(QIODevice::WriteOnly))
-    {
-        std::cerr << "ERROR: Could not open " << robot_config->configFilePath.toStdString( ) << " for writing!" << std::endl;
-        return;
-    }
-    else
-        robot_config->exportData(&file);
-    file.close();
+	QFile file(robot_config->configFilePath);
+	if (!file.open(QIODevice::WriteOnly))
+	{
+		std::cerr << "ERROR: Could not open " << robot_config->configFilePath.toStdString( ) << " for writing!" << std::endl;
+		return;
+	}
+	else
+		robot_config->exportData(&file);
+	file.close();
 
-    accept();
+	accept();
 }

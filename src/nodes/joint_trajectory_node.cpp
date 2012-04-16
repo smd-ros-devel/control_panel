@@ -32,17 +32,13 @@ void JointTrajectoryNode::advertise()
 
 int JointTrajectoryNode::jointIndex(const std::string &joint_name)
 {
-	bool joint_found = false;
 	unsigned int i = 0;
 
-	for(i = 0; i < joint_traject_msg.joint_names.size() && !joint_found; i++)
+	for(i = 0; i < joint_traject_msg.joint_names.size(); i++)
 		if(joint_traject_msg.joint_names[i] == joint_name)
-			joint_found = true;
+			return i;
 
-	if(joint_found)
-		return i;
-	else
-		return -1;
+	return -1;
 }
 
 void JointTrajectoryNode::publish()
