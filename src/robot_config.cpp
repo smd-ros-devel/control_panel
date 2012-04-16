@@ -124,7 +124,21 @@ QFile * RobotConfig::exportData(QFile *file)
 	e.appendChild(txt);
 	root.appendChild(e);
 
+	e = doc.createElement("namespace");
+	txt = doc.createTextNode(nameSpace);
+	e.appendChild(txt);
+	root.appendChild(e);
+
 	root.appendChild(getSensors(doc));
+	if( joint_states.used )
+		root.appendChild(getJoints(doc));
+	root.appendChild(getProcessedData(doc));
+	if( diagnostics.used )
+		root.appendChild(getDiagnostics(doc));
+	if( commands.used )
+		root.appendChild(getCommands(doc));
+	if( controls.used )
+		root.appendChild(getControls(doc));
 
 	QTextStream stream;
 	stream.setDevice(file);
@@ -135,29 +149,29 @@ QFile * RobotConfig::exportData(QFile *file)
 
 void RobotConfig::processElement(QDomElement e, bool getComponents)
 {
-	if(e.tagName() == "robotName")
-		robotName = e.text();
-	else if(e.tagName() == "system")
-		system = e.text();
-	else if(e.tagName() == "driveSystem")
-		driveSystem = e.text();
-	else if(e.tagName() == "imageFile")
-	{
-		if(!e.isNull() && !e.text().isEmpty())
-		{
-			imageFilePath = e.text();
-			if(imageFilePath[0] != '/' && imageFilePath[0] != ':')
-				imageFilePath.prepend(":/images/");
-			image.load(imageFilePath);
-		}
-	}
+    if(e.tagName() == "robotName")
+        robotName = e.text();
+    else if(e.tagName() == "system")
+        system = e.text();
+    else if(e.tagName() == "driveSystem")
+        driveSystem = e.text();
+    else if(e.tagName() == "imageFile")
+    {
+        if(!e.isNull() && !e.text().isEmpty())
+        {
+            imageFilePath = e.text();
+            if(imageFilePath[0] != '/' && imageFilePath[0] != ':')
+                imageFilePath.prepend(":/images/");
+            image.load(imageFilePath);
+        }
+    }
     else if(e.tagName() == "nameSpace")
         nameSpace = e.text();
-	else if(e.tagName() == "sensors")
-	{
-		if(!e.isNull() && !e.text().isEmpty() && getComponents)
-			processSensors(e);
-	}
+    else if(e.tagName() == "sensors")
+    {
+        if(!e.isNull() && !e.text().isEmpty() && getComponents)
+            processSensors(e);
+    }
     else if(e.tagName() == "joints")
     {
         if(!e.isNull() && !e.text().isEmpty() && getComponents)
@@ -168,23 +182,23 @@ void RobotConfig::processElement(QDomElement e, bool getComponents)
         if(!e.isNull() && !e.text().isEmpty() && getComponents)
             processProcessedData(e);
     }
-	else if(e.tagName() == "diagnostics")
-	{
-		if(!e.isNull() && !e.text().isEmpty() && getComponents)
-			processDiagnostics(e);
-	}
-	else if(e.tagName() == "commands")
-	{
-		if(!e.isNull() && !e.text().isEmpty() && getComponents)
-			processCommands(e);
-	}
-	else if(e.tagName() == "controls")
-	{
-		if(!e.isNull() && !e.text().isEmpty() && getComponents)
-			processControls(e);
-	}
-	else
-		std::cerr << "WARNING: Unknown tag " << e.tagName().toStdString() << std::endl;
+    else if(e.tagName() == "diagnostics")
+    {
+        if(!e.isNull() && !e.text().isEmpty() && getComponents)
+            processDiagnostics(e);
+    }
+    else if(e.tagName() == "commands")
+    {
+        if(!e.isNull() && !e.text().isEmpty() && getComponents)
+            processCommands(e);
+    }
+    else if(e.tagName() == "controls")
+    {
+        if(!e.isNull() && !e.text().isEmpty() && getComponents)
+            processControls(e);
+    }
+    else
+        std::cerr << "WARNING: Unknown tag " << e.tagName().toStdString() << std::endl;
 }
 
 ////////////////////////// Sensors /////////////////////////////
@@ -647,6 +661,22 @@ void RobotConfig::processProcessedData(QDomElement e)
     }
 }
 
+QDomElement RobotConfig::getProcessedData(QDomDocument &doc)
+{
+	QDomElement root = doc.createElement("processedData");
+
+	for(unsigned int i = 0; i < processedData.images.size(); i++)
+		root.appendChild(getImage(doc, processedData.images[i]));
+	for(unsigned int i = 0; i < processedData.disparity_images.size(); i++)
+		root.appendChild(getDisparityImage(doc, processedData.disparity_images[i]));
+	for(unsigned int i = 0; i < processedData.maps.size(); i++)
+		root.appendChild(getMap(doc, processedData.maps[i]));
+	for(unsigned int i = 0; i < processedData.odometry.size(); i++)
+		root.appendChild(getOdometry(doc, processedData.odometry[i]));
+
+	return root;
+}
+
 void RobotConfig::addImage(QDomElement e)
 {
     struct RobotCamera new_image;
@@ -663,6 +693,23 @@ void RobotConfig::addImage(QDomElement e)
         n = n.nextSibling();
     }
     processedData.images.insert(processedData.images.begin(), new_image);
+}
+
+QDomElement RobotConfig::getImage(QDomDocument &doc, struct RobotCamera &image)
+{
+	QDomElement root = doc.createElement("image");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(image.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(image.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
 }
 
 void RobotConfig::addDisparityImage(QDomElement e)
@@ -683,6 +730,23 @@ void RobotConfig::addDisparityImage(QDomElement e)
     processedData.disparity_images.insert(processedData.disparity_images.begin(), new_disparity);
 }
 
+QDomElement RobotConfig::getDisparityImage(QDomDocument &doc, struct RobotDisparityImage &disparity)
+{
+	QDomElement root = doc.createElement("disparityImage");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(disparity.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(disparity.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 void RobotConfig::addMap(QDomElement e)
 {
     struct RobotMap new_map;
@@ -699,6 +763,23 @@ void RobotConfig::addMap(QDomElement e)
         n = n.nextSibling();
     }
     processedData.maps.insert(processedData.maps.begin(), new_map);
+}
+
+QDomElement RobotConfig::getMap(QDomDocument &doc, struct RobotMap &map)
+{
+	QDomElement root = doc.createElement("map");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(map.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(map.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
 }
 
 void RobotConfig::addOdometry(QDomElement e)
@@ -732,6 +813,60 @@ void RobotConfig::addOdometry(QDomElement e)
     }
     processedData.odometry.insert(processedData.odometry.begin(), new_odometry);
 }
+
+QDomElement RobotConfig::getOdometry(QDomDocument &doc, struct RobotOdometry &odometry)
+{
+	QDomElement root = doc.createElement("odometry");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(odometry.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(odometry.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	if(odometry.position)
+	{
+		e = doc.createElement("position");
+		root.appendChild(e);
+	}
+	if(odometry.orientation)
+	{
+		e = doc.createElement("orientation");
+		root.appendChild(e);
+	}
+	if(odometry.linearVelocity)
+	{
+		e = doc.createElement("linearVelocity");
+		root.appendChild(e);
+	}
+	if(odometry.angularVelocity)
+	{
+		e = doc.createElement("angularVelocity");
+		root.appendChild(e);
+	}
+	if(odometry.hideAttitude)
+	{
+		e = doc.createElement("hideAttitude");
+		root.appendChild(e);
+	}
+	if(odometry.hideHeading)
+	{
+		e = doc.createElement("hideHeading");
+		root.appendChild(e);
+	}
+	if(odometry.hideLabels)
+	{
+		e = doc.createElement("hideLabels");
+		root.appendChild(e);
+	}
+
+	return root;
+}
+
 /////////////////////// End Processed Data //////////////////////
 
 
@@ -754,6 +889,25 @@ void RobotConfig::processDiagnostics(QDomElement e)
 			std::cerr << "WARNING: Unknown diagnostic tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
+}
+
+QDomElement RobotConfig::getDiagnostics(QDomDocument &doc)
+{
+	QDomElement root = doc.createElement("diagnostics");
+
+	QDomElement e = doc.createElement("topicName");
+	QDomText txt = doc.createTextNode(diagnostics.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	for(unsigned int i = 0; i < diagnostics.temperature.size(); i++)
+		root.appendChild(getTemperature(doc, diagnostics.temperature[i]));
+	for(unsigned int i = 0; i < diagnostics.voltage.size(); i++)
+		root.appendChild(getVoltage(doc, diagnostics.voltage[i]));
+	for(unsigned int i = 0; i < diagnostics.batteryLevel.size(); i++)
+		root.appendChild(getBatteryLevel(doc, diagnostics.batteryLevel[i]));
+
+	return root;
 }
 
 void RobotConfig::addTemperature(QDomElement e)
@@ -779,6 +933,33 @@ void RobotConfig::addTemperature(QDomElement e)
 	diagnostics.used = true;
 }
 
+QDomElement RobotConfig::getTemperature(QDomDocument &doc, struct RobotTemperature &temperature)
+{
+	QDomElement root = doc.createElement("temperature");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(temperature.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("minRange");
+	txt = doc.createTextNode(QString::number(temperature.minRange));
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("maxRange");
+	txt = doc.createTextNode(QString::number(temperature.maxRange));
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("units");
+	txt = doc.createTextNode(temperature.units);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 void RobotConfig::addVoltage(QDomElement e)
 {
 	struct RobotVoltage new_voltage;
@@ -802,6 +983,33 @@ void RobotConfig::addVoltage(QDomElement e)
 	diagnostics.used = true;
 }
 
+QDomElement RobotConfig::getVoltage(QDomDocument &doc, struct RobotVoltage &voltage)
+{
+	QDomElement root = doc.createElement("voltage");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(voltage.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("minRange");
+	txt = doc.createTextNode(QString::number(voltage.minRange));
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("maxRange");
+	txt = doc.createTextNode(QString::number(voltage.maxRange));
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("operatingVoltage");
+	txt = doc.createTextNode(QString::number(voltage.operatingVoltage));
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 void RobotConfig::addBatteryLevel(QDomElement e)
 {
 	struct RobotBatteryLevel new_batteryLevel;
@@ -820,6 +1028,24 @@ void RobotConfig::addBatteryLevel(QDomElement e)
 	diagnostics.batteryLevel.insert(diagnostics.batteryLevel.begin(), new_batteryLevel);
 	diagnostics.used = true;
 }
+
+QDomElement RobotConfig::getBatteryLevel(QDomDocument &doc, struct RobotBatteryLevel &batteryLevel)
+{
+	QDomElement root = doc.createElement("batteryLevel");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(batteryLevel.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("max");
+	txt = doc.createTextNode(QString::number(batteryLevel.max));
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 ////////////////////////// End Diagnostics //////////////////////////
 
 void RobotConfig::processCommands(QDomElement e)
@@ -838,6 +1064,16 @@ void RobotConfig::processCommands(QDomElement e)
 			std::cerr << "WARNING: Unknown command tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
+}
+
+QDomElement RobotConfig::getCommands(QDomDocument &doc)
+{
+	QDomElement root = doc.createElement("commands");
+
+	for(unsigned int i = 0; i < commands.custom.size(); i++)
+		root.appendChild(getCommandCustom(doc, commands.custom[i]));
+
+	return root;
 }
 
 void RobotConfig::addCommandCustom(QDomElement e)
@@ -861,6 +1097,32 @@ void RobotConfig::addCommandCustom(QDomElement e)
 	commands.used = true;
 }
 
+QDomElement RobotConfig::getCommandCustom(QDomDocument &doc, struct RobotCommandCustom &custom)
+{
+	QDomElement root;
+	if( custom.name == "custom" )
+		root = doc.createElement("custom");
+	else
+		root = doc.createElement(custom.name);
+
+	QDomElement e;
+	QDomText txt;
+	if( custom.name == "custom" )
+	{
+		e = doc.createElement("name");
+		txt = doc.createTextNode(custom.name);
+		e.appendChild(txt);
+		root.appendChild(e);
+	}
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(custom.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
+}
+
 void RobotConfig::processControls(QDomElement e)
 {
 	QDomNode n = e.firstChild();
@@ -873,6 +1135,16 @@ void RobotConfig::processControls(QDomElement e)
 			std::cerr << "WARNING: Unknown control tag " << e.tagName().toStdString() << std::endl;
 		n = n.nextSibling();
 	}
+}
+
+QDomElement RobotConfig::getControls(QDomDocument &doc)
+{
+	QDomElement root = doc.createElement("controls");
+
+	for(unsigned int i = 0; i < controls.drive.size(); i++)
+		root.appendChild(getDrive(doc, controls.drive[i]));
+
+	return root;
 }
 
 void RobotConfig::addDrive(QDomElement e)
@@ -890,5 +1162,17 @@ void RobotConfig::addDrive(QDomElement e)
 	}
 	controls.drive.insert(controls.drive.begin(), new_drive);
 	controls.used = true;
+}
+
+QDomElement RobotConfig::getDrive(QDomDocument &doc, struct RobotDrive &drive)
+{
+	QDomElement root = doc.createElement("drive");
+
+	QDomElement e = doc.createElement("topicName");
+	QDomText txt = doc.createTextNode(drive.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	return root;
 }
 

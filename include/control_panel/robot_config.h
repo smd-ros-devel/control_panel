@@ -556,7 +556,7 @@ struct RobotConfig : public QObject
         void addJoint(QDomElement);
 	QDomElement getJoint(QDomDocument &, struct RobotJoint &);
         void addImage(QDomElement);
-	QDomElement getImage(QDomDocument &, struct RobotImage &);
+	QDomElement getImage(QDomDocument &, struct RobotCamera &);
         void addDisparityImage(QDomElement);
 	QDomElement getDisparityImage(QDomDocument &, struct RobotDisparityImage &);
         void addMap(QDomElement);
