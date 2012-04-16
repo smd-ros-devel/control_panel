@@ -38,45 +38,45 @@
 NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	camera_node(NULL), image_node(NULL), control_node(NULL), command_node(NULL),
 	diagnostic_node(NULL), disparity_image_node(NULL), gps_node(NULL), imu_node(NULL),
-    joint_state_node(NULL), laser_node(NULL), map_node(NULL), odometry_node(NULL),
-    range_node(NULL)
+	joint_state_node(NULL), laser_node(NULL), map_node(NULL), odometry_node(NULL),
+	range_node(NULL)
 {
 	connected = false;
-    control_node_enabled = false;
+	control_node_enabled = false;
 	robot_config = new_robot_config;
 
-    gps_node_list = new QList<GpsNode *>;
-    imu_node_list = new QList<ImuNode *>;
-    odom_node_list = new QList<OdometryNode *>;
+	gps_node_list = new QList<GpsNode *>;
+	imu_node_list = new QList<ImuNode *>;
+	odom_node_list = new QList<OdometryNode *>;
 
-    // Create the node handle and set the local callback queue
+	// Create the node handle and set the local callback queue
 	nh_ptr = new ros::NodeHandle(robot_config->nameSpace.toStdString());
 	nh_ptr->setCallbackQueue(&robot_callback_queue);
 
 	// Inititalize ROS nodes
 	if(!robot_config->sensors.cameras.empty())
 		camera_node = new ImageNode(nh_ptr);
-    if(!robot_config->processedData.maps.empty())
-        map_node = new MapNode(nh_ptr);
-    if(!robot_config->processedData.images.empty())
-        image_node = new ImageNode(nh_ptr);
-    if(!robot_config->processedData.disparity_images.empty())
-        disparity_image_node = new DisparityImageNode(nh_ptr);
-    if(robot_config->controls.used)
-    {
+	if(!robot_config->processedData.maps.empty())
+		map_node = new MapNode(nh_ptr);
+	if(!robot_config->processedData.images.empty())
+		image_node = new ImageNode(nh_ptr);
+	if(!robot_config->processedData.disparity_images.empty())
+		disparity_image_node = new DisparityImageNode(nh_ptr);
+	if(robot_config->controls.used)
+	{
 		control_node = new ControlNode(nh_ptr);
-        control_node->setTopic(robot_config->controls.drive[0].topicName.toStdString());
+		control_node->setTopic(robot_config->controls.drive[0].topicName.toStdString());
 
-        pub_timer = new QTimer(this);
-        connect(pub_timer, SIGNAL(timeout()), control_node, SLOT(publish()));
+		pub_timer = new QTimer(this);
+		connect(pub_timer, SIGNAL(timeout()), control_node, SLOT(publish()));
 
-        joystick_node = new JoystickNode(nh_ptr);
-        connect(joystick_node, SIGNAL(axis_event(int, double)),
-            this, SLOT(joystickAxisChanged(int, double)));
-        connect(joystick_node, SIGNAL(button_event(int, bool)),
-            this, SLOT(joystickButtonChanged(int, bool)));
-    }
-    if(robot_config->commands.used)
+		joystick_node = new JoystickNode(nh_ptr);
+		connect(joystick_node, SIGNAL(axis_event(int, double)),
+			this, SLOT(joystickAxisChanged(int, double)));
+		connect(joystick_node, SIGNAL(button_event(int, bool)),
+			this, SLOT(joystickButtonChanged(int, bool)));
+	}
+	if(robot_config->commands.used)
 		command_node = new CommandNode(nh_ptr);
 	if(robot_config->diagnostics.used)
 		diagnostic_node = new DiagnosticNode(nh_ptr);
@@ -84,8 +84,8 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		joint_state_node = new JointStateNode(nh_ptr);
 	if(!robot_config->sensors.lasers.empty())
 		laser_node = new LaserNode(nh_ptr);
-    if(!robot_config->sensors.range.empty())
-        range_node = new RangeNode(nh_ptr);
+	if(!robot_config->sensors.range.empty())
+		range_node = new RangeNode(nh_ptr);
 }
 
 /******************************************************************************
@@ -97,9 +97,9 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
  *****************************************************************************/
 void NodeManager::run()
 {
-    int i;
+	int i;
 
-    emit connectionStatusChanged(Globals::Connecting);
+	emit connectionStatusChanged(Globals::Connecting);
 
 	// Start necessary ROS nodes
 	if(diagnostic_node)
@@ -107,18 +107,18 @@ void NodeManager::run()
 		diagnostic_node->setTopic(robot_config->diagnostics.topicName.toStdString());
 		diagnostic_node->subscribe();
 	}
-    for(i = 0; i < gps_node_list->count(); i++)
+	for(i = 0; i < gps_node_list->count(); i++)
 		((GpsNode *)gps_node_list->at(i))->subscribe();
-    for(i = 0; i < imu_node_list->count(); i++)
+	for(i = 0; i < imu_node_list->count(); i++)
 		((ImuNode *)imu_node_list->at(i))->subscribe();
-    for(i = 0; i < odom_node_list->count(); i++)
-        ((OdometryNode *)odom_node_list->at(i))->subscribe();
+	for(i = 0; i < odom_node_list->count(); i++)
+		((OdometryNode *)odom_node_list->at(i))->subscribe();
 	if(joint_state_node)
 		joint_state_node->subscribe();
 	if(odometry_node)
 		odometry_node->subscribe();
-    if(range_node)
-        range_node->subscribe();
+	if(range_node)
+		range_node->subscribe();
 
 	connected = true;
 	emit connectionStatusChanged(Globals::Connected);
@@ -143,7 +143,7 @@ void NodeManager::stop()
 {
 	if(connected)
 	{
-        enableControlNode(false);
+		enableControlNode(false);
 
 		connected = false;
 
@@ -151,11 +151,10 @@ void NodeManager::stop()
 			robot_config->getRobotName().toStdString().c_str());
 
 		// Shutdown node handle
-		// Why do we need to unsubscribe camera_node here?
 		if(camera_node)
 			camera_node->unsubscribe();
-        if(image_node)
-            image_node->unsubscribe();
+		if(image_node)
+			image_node->unsubscribe();
 		nh_ptr->shutdown();
 
 		// Kill thread
@@ -221,80 +220,80 @@ void NodeManager::changeRawDataSource(const std::string &source)
 
 void NodeManager::changeProcessedDataSource(const std::string &source)
 {
-    if(odometry_node)
-        emit mapSubscribed(false);
+	if(odometry_node)
+		emit mapSubscribed(false);
 
-    if(map_node)
-        map_node->unsubscribe();
-    if(image_node)
-        image_node->unsubscribe();
-    if(disparity_image_node)
-        disparity_image_node->unsubscribe();
+	if(map_node)
+		map_node->unsubscribe();
+	if(image_node)
+		image_node->unsubscribe();
+	if(disparity_image_node)
+		disparity_image_node->unsubscribe();
 
-    for(unsigned int i = 0; i < robot_config->processedData.images.size(); i++)
-    {
-        if(source == robot_config->processedData.images[i].name.toStdString())
-        {
-            image_node->setTopic(robot_config->processedData.images[i].topicName.toStdString());
-            image_node->subscribe();
-            return;
-        }
-    }
+	for(unsigned int i = 0; i < robot_config->processedData.images.size(); i++)
+	{
+		if(source == robot_config->processedData.images[i].name.toStdString())
+		{
+			image_node->setTopic(robot_config->processedData.images[i].topicName.toStdString());
+			image_node->subscribe();
+			return;
+		}
+	}
 
-    for(unsigned int i = 0; i < robot_config->processedData.maps.size(); i++)
-    {
-        if(source == robot_config->processedData.maps[i].name.toStdString())
-        {
-            map_node->setTopic(robot_config->processedData.maps[i].topicName.toStdString());
-            map_node->subscribe();
+	for(unsigned int i = 0; i < robot_config->processedData.maps.size(); i++)
+	{
+		if(source == robot_config->processedData.maps[i].name.toStdString())
+		{
+			map_node->setTopic(robot_config->processedData.maps[i].topicName.toStdString());
+			map_node->subscribe();
 
-            if(odometry_node)
-                emit mapSubscribed(true);
+			if(odometry_node)
+				emit mapSubscribed(true);
 
-            return;
-        }
-    }
+			return;
+		}
+	}
 
-    for(unsigned int i = 0; i < robot_config->processedData.disparity_images.size(); i++)
-    {
-        if(source == robot_config->processedData.disparity_images[i].name.toStdString())
-        {
-            disparity_image_node->setTopic(robot_config->processedData.disparity_images[i].topicName.toStdString());
-            disparity_image_node->subscribe();
-            return;
-        }
-    }
+	for(unsigned int i = 0; i < robot_config->processedData.disparity_images.size(); i++)
+	{
+		if(source == robot_config->processedData.disparity_images[i].name.toStdString())
+		{
+			disparity_image_node->setTopic(robot_config->processedData.disparity_images[i].topicName.toStdString());
+			disparity_image_node->subscribe();
+			return;
+		}
+	}
 }
 
 GpsNode *NodeManager::addGpsNode(const std::string &topic)
 {
-    gps_node = new GpsNode(nh_ptr);
-    gps_node->setTopic(topic);
+	gps_node = new GpsNode(nh_ptr);
+	gps_node->setTopic(topic);
 
-    gps_node_list->append(gps_node);
+	gps_node_list->append(gps_node);
 
-    return gps_node;
+	return gps_node;
 }
 
 ImuNode *NodeManager::addImuNode(const std::string &topic)
 {
-    imu_node = new ImuNode(nh_ptr);
-    imu_node->setTopic(topic);
+	imu_node = new ImuNode(nh_ptr);
+	imu_node->setTopic(topic);
 
-    imu_node_list->append(imu_node);
+	imu_node_list->append(imu_node);
 
-    return imu_node;
+	return imu_node;
 }
 
 
 OdometryNode *NodeManager::addOdometryNode(const std::string &topic)
 {
-    odometry_node = new OdometryNode(nh_ptr);
-    odometry_node->setTopic(topic);
+	odometry_node = new OdometryNode(nh_ptr);
+	odometry_node->setTopic(topic);
 
-    odom_node_list->append(odometry_node);
+	odom_node_list->append(odometry_node);
 
-    return odometry_node;
+	return odometry_node;
 }
 
 /*
@@ -364,19 +363,19 @@ void NodeManager::joystickButtonChanged(int button, bool state)
 
 void NodeManager::enableControlNode(bool enable)
 {
-    if(connected && control_node)
-    {
-        if(enable)
-        {
-            control_node->advertise();
-            pub_timer->start(30);
-            control_node_enabled = true;
-        }
-        else
-        {
-            pub_timer->stop();
-            control_node->unadvertise();
-            control_node_enabled = false;
-        }
-    }
+	if(connected && control_node)
+	{
+		if(enable)
+		{
+			control_node->advertise();
+			pub_timer->start(30);
+			control_node_enabled = true;
+		}
+		else
+		{
+			pub_timer->stop();
+			control_node->unadvertise();
+			control_node_enabled = false;
+		}
+	}
 }

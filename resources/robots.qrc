@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/" >
         <file>robots/armbot1.xml</file>
+        <file>robots/armbot2.xml</file>
         <file>robots/ardrone1.xml</file>
         <file>robots/ardrone2.xml</file>
         <file>robots/ardrone3.xml</file>

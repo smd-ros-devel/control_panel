@@ -1,0 +1,24 @@
+<robot>
+  <robotName>Armbot 2</robotName>
+  <system>UGV</system>
+  <driveSystem>2-Wheeled Differential Drive</driveSystem>
+  <imageFile>armbot.jpg</imageFile>
+  <nameSpace>armbot2</nameSpace>
+
+  <sensors>
+    <imu>
+      <name>Imu</name>
+      <topicName>imu/data</topicName>
+      <roll />
+      <pitch />
+      <yaw />
+      <linearAcceleration />
+    </imu>
+  </sensors>
+
+  <controls>
+    <drive>
+      <topicName>cmd_vel</topicName>
+    </drive>
+  </controls>
+</robot>

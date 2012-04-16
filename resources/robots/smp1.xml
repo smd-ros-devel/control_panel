@@ -5,4 +5,12 @@
   <imageFile>smp.jpg</imageFile>
   <nameSpace>smp1</nameSpace>
 
+  <sensors>
+  </sensors>
+
+  <controls>
+    <drive>
+      <topicName>cmd_vel</topicName>
+    </drive>
+  </controls>
 </robot>

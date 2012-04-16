@@ -49,8 +49,6 @@
       <yaw />
       <angularVelocity />
       <linearAcceleration />
-      <hideAttitude />
-      <hideHeading />
     </imu>
   </sensors>
 

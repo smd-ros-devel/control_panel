@@ -49,6 +49,7 @@
 #include "nodes/image_node.h"
 #include "nodes/imu_node.h"
 #include "nodes/joint_state_node.h"
+#include "nodes/joint_trajectory_node.h"
 #include "nodes/joystick_node.h"
 #include "nodes/laser_node.h"
 #include "nodes/map_node.h"
@@ -68,52 +69,53 @@ class NodeManager : public QThread
 
 	public:
 		NodeManager(struct RobotConfig *);
-        bool controlNodeEnabled() const { return control_node_enabled; }
-        void enableControlNode(bool enable);
+		bool controlNodeEnabled() const { return control_node_enabled; }
+		void enableControlNode(bool enable);
 		void run();
 		void stop();
 		bool isConnected() const;
-        GpsNode *addGpsNode(const std::string &topic = Globals::DEFAULT_GPS_TOPIC);
-        ImuNode *addImuNode(const std::string &topic = Globals::DEFAULT_IMU_TOPIC);
-        OdometryNode *addOdometryNode(const std::string &topic = Globals::DEFAULT_ODOMETRY_TOPIC);
+		GpsNode *addGpsNode(const std::string &topic = Globals::DEFAULT_GPS_TOPIC);
+		ImuNode *addImuNode(const std::string &topic = Globals::DEFAULT_IMU_TOPIC);
+		OdometryNode *addOdometryNode(const std::string &topic = Globals::DEFAULT_ODOMETRY_TOPIC);
 
 		// ROS Nodes
 		ImageNode *camera_node; // For raw images (e.g., camera/depth image feeds)
-        ImageNode *image_node;  // For processed images (e.g., rectified images)
+		ImageNode *image_node;  // For processed images (e.g., rectified images)
 		ControlNode *control_node;
 		CommandNode *command_node;
 		DiagnosticNode *diagnostic_node;
-        DisparityImageNode *disparity_image_node;
+		DisparityImageNode *disparity_image_node;
 		GpsNode *gps_node;
 		ImuNode *imu_node;
 		JointStateNode *joint_state_node;
-        JoystickNode *joystick_node;
+		JointTrajectoryNode *joint_trajectory_node;
+		JoystickNode *joystick_node;
 		LaserNode *laser_node;
 		MapNode *map_node;
 		OdometryNode *odometry_node;
-        RangeNode *range_node;
+		RangeNode *range_node;
 
 	public slots:
 		void changeRawDataSource(const std::string &source);
-        void changeProcessedDataSource(const std::string &source);
-        void joystickAxisChanged(int axis, double value);
-        void joystickButtonChanged(int button, bool state);
+		void changeProcessedDataSource(const std::string &source);
+		void joystickAxisChanged(int axis, double value);
+		void joystickButtonChanged(int button, bool state);
 
 	signals:
 		void connectionStatusChanged(int status);
-        void mapSubscribed(bool sub);
+		void mapSubscribed(bool sub);
 
 	private:
 		ros::NodeHandle *nh_ptr;
 		ros::CallbackQueue robot_callback_queue;
 		struct RobotConfig *robot_config;
 		bool connected;
-        bool control_node_enabled;
-        QTimer *pub_timer;
+		bool control_node_enabled;
+		QTimer *pub_timer;
 
-        QList<ImuNode *> *imu_node_list;
-        QList<GpsNode *> *gps_node_list;
-        QList<OdometryNode *> *odom_node_list;
+		QList<ImuNode *> *imu_node_list;
+		QList<GpsNode *> *gps_node_list;
+		QList<OdometryNode *> *odom_node_list;
 };
 
 #endif // CONTROL_PANEL_NODE_MANAGER_H
