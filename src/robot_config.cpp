@@ -124,7 +124,7 @@ QFile * RobotConfig::exportData(QFile *file)
 	e.appendChild(txt);
 	root.appendChild(e);
 
-	e = doc.createElement("namespace");
+	e = doc.createElement("nameSpace");
 	txt = doc.createTextNode(nameSpace);
 	e.appendChild(txt);
 	root.appendChild(e);
