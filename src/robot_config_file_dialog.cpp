@@ -56,85 +56,85 @@ bool checkStateToBool(Qt::CheckState state)
 ////////////////////////// General Tab ///////////////////////////////
 
 GeneralTab::GeneralTab(struct RobotConfig *robot_config, QWidget *parent)
-    : QWidget(parent)
+	: QWidget(parent)
 {
-    QLabel *robot_name_label = new QLabel(tr("Robot's Name"));
-    robot_name_lineedit = new QLineEdit(robot_config->robotName);
+	QLabel *robot_name_label = new QLabel(tr("Robot's Name"));
+	robot_name_lineedit = new QLineEdit(robot_config->robotName);
 
-    QLabel *system_label = new QLabel(tr("System"));
-    QStringList system_list;
-    system_list << "UGV"// (Unmanned Ground Vehicle)"
-                << "UAV"// (Unmanned Aerial Vehicle)"
-                << "AUV"// (Autonomous Underwater Vehicle)"
-                << "USV"// (Unmanned Surface Vehicle)"
-                << "Humanoid";
-    system_combobox = new QComboBox;
-    system_combobox->addItems(system_list);
+	QLabel *system_label = new QLabel(tr("System"));
+	QStringList system_list;
+	system_list << "UGV"// (Unmanned Ground Vehicle)"
+		<< "UAV"// (Unmanned Aerial Vehicle)"
+		<< "AUV"// (Autonomous Underwater Vehicle)"
+		<< "USV"// (Unmanned Surface Vehicle)"
+		<< "Humanoid";
+	system_combobox = new QComboBox;
+	system_combobox->addItems(system_list);
 
-    int index = system_list.indexOf(robot_config->system);
-    if(index != -1)
-        system_combobox->setCurrentIndex(index);
+	int index = system_list.indexOf(robot_config->system);
+	if(index != -1)
+		system_combobox->setCurrentIndex(index);
 
-    QLabel *drive_system_label = new QLabel(tr("Drive System"));
-    drive_system_lineedit = new QLineEdit(robot_config->driveSystem);
+	QLabel *drive_system_label = new QLabel(tr("Drive System"));
+	drive_system_lineedit = new QLineEdit(robot_config->driveSystem);
 
-    QLabel *image_file_label = new QLabel(tr("Image File"));
-    image_file_lineedit = new QLineEdit(robot_config->imageFilePath);
+	QLabel *image_file_label = new QLabel(tr("Image File"));
+	image_file_lineedit = new QLineEdit(robot_config->imageFilePath);
 
-    QPushButton *browse_button = new QPushButton(tr("Browse"));
-    connect(browse_button, SIGNAL(clicked()), this, SLOT(findImageFile()));
+	QPushButton *browse_button = new QPushButton(tr("Browse"));
+	connect(browse_button, SIGNAL(clicked()), this, SLOT(findImageFile()));
 
-    QLabel *namespace_label = new QLabel(tr("Namespace"));
-    namespace_lineedit = new QLineEdit(robot_config->nameSpace);
+	QLabel *namespace_label = new QLabel(tr("Namespace"));
+	namespace_lineedit = new QLineEdit(robot_config->nameSpace);
 
-    // General tab layout
-    QHBoxLayout *image_file_hlayout = new QHBoxLayout;
-    image_file_hlayout->addWidget(image_file_lineedit);
-    image_file_hlayout->addWidget(browse_button);
+	// General tab layout
+	QHBoxLayout *image_file_hlayout = new QHBoxLayout;
+	image_file_hlayout->addWidget(image_file_lineedit);
+	image_file_hlayout->addWidget(browse_button);
 
-    QGridLayout *general_tab_layout = new QGridLayout;
-    general_tab_layout->addWidget(robot_name_label, 0, 0);
-    general_tab_layout->addWidget(robot_name_lineedit, 0, 1);
-    general_tab_layout->addWidget(system_label, 1, 0);
-    general_tab_layout->addWidget(system_combobox, 1, 1);
-    general_tab_layout->addWidget(drive_system_label, 2, 0);
-    general_tab_layout->addWidget(drive_system_lineedit, 2, 1);
-    general_tab_layout->addWidget(image_file_label, 3, 0);
-    general_tab_layout->addLayout(image_file_hlayout, 3, 1);
-    general_tab_layout->addWidget(namespace_label, 4, 0);
-    general_tab_layout->addWidget(namespace_lineedit, 4, 1);
-    setLayout(general_tab_layout);
+	QGridLayout *general_tab_layout = new QGridLayout;
+	general_tab_layout->addWidget(robot_name_label, 0, 0);
+	general_tab_layout->addWidget(robot_name_lineedit, 0, 1);
+	general_tab_layout->addWidget(system_label, 1, 0);
+	general_tab_layout->addWidget(system_combobox, 1, 1);
+	general_tab_layout->addWidget(drive_system_label, 2, 0);
+	general_tab_layout->addWidget(drive_system_lineedit, 2, 1);
+	general_tab_layout->addWidget(image_file_label, 3, 0);
+	general_tab_layout->addLayout(image_file_hlayout, 3, 1);
+	general_tab_layout->addWidget(namespace_label, 4, 0);
+	general_tab_layout->addWidget(namespace_lineedit, 4, 1);
+	setLayout(general_tab_layout);
 }
 
 void GeneralTab::findImageFile()
 {
-    QString path;
-    if(!image_file_lineedit->text().isEmpty())
-    {
-        QFileInfo file(image_file_lineedit->text());
-        if(file.exists())
-            path = file.absoluteFilePath();
-        else
-            path = QDir::homePath();
-    }
-    else
-        path = QDir::homePath();
+	QString path;
+	if(!image_file_lineedit->text().isEmpty())
+	{
+		QFileInfo file(image_file_lineedit->text());
+		if(file.exists())
+			path = file.absoluteFilePath();
+		else
+			path = QDir::homePath();
+	}
+	else
+		path = QDir::homePath();
 
-    QString file_name = QFileDialog::getOpenFileName(this, tr("Find Image"),
-        path, tr("Images (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.tiff *.xbm *.xpm)"));
+	QString file_name = QFileDialog::getOpenFileName(this, tr("Find Image"),
+		path, tr("Images (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.tiff *.xbm *.xpm)"));
 
-    image_file_lineedit->setText(file_name);
+	image_file_lineedit->setText(file_name);
 }
 
 void GeneralTab::storeToConfig(struct RobotConfig *robot_config)
 {
-    std::cout << "Storing general info to robot configuration struct" << std::endl;
+	std::cout << "Storing general info to robot configuration struct" << std::endl;
 
-    robot_config->robotName = robot_name_lineedit->text();
-    robot_config->system = system_combobox->currentText();
-    robot_config->driveSystem = drive_system_lineedit->text();
-    robot_config->imageFilePath = image_file_lineedit->text();
-    robot_config->nameSpace = namespace_lineedit->text();
+	robot_config->robotName = robot_name_lineedit->text();
+	robot_config->system = system_combobox->currentText();
+	robot_config->driveSystem = drive_system_lineedit->text();
+	robot_config->imageFilePath = image_file_lineedit->text();
+	robot_config->nameSpace = namespace_lineedit->text();
 }
 
 ////////////////////////////// Sensors Tab ///////////////////////////////
@@ -599,16 +599,16 @@ void SensorsTab::editSensor(QTreeWidgetItem *item)
 
 void SensorsTab::removeSensor()
 {
-    // Get current item
-    QTreeWidgetItem *item = sensors_treewidget->currentItem();
+	// Get current item
+	QTreeWidgetItem *item = sensors_treewidget->currentItem();
 
-    if(item == 0) // No item is selected
-        return;
+	if(item == 0) // No item is selected
+		return;
 
-    if(item->parent() != 0) // Get top level item in the tree widget
-        item = item->parent();
+	if(item->parent() != 0) // Get top level item in the tree widget
+		item = item->parent();
 
-    delete item;
+	delete item;
 }
 
 void SensorsTab::storeToConfig(struct RobotSensors *robot_sensors)
@@ -995,16 +995,16 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
 
 void ProcessedDataTab::removeProcessedData()
 {
-    // Get current item
-    QTreeWidgetItem *item = processed_data_treewidget->currentItem();
+	// Get current item
+	QTreeWidgetItem *item = processed_data_treewidget->currentItem();
 
-    if(item == 0) // No item is selected
-        return;
+	if(item == 0) // No item is selected
+		return;
 
-    if(item->parent() != 0) // Get top level item in the tree widget
-        item = item->parent();
+	if(item->parent() != 0) // Get top level item in the tree widget
+		item = item->parent();
 
-    delete item;
+	delete item;
 }
 
 void ProcessedDataTab::storeToConfig(struct RobotProcessedData *robot_processed_data)
@@ -1133,42 +1133,42 @@ JointsTab::JointsTab(struct RobotJoints *robot_joints,
 
 void JointsTab::addJoint()
 {
-    ComponentDialog add_joint_dialog(this);
-    add_joint_dialog.setNameLabelText(tr("Joint Name"));
-    add_joint_dialog.setTopicNameLabelText(tr("Display Name"));
-    add_joint_dialog.setWindowTitle("Add Joint");
+	ComponentDialog add_joint_dialog(this);
+	add_joint_dialog.setNameLabelText(tr("Joint Name"));
+	add_joint_dialog.setTopicNameLabelText(tr("Display Name"));
+	add_joint_dialog.setWindowTitle("Add Joint");
 
-    if(add_joint_dialog.exec())
-    {
-        joints_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
-            (QStringList() << add_joint_dialog.getName() << add_joint_dialog.getTopicName())));
-    }
+	if(add_joint_dialog.exec())
+	{
+		joints_treewidget->addTopLevelItem(new QTreeWidgetItem((QTreeWidget *)0,
+			(QStringList() << add_joint_dialog.getName() << add_joint_dialog.getTopicName())));
+	}
 }
 
 void JointsTab::editJoint(QTreeWidgetItem *item)
 {
-    QTreeWidgetItem *joint_item = item;
+	QTreeWidgetItem *joint_item = item;
 
-    if(joint_item == 0) // Item is unknown
-    {
-        joint_item = joints_treewidget->currentItem();
+	if(joint_item == 0) // Item is unknown
+	{
+		joint_item = joints_treewidget->currentItem();
 
-        if(joint_item == 0) // No item is selected
-            return;
-    }
+		if(joint_item == 0) // No item is selected
+			return;
+	}
 
-    ComponentDialog edit_joint_dialog(this);
-    edit_joint_dialog.setNameLabelText(tr("Joint Name"));
-    edit_joint_dialog.setName(joint_item->text(0));
-    edit_joint_dialog.setTopicNameLabelText(tr("Display Name"));
-    edit_joint_dialog.setTopicName(joint_item->text(1));
-    edit_joint_dialog.setWindowTitle(tr("Edit Joint"));
+	ComponentDialog edit_joint_dialog(this);
+	edit_joint_dialog.setNameLabelText(tr("Joint Name"));
+	edit_joint_dialog.setName(joint_item->text(0));
+	edit_joint_dialog.setTopicNameLabelText(tr("Display Name"));
+	edit_joint_dialog.setTopicName(joint_item->text(1));
+	edit_joint_dialog.setWindowTitle(tr("Edit Joint"));
 
-    if(edit_joint_dialog.exec())
-    {
-        joint_item->setText(0, edit_joint_dialog.getName());
-        joint_item->setText(1, edit_joint_dialog.getTopicName());
-    }
+	if(edit_joint_dialog.exec())
+	{
+		joint_item->setText(0, edit_joint_dialog.getName());
+		joint_item->setText(1, edit_joint_dialog.getTopicName());
+	}
 }
 
 void JointsTab::removeJoint()
@@ -1231,14 +1231,21 @@ ControlsTab::ControlsTab(struct RobotControls *robot_controls,
 	QStringList column_list;
 	column_list << tr("Control") << tr("Values");
 
+
+	// Add all teleoperation from robot config file
 	QList<QTreeWidgetItem *> controls_itemlist;
 	for(unsigned int i = 0; i < robot_controls->drive.size(); i++)
 		controls_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
 			(QStringList() << tr("Teleoperation") << robot_controls->drive[i].topicName)));
 
+
+	// Create tree widget
 	controls_treewidget = new QTreeWidget;
 	controls_treewidget->setHeaderLabels(column_list);
 	controls_treewidget->addTopLevelItems(controls_itemlist);
+	connect(controls_treewidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+		this, SLOT(editControl(QTreeWidgetItem *)));
+
 
 	// Dialog layout
 	QHBoxLayout *button_hlayout = new QHBoxLayout;
@@ -1279,7 +1286,7 @@ void ControlsTab::addControl()
 	{
 		bool ok;
 		QString topic_name = QInputDialog::getText(this, QString("Add %1").arg(type_str),
-		tr("Topic Name"), QLineEdit::Normal, QString(), &ok);
+			tr("Topic Name"), QLineEdit::Normal, QString(), &ok);
 
 		if(ok && !topic_name.isEmpty())
 		{
@@ -1291,7 +1298,22 @@ void ControlsTab::addControl()
 
 void ControlsTab::editControl(QTreeWidgetItem *item)
 {
+	QTreeWidgetItem *control_item = item;
 
+        if(control_item == 0) // Item is unknown so grab current item
+        {
+                control_item = controls_treewidget->currentItem();
+
+                if(control_item == 0) // No item is selected
+                        return;
+        }
+
+	bool ok;
+	QString topic_name = QInputDialog::getText(this, QString("Edit Teleoperation"),
+		tr("Topic Name"), QLineEdit::Normal, control_item->text(1), &ok);
+
+	if(ok)
+		control_item->setText(1, topic_name);
 }
 
 void ControlsTab::removeControl()
@@ -1307,7 +1329,21 @@ void ControlsTab::removeControl()
 
 void ControlsTab::storeToConfig(struct RobotControls *robot_controls)
 {
+	std::cout << "Storing controls to robot configuration struct" << std::endl;
 
+        robot_controls->used = false;
+
+        QTreeWidgetItemIterator it(controls_treewidget);
+        while(*it)
+        {
+                struct RobotDrive temp_drive;
+                temp_drive.topicName = (*it)->text(1);
+
+                robot_controls->drive.push_back(temp_drive);
+                robot_controls->used = true;
+
+                it++;
+        }
 }
 
 //////////////////////////// Services Tab ///////////////////////////////
@@ -1326,12 +1362,19 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
 	QPushButton *add_button = new QPushButton(tr("Add"));
 	connect(add_button, SIGNAL(clicked()), this, SLOT(addService()));
 
+	QPushButton *edit_button = new QPushButton(tr("Edit"));
+	connect(edit_button, SIGNAL(clicked()), this, SLOT(editService()));
+
+	QPushButton *remove_button = new QPushButton(tr("Remove"));
+	connect(remove_button, SIGNAL(clicked()), this, SLOT(removeService()));
+
     
 	/* Add all services from robot configuration file */
 	QList<QTreeWidgetItem *> services_itemlist;
 	for(unsigned int i = 0; i < robot_services->custom.size(); i++)
 		services_itemlist.append(new QTreeWidgetItem((QTreeWidget *)0,
 			(QStringList() << robot_services->custom[i].name << robot_services->custom[i].topicName)));
+
 
 	QStringList column_list;
 	column_list << "Service Name" << "Topic Name";
@@ -1340,8 +1383,17 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
 	services_treewidget = new QTreeWidget;
 	services_treewidget->setHeaderLabels(column_list);
 	services_treewidget->addTopLevelItems(services_itemlist);
+	connect(services_treewidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+		this, SLOT(editService(QTreeWidgetItem *)));
+
 
 	/* Create services tab layout */
+	QHBoxLayout *button_hlayout = new QHBoxLayout;
+	button_hlayout->addStretch();
+	button_hlayout->addWidget(remove_button, 0, Qt::AlignRight);
+	button_hlayout->addSpacing(10);
+	button_hlayout->addWidget(edit_button, 0, Qt::AlignRight);
+
 	QHBoxLayout *services_hlayout = new QHBoxLayout;
 	services_hlayout->addWidget(services_label, 0, Qt::AlignLeft);
 	services_hlayout->addStretch();
@@ -1351,6 +1403,7 @@ ServicesTab::ServicesTab(struct RobotCommands *robot_services,
 	QVBoxLayout *services_layout = new QVBoxLayout;
 	services_layout->addLayout(services_hlayout);
 	services_layout->addWidget(services_treewidget);
+	services_layout->addLayout(button_hlayout);
 	setLayout(services_layout);
 }
 
@@ -1372,7 +1425,27 @@ void ServicesTab::addService()
 
 void ServicesTab::editService(QTreeWidgetItem *item)
 {
+	QTreeWidgetItem *service_item = item;
 
+	if(service_item == 0) // Item is unknown so get currently selected item
+	{
+		service_item = services_treewidget->currentItem();
+
+		if(service_item == 0) // No item is selected
+			return;
+	}
+
+	ComponentDialog edit_service_dialog(this);
+	edit_service_dialog.setName(service_item->text(0));
+	edit_service_dialog.setNameLabelText(tr("Service Name"));
+	edit_service_dialog.setTopicName(service_item->text(1));
+	edit_service_dialog.setWindowTitle(tr("Edit Service"));
+
+	if(edit_service_dialog.exec())
+	{
+		service_item->setText(0, edit_service_dialog.getName());
+		service_item->setText(1, edit_service_dialog.getTopicName());
+	}
 }
 
 void ServicesTab::removeService()
@@ -1387,7 +1460,22 @@ void ServicesTab::removeService()
 
 void ServicesTab::storeToConfig(struct RobotCommands *robot_commands)
 {
+	std::cout << "Storing commands to robot configuration struct" << std::endl;
 
+	robot_commands->used = false;
+
+	QTreeWidgetItemIterator it(services_treewidget);
+        while(*it)
+        {
+                struct RobotCommandCustom temp_custom;
+		temp_custom.name = (*it)->text(0);
+                temp_custom.topicName = (*it)->text(1);
+
+                robot_commands->custom.push_back(temp_custom);
+                robot_commands->used = true;
+
+                it++;
+        }
 }
 
 ////////////////////////// Diagnostics Tab ////////////////////////////////
