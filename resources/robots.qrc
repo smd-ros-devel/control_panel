@@ -15,6 +15,7 @@
         <file>robots/brady_bot.xml</file>
         <file>robots/pr2.xml</file>
         <file>robots/smp1.xml</file>
+        <file>robots/smp2.xml</file>
         <file>robots/test_robot.xml</file>
         <file>robots/turtlebot.xml</file>
     </qresource>
