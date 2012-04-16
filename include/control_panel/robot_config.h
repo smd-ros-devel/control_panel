@@ -189,38 +189,38 @@ struct RobotJoint
  */
 struct RobotJoints
 {
-    public:
-        /* stored data */
-        QString topicName;
-        bool position;
-        bool velocity;
-        bool effort;
-        bool used;
+	public:
+		/* stored data */
+		QString topicName;
+		bool position;
+		bool velocity;
+		bool effort;
+		bool used;
 
-        /* Joints list */
-        std::vector<struct RobotJoint> joints;
+		/* Joints list */
+		std::vector<struct RobotJoint> joints;
 
-        /**
-         * \brief Constructor. Initializes public members
-         */
-        RobotJoints()
-            : topicName("joint_states"),
-              position(false),
-              velocity(false),
-              effort(false),
-              used(false) { }
+		/**
+		 * \brief Constructor. Initializes public members
+		 */
+		RobotJoints()
+			: topicName("joint_states"),
+			  position(false),
+			  velocity(false),
+			  effort(false),
+			  used(false) { }
 
-        /**
-         * \brief Destroys linked list
-         */
-        void defaults()
-        {
-            topicName = "joint_states";
-            position = false;
-            velocity = false;
-            effort = false;
-            joints.clear();
-        }
+		/**
+		 * \brief Destroys linked list
+		 */
+		void defaults()
+		{
+			topicName = "joint_states";
+			position = false;
+			velocity = false;
+			effort = false;
+			joints.clear();
+		}
 };
 
 ///////////////////// End Joints ////////////////////////////
@@ -235,17 +235,17 @@ struct RobotJoints
  */
 struct RobotDisparityImage
 {
-    public:
-        /* stored data */
-        QString name;
-        QString topicName;
+	public:
+		/* stored data */
+		QString name;
+		QString topicName;
 
-        /**
-         * \brief Constructor. Initilizes data.
-         */
-        RobotDisparityImage()
-            : name("Unknown Disparity Image"),
-              topicName("unknown_disparity_image") { }
+		/**
+		 * \brief Constructor. Initilizes data.
+		 */
+		RobotDisparityImage()
+			: name("Unknown Disparity Image"),
+			  topicName("unknown_disparity_image") { }
 };
 
 /**
@@ -254,17 +254,17 @@ struct RobotDisparityImage
  */
 struct RobotMap
 {
-    public:
-        /* stored data */
-        QString name;
-        QString topicName;
+	public:
+		/* stored data */
+		QString name;
+		QString topicName;
 
-        /**
-         * \brief Constructor. Sets member values to default values.
-         */
-        RobotMap()
-            : name("Unknown Map"),
-              topicName("unknown_map") { }
+		/**
+		 * \brief Constructor. Sets member values to default values.
+		 */
+		RobotMap()
+			: name("Unknown Map"),
+			  topicName("unknown_map") { }
 };
 
 /**
@@ -273,33 +273,31 @@ struct RobotMap
  */
 struct RobotOdometry
 {
-    public:
-        /* stored data */
-        QString name;
-        QString topicName;
-        bool position;
-        bool orientation;
-        bool linearVelocity;
-        bool angularVelocity;
-        bool hideAttitude;
-        bool hideHeading;
-        bool hideLabels;
+	public:
+		/* stored data */
+		QString name;
+		QString topicName;
+		bool position;
+		bool orientation;
+		bool linearVelocity;
+		bool angularVelocity;
+		bool hideAttitude;
+		bool hideHeading;
+		bool hideLabels;
 
-        /**
-         * Constructor. Initializes structure members
-         */
-        RobotOdometry()
-            : name("Unknown Odometry"),
-              topicName("unknown_odometry"),
-              position(false),
-              orientation(false),
-              linearVelocity(false),
-              angularVelocity(false),
-              hideAttitude(false),
-              hideHeading(false),
-              hideLabels(false) 
-        {
-        }
+		/**
+		 * Constructor. Initializes structure members
+		 */
+		RobotOdometry()
+			: name("Unknown Odometry"),
+			  topicName("unknown_odometry"),
+			  position(false),
+			  orientation(false),
+			  linearVelocity(false),
+			  angularVelocity(false),
+			  hideAttitude(false),
+			  hideHeading(false),
+			  hideLabels(false) { }
 };
 
 /**
@@ -308,23 +306,23 @@ struct RobotOdometry
  */
 struct RobotProcessedData
 {
-    public:
-        /* Processed data lists */
-        std::vector <struct RobotCamera> images;
-        std::vector <struct RobotDisparityImage> disparity_images;
-        std::vector <struct RobotMap> maps;
-        std::vector <struct RobotOdometry> odometry;
+	public:
+		/* Processed data lists */
+		std::vector <struct RobotCamera> images;
+		std::vector <struct RobotDisparityImage> disparity_images;
+		std::vector <struct RobotMap> maps;
+		std::vector <struct RobotOdometry> odometry;
 
-        /**
-         * \brief Sets all struct members to their defaults
-         */
-        void defaults()
-        {
-            images.clear();
-            disparity_images.clear();
-            maps.clear();
-            odometry.clear();
-        }
+		/**
+		 * \brief Sets all struct members to their defaults
+		 */
+		void defaults()
+		{
+			images.clear();
+			disparity_images.clear();
+			maps.clear();
+			odometry.clear();
+		}
 };
 
 ///////////////////////// End Processed Data //////////////////////////
