@@ -86,6 +86,8 @@ class MainTab : public QWidget
 		 */
 		int numSelected();
 
+		QStringList removeSelectedRobots();
+
 	signals:
 		void loadRobots(const QStringList &robot_load_list, bool auto_connect);
 

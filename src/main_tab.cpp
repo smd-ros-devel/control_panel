@@ -176,6 +176,27 @@ int MainTab::numSelected()
 	return count;
 }
 
+QStringList MainTab::removeSelectedRobots()
+{
+        QStringList robot_list;
+
+        /* Find all selected robots and delete them */
+        for(int i = 0; i < robot_list_layout->count() - 1; i++)
+        {
+                robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+                if(robot_widget->isSelected())
+		{
+                        robot_list << robot_widget->getConfigPath();
+
+			robot_widget = (RobotWidget *)robot_list_layout->takeAt(i)->widget();
+			delete robot_widget;
+			i--;
+		}
+        }
+
+        return robot_list;
+}
+
 
 void MainTab::loadRobots()
 {

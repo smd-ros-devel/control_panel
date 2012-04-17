@@ -95,6 +95,8 @@ void MainWindow::readSettings()
 	if(settings.value("maximized", false).toBool())
 		showMaximized();
 	robot_config_list = settings.value("robot_config_files").toStringList();
+	for(int i = 0; i < robot_config_list.count(); i++)
+		main_tab->loadRobot(robot_config_list.at(i));
 }
 
 void MainWindow::writeSettings()
@@ -103,6 +105,7 @@ void MainWindow::writeSettings()
 
 	QSettings settings;
 	settings.setValue("maximized", isMaximized());
+	robot_config_list.sort();
 	settings.setValue("robot_config_files", robot_config_list);
 }
 
@@ -229,6 +232,10 @@ void MainWindow::createMenuActions()
 	configuration_file_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
 	connect(configuration_file_action, SIGNAL(triggered()),
 		this, SLOT(editRobotConfigFile()));
+
+	remove_config_action = new QAction(tr("&Remove Selected Robot(s)"), this);
+	connect(remove_config_action, SIGNAL(triggered()),
+		this, SLOT(removeRobotConfigFiles()));
 
 	topics_action = new QAction(tr("&Topic Names"), this);
 	topics_action->setEnabled(false);
@@ -375,6 +382,8 @@ void MainWindow::createMenus()
 	// Create edit menu
 	edit_menu = menuBar()->addMenu(tr("&Edit"));
 	edit_menu->addAction(configuration_file_action);
+	edit_menu->addAction(remove_config_action);
+	edit_menu->addSeparator();
 	//edit_menu->addAction(topics_action);
 	edit_menu->addAction(set_velocity_action);
 
@@ -382,7 +391,7 @@ void MainWindow::createMenus()
 	view_menu = menuBar()->addMenu(tr("&View"));
 	view_menu->addAction(show_menu_bar_action);
 	view_menu->addAction(full_screen_action);
-	view_menu->addSeparator();
+	//view_menu->addSeparator();
 	//view_menu->addAction(tab_in_window_action);
 
 	// Create connections menu
@@ -410,10 +419,10 @@ void MainWindow::createMenus()
 	tools_menu->addAction(dynamic_reconfigure_action);
 
 	// Create help menu
-	help_menu = menuBar()->addMenu(tr("&Help"));
-	help_menu->addAction(help_action);
-	help_menu->addSeparator();
-	help_menu->addAction(about_action);
+	//help_menu = menuBar()->addMenu(tr("&Help"));
+	//help_menu->addAction(help_action);
+	//help_menu->addSeparator();
+	//help_menu->addAction(about_action);
 }
 
 void MainWindow::editRobotConfigFile()
@@ -472,6 +481,20 @@ void MainWindow::editRobotConfigFile()
 	}
 
 	main_tab->deselectAllRobots();
+}
+
+void MainWindow::removeRobotConfigFiles()
+{
+	// Remove selected robots and save there config file paths
+	QStringList removed_robots = main_tab->removeSelectedRobots();
+
+	// Remove any paths from settings
+	for(int i = 0; i < removed_robots.count(); i++)
+	{
+		int index = robot_config_list.indexOf(removed_robots.at(i));
+		if(index != -1)
+			robot_config_list.removeAt(index);
+	}
 }
 
 void MainWindow::editTopics()

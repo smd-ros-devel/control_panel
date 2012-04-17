@@ -94,6 +94,7 @@ class MainWindow : public QMainWindow
 		//void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
 		void editRobotConfigFile();
+		void removeRobotConfigFiles();
 		void editTopics();
 		void setMaxVelocity();
 		void fullScreenChanged(bool checked);
@@ -148,6 +149,7 @@ class MainWindow : public QMainWindow
 		QAction *open_config_action;
 		QAction *exit_action;
 		QAction *configuration_file_action;
+		QAction *remove_config_action;
 		QAction *topics_action;
 		QAction *set_velocity_action;
 		QAction *gestures_action;
