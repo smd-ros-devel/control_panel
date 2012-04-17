@@ -414,7 +414,7 @@ struct RobotCommandCustom
 		QString topicName;
 
 		/* constructor */
-		RobotCommandCustom() : name("Unknown Temperature"), topicName("unknown_custom_command")
+		RobotCommandCustom() : name("Unknown Custom Command"), topicName("unknown_custom_command")
 		{
 		}
 };

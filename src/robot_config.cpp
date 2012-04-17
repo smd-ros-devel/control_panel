@@ -1100,14 +1100,14 @@ void RobotConfig::addCommandCustom(QDomElement e)
 QDomElement RobotConfig::getCommandCustom(QDomDocument &doc, struct RobotCommandCustom &custom)
 {
 	QDomElement root;
-	if( custom.name == "custom" )
-		root = doc.createElement("custom");
-	else
+	if(custom.name == "takeoff" || custom.name == "land")
 		root = doc.createElement(custom.name);
+	else
+		root = doc.createElement("custom");
 
 	QDomElement e;
 	QDomText txt;
-	if( custom.name == "custom" )
+	if( custom.name != "takeoff" && custom.name != "land" )
 	{
 		e = doc.createElement("name");
 		txt = doc.createTextNode(custom.name);
