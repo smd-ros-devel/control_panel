@@ -128,6 +128,8 @@ class MainWindow : public QMainWindow
 
 		QString robot_directory;
 
+		QStringList robot_config_list;
+
 		/* Icons to display on a robot's tab for indicating connection status */
 		QIcon robot_disconnected_icon;
 		QIcon robot_connecting_icon;

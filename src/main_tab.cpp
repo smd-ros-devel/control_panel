@@ -44,15 +44,15 @@
 #include <iostream>
 
 MainTab::MainTab(const QString &robots, QWidget *parent)
-    : QWidget(parent)
+	: QWidget(parent)
 {
-    robot_directory = robots;
+	robot_directory = robots;
 
 	createWidgets();
 	createLayout();
 
 	setMinimumWidth(800);
-    setMinimumHeight(400);
+	setMinimumHeight(400);
 	setLayout(main_tab_layout);
 }
 
@@ -96,84 +96,84 @@ void MainTab::createLayout()
 	robot_list_scrollarea->setWidget(robot_list_widget);
 
 	main_tab_layout = new QVBoxLayout;
-    main_tab_layout->addWidget(robot_list_label, 0, Qt::AlignLeft);
-    main_tab_layout->addWidget(robot_list_scrollarea);
+	main_tab_layout->addWidget(robot_list_label, 0, Qt::AlignLeft);
+	main_tab_layout->addWidget(robot_list_scrollarea);
 	main_tab_layout->addLayout(button_hlayout);
 }
 
 QString MainTab::getFirstSelectedRobot()
 {
-    QString robot_config_path;
-    bool robot_found = false;
+	QString robot_config_path;
+	bool robot_found = false;
 
-    /* Search for the first selected robot */
-    for(int i = 0; i < robot_list_layout->count() - 1 && !robot_found; i++)
-    {
-        robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
-        if(robot_widget->isSelected())
-        {
-            robot_config_path = robot_widget->getConfigPath();
-            robot_found = true;
-        }
-    }
+	/* Search for the first selected robot */
+	for(int i = 0; i < robot_list_layout->count() - 1 && !robot_found; i++)
+	{
+		robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+		if(robot_widget->isSelected())
+		{
+			robot_config_path = robot_widget->getConfigPath();
+			robot_found = true;
+		}
+	}
 
     return robot_config_path;
 }
 
 QStringList MainTab::getSelectedRobots()
 {
-    QStringList robot_list;
+	QStringList robot_list;
 
-    /* Add all selected robots' names to the string list */
-    for(int i = 0; i < robot_list_layout->count() - 1; i++)
-    {
-        robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
-        if(robot_widget->isSelected())
-            robot_list << robot_widget->getConfigPath();
-    }
+	/* Add all selected robots' names to the string list */
+	for(int i = 0; i < robot_list_layout->count() - 1; i++)
+	{
+		robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+		if(robot_widget->isSelected())
+			robot_list << robot_widget->getConfigPath();
+	}
 
-    return robot_list;
+	return robot_list;
 }
 
 void MainTab::insertRobot(struct RobotConfig *config, bool sorted)
 {
-    bool found = false;
-    int i;
+	bool found = false;
+	int i;
 
-    robot_widget = new RobotWidget;
-    robot_widget->setRobot(config);
-    connect(robot_widget, SIGNAL(singleRobotSelected(const QStringList &, bool)),
-            this, SIGNAL(loadRobots(const QStringList &, bool)));
+	robot_widget = new RobotWidget;
+	robot_widget->setRobot(config);
+	connect(robot_widget, SIGNAL(singleRobotSelected(const QStringList &, bool)),
+		this, SIGNAL(loadRobots(const QStringList &, bool)));
 
-    if(sorted)
-    {
-        // Find the correct position to insert the robot
-        for(i = 0; i < robot_list_layout->count() - 1 && !found; i++)
-            if(((RobotWidget *)robot_list_layout->itemAt(i)->widget())->getRobotName() > config->robotName)
-                found = true;
+	if(sorted)
+	{
+		// Find the correct position to insert the robot
+		for(i = 0; i < robot_list_layout->count() - 1 && !found; i++)
+			if(((RobotWidget *)robot_list_layout->itemAt(i)->widget())->getRobotName() > config->robotName)
+				found = true;
 
-        if(found) // Found a position to insert the robot
-            robot_list_layout->insertWidget(i - 1, robot_widget);
-        else // Insert robot at end of list
-            robot_list_layout->insertWidget(i, robot_widget);
-    }
-    else // Insert robot at end of list
-        robot_list_layout->insertWidget(robot_list_layout->count() - 1, robot_widget);
+		if(found) // Found a position to insert the robot
+			robot_list_layout->insertWidget(i - 1, robot_widget);
+		else // Insert robot at end of list
+			robot_list_layout->insertWidget(i, robot_widget);
+	}
+	else // Insert robot at end of list
+		robot_list_layout->insertWidget(robot_list_layout->count() - 1, robot_widget);
 }
 
 int MainTab::numSelected()
 {
-    int count = 0;
+	int count = 0;
 
-    /* Count the number of selected robots */
-    for(int i = 0; i < robot_list_layout->count() - 1; i++)
-    {
-        robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
-        if(robot_widget->isSelected())
-            count++;
-    }
+	/* Count the number of selected robots */
+	for(int i = 0; i < robot_list_layout->count() - 1; i++)
+	{
+		robot_widget = (RobotWidget *)robot_list_layout->itemAt(i)->widget();
+		if(robot_widget->isSelected())
+			count++;
+	}
 
-    return count;
+	return count;
 }
 
 
@@ -181,12 +181,12 @@ void MainTab::loadRobots()
 {
 	RobotConfig robot_config;
 
-    QDir dir(":/robots");
-    QStringList robot_list = dir.entryList(QDir::Files, QDir::Name);
+	QDir dir(":/robots");
+	QStringList robot_list = dir.entryList(QDir::Files, QDir::Name);
 
 	/* load the robots */
-    for(int i = 0; i < robot_list.size(); i++)
-    {
+	for(int i = 0; i < robot_list.size(); i++)
+	{
 		QFile curr_file(dir.filePath(robot_list.at(i)));
 		std::cout << "Loading robot from " << dir.filePath(robot_list.at(i)).toStdString() << std::endl;
 		if(curr_file.open(QIODevice::ReadOnly) && !robot_config.loadFrom(&curr_file))
@@ -199,6 +199,21 @@ void MainTab::loadRobots()
 		}
 		curr_file.close();
 	}
+}
+
+bool MainTab::loadRobot(const QString &path)
+{
+	RobotConfig robot_config;
+
+	// Load robot and add to list, sorted
+	QFile file(path);
+	std::cout << "Loading robot from " << path.toStdString() << std::endl;
+	if(file.open(QIODevice::ReadOnly) && !robot_config.loadFrom(&file))
+	{
+		insertRobot(&robot_config);
+		return true;
+	}
+	return false;
 }
 
 void MainTab::deselectAllRobots()

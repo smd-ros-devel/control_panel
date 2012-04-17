@@ -67,22 +67,24 @@ class MainTab : public QWidget
 	public:
 		MainTab(const QString &robots, QWidget *parent = 0);
 
-        /**
-         * \brief Returns the name of the first robot selected.
-         */
-        QString getFirstSelectedRobot();
+		/**
+		 * \brief Returns the name of the first robot selected.
+		 */
+		QString getFirstSelectedRobot();
 
-        /**
-         * \brief Returns the names of all robots that are selected.
-         */
-        QStringList getSelectedRobots();
+		/**
+		 * \brief Returns the names of all robots that are selected.
+		 */
+		QStringList getSelectedRobots();
 
-        void insertRobot(struct RobotConfig *config, bool sorted = true);
+		void insertRobot(struct RobotConfig *config, bool sorted = true);
 
-        /**
-         * \brief Returns the number of RobotWidgets that are selected.
-         */
-        int numSelected();
+		bool loadRobot(const QString &path);
+
+		/**
+		 * \brief Returns the number of RobotWidgets that are selected.
+		 */
+		int numSelected();
 
 	signals:
 		void loadRobots(const QStringList &robot_load_list, bool auto_connect);
@@ -90,7 +92,7 @@ class MainTab : public QWidget
 	public slots:
 		void deselectAllRobots();
 
-    private slots:
+	private slots:
 		void loadButtonPressed();
 
 	private:
@@ -98,7 +100,7 @@ class MainTab : public QWidget
 		void createWidgets();
 		void createLayout();
 
-        QString robot_directory;
+		QString robot_directory;
 
 		QVBoxLayout *main_tab_layout;
 

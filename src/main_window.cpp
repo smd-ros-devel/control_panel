@@ -94,6 +94,7 @@ void MainWindow::readSettings()
 	QSettings settings;
 	if(settings.value("maximized", false).toBool())
 		showMaximized();
+	robot_config_list = settings.value("robot_config_files").toStringList();
 }
 
 void MainWindow::writeSettings()
@@ -102,6 +103,7 @@ void MainWindow::writeSettings()
 
 	QSettings settings;
 	settings.setValue("maximized", isMaximized());
+	settings.setValue("robot_config_files", robot_config_list);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -470,7 +472,6 @@ void MainWindow::editRobotConfigFile()
 	}
 
 	main_tab->deselectAllRobots();
-	//setFocus(); // Focus is lost, so grab focus
 }
 
 void MainWindow::editTopics()
@@ -732,8 +733,8 @@ void MainWindow::newRobotConfigFile()
 	{
 		main_tab->insertRobot(new_robot_config);
 
-		/* @todo Store robot config path in a QStringList and set a flag so
-			 we know to save that path when the Control Panel closes. */
+		// Store path to save at closing
+		robot_config_list << new_robot_config->configFilePath;
 	}
 
 	delete new_robot_config;
@@ -743,11 +744,15 @@ void MainWindow::openRobotConfig()
 {
 	QString file_name = QFileDialog::getOpenFileName(this,
 		tr("Open Robot Configuration File"), QDir::homePath(),
-		tr("Images (*.xml)"));
+		tr("XML Files (*.xml)"));
 
 	if(!file_name.isEmpty())
 	{
-		/* @todo Add robot to main window */
+		if(main_tab->loadRobot(file_name))
+			robot_config_list << file_name; // Only store config if robot was successfuly loaded
+		else
+			QMessageBox::warning(this, "Robot Load Failed",
+				tr("Robot configuration file path <b>%1</b> could not be loaded").arg(file_name));
 	}
 }
 
