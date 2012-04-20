@@ -338,9 +338,10 @@ void NodeManager::joystickAxisChanged(int axis, double value)
 			control_node->setLinearZ(value);
 
 		// joints
-		else if((axis == 8 || axis == 9) && joint_trajectory_node)
+		else if((axis == 12 || axis == 13) && joint_trajectory_node)
 		{
-			if(axis == 8)
+			value = ( value - 1 ) / -2.0;
+			if(axis == 13)
 				l_shoulder = value;
 			else
 				r_shoulder = value;

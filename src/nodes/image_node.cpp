@@ -75,6 +75,23 @@ void ImageNode::imageCallback(const sensor_msgs::ImageConstPtr &msg)
 
 		emit frameReceived(buffer.rgbSwapped());
 	}
+/*
+	else if(msg->encoding == enc::MONO16)
+	{
+		cv_ptr = cv_bridge::toCvShare(msg, enc::MONO16);
+
+		cv::Mat depth_mat;
+		cv::Mat depth_f;
+
+		cv_ptr->image.convertTo(depth_mat, CV_8UC1, 255.0/2048.0);
+		cv::cvtColor(depth_mat, depth_f, CV_GRAY2BGR);
+
+		QImage buffer((unsigned char *)depth_f.data, depth_f.cols,
+			depth_f.rows, QImage::Format_RGB888);
+
+		emit frameReceived(buffer.rgbSwapped());
+	}
+*/
 	else if(msg->encoding == enc::TYPE_32FC1)
 	{
 		cv_ptr = cv_bridge::toCvShare(msg, enc::TYPE_32FC1);

@@ -18,6 +18,10 @@
       <name>Depth Image</name>
       <topicName>depth/image_raw</topicName>
     </camera>
+    <laser>
+      <name>LiDAR Scan</name>
+      <topicName>scan</topicName>
+    </laser>
   </sensors>
 
   <controls>
