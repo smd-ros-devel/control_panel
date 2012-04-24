@@ -50,42 +50,44 @@ QT_END_NAMESPACE
  */
 class CallServiceDialog : public QDialog
 {
-    public:
-        /**
-         * \brief Constructs the dialog with an empty QListWidget
-         *
-         * \param parent The parent widget.
-         */
-        CallServiceDialog(QWidget *parent = 0);
+	Q_OBJECT
 
-        /**
-         * \brief Constructs the dialog and populates the QListWidget with services passed in
-         *
-         * \param services The list of services to add to the QListWidget
-         * \param parent   The perent widget.
-         */
-        CallServiceDialog(const QStringList &services, QWidget *parent = 0);
+	public:
+		/**
+		 * \brief Constructs the dialog with an empty QListWidget
+		 *
+		 * \param parent The parent widget.
+		 */
+		CallServiceDialog(QWidget *parent = 0);
 
-        /**
-         * \brief Adds service to the ListWidget
-         *
-         * \param service Service to add to the list.
-         */
-        void addService(const QString &service) { service_list->addItem(service); }
+		/**
+		 * \brief Constructs the dialog and populates the QListWidget with services passed in
+		 *
+		 * \param services The list of services to add to the QListWidget
+		 * \param parent   The perent widget.
+		 */
+		CallServiceDialog(const QStringList &services, QWidget *parent = 0);
 
-        /**
-         * \brief Returns the service that was selected by the user, or a null QString if no service was selected.
-         */
-        QString getSelectedService() const;
+		/**
+		 * \brief Adds service to the ListWidget
+		 *
+		 * \param service Service to add to the list.
+		 */
+		void addService(const QString &service) { service_list->addItem(service); }
 
-    private:
-        /**
-         * \brief Creates the dialog's widgets and layout
-         */
-        void createDialog();
+		/**
+		 * \brief Returns the service that was selected by the user, or a null QString if no service was selected.
+		 */
+		QString getSelectedService() const;
 
-        QListWidget *service_list;
-        QDialogButtonBox *button_box;
+	private:
+		/**
+		 * \brief Creates the dialog's widgets and layout
+		 */
+		void createDialog();
+
+		QListWidget *service_list;
+		QDialogButtonBox *button_box;
 };
 
 #endif // CONTROL_PANEL_CALL_SERVICE_DIALOG_H

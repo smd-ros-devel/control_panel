@@ -37,42 +37,42 @@
 
 CallServiceDialog::CallServiceDialog(QWidget *parent) : QDialog(parent)
 {
-    createDialog();
+	createDialog();
 }
 
 CallServiceDialog::CallServiceDialog(const QStringList &services,
-    QWidget *parent) : QDialog(parent)
+	QWidget *parent) : QDialog(parent)
 {
-    createDialog();
+	createDialog();
 
-    service_list->addItems(services);
+	service_list->addItems(services);
 }
 
 QString CallServiceDialog::getSelectedService() const
 {
-    // Return selected service, or a null QString if no service is selected
-    if(service_list->currentItem() != 0)
-        return service_list->currentItem()->text();
-    return QString();
+	// Return selected service, or a null QString if no service is selected
+	if(service_list->currentItem() != 0)
+		return service_list->currentItem()->text();
+	return QString();
 }
 
 void CallServiceDialog::createDialog()
 {
-    service_list = new QListWidget;
-    service_list->setSortingEnabled(true);
-    connect(service_list, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
-            this, SLOT(accept()));
+	service_list = new QListWidget;
+	service_list->setSortingEnabled(true);
+	connect(service_list, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
+		this, SLOT(accept()));
 
-    button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
-                                      QDialogButtonBox::Ok);
-    connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
+	button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
+		QDialogButtonBox::Ok);
+	connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
     
-    // Create dialog layout
-    QVBoxLayout *dialog_layout = new QVBoxLayout;
-    dialog_layout->addWidget(service_list);
-    dialog_layout->addWidget(button_box);
-    setLayout(dialog_layout);
+	// Create dialog layout
+	QVBoxLayout *dialog_layout = new QVBoxLayout;
+	dialog_layout->addWidget(service_list);
+	dialog_layout->addWidget(button_box);
+	setLayout(dialog_layout);
 
-    setWindowTitle(tr("Call Service"));
+	setWindowTitle(tr("Call Service"));
 }
