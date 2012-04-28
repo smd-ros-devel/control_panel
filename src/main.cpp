@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * Copyright (c) 2011, 2012 SDSM&T CSR.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,24 +31,22 @@
  * \file   main.cpp
  * \date   June 2011
  * \author Matt Richard
- * \brief  Control Panel execution point.
+ * \brief  Shared Robotics Systems (SRS) Control Panel execution point.
  */
 #include <QApplication>
 #include "control_panel/main_window.h"
-#include <stdio.h>
 
 
 int main(int argc, char **argv)
 {
-	// Create Qt application
-	printf("Initializing SRS Control Panel Application.\n");
-    QApplication app(argc, argv);
-    app.setOrganizationName("sdsmt-rias");
-    app.setApplicationName("srs-control-panel");
+	std::cout << "Starting SRS Control Panel Application..." << std::endl;
 
-	// Create the main window
-    MainWindow main_window(argc, argv);
-    main_window.show();
+	QApplication app(argc, argv);
+	app.setOrganizationName("sdsmt-rias");
+	app.setApplicationName("srs-control-panel");
 
-    return app.exec();
+	MainWindow main_window(argc, argv);
+	main_window.show();
+
+	return app.exec();
 }
