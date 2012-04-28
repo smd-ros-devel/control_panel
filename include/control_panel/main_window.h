@@ -107,7 +107,6 @@ class MainWindow : public QMainWindow
 		void closeTab(int index);
 		void editRobotConfigFile();
 		void removeRobotConfigFiles();
-		void editTopics();
 		void setMaxVelocity();
 		void fullScreenChanged(bool checked);
 		void help();
@@ -162,7 +161,6 @@ class MainWindow : public QMainWindow
 		QAction *exit_action;
 		QAction *configuration_file_action;
 		QAction *remove_config_action;
-		QAction *topics_action;
 		QAction *set_velocity_action;
 		QAction *gestures_action;
 		QAction *show_menu_bar_action;

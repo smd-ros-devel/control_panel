@@ -207,14 +207,11 @@ void MainWindow::createActions()
 	connect(remove_config_action, SIGNAL(triggered()),
 		this, SLOT(removeRobotConfigFiles()));
 
-	topics_action = new QAction(tr("&Topic Names"), this);
-	topics_action->setEnabled(false);
-	//connect(topics_action, SIGNAL(triggered()), this, SLOT(editTopicNames()));
-
 	set_velocity_action = new QAction(tr("Set &Velocity Scale"), this);
 	set_velocity_action->setEnabled(false);
 	set_velocity_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
-	connect(set_velocity_action, SIGNAL(triggered()), SLOT(setMaxVelocity()));
+	connect(set_velocity_action, SIGNAL(triggered()),
+		this, SLOT(setMaxVelocity()));
 
 
 	/**
@@ -354,7 +351,6 @@ void MainWindow::createMenus()
 	edit_menu->addAction(configuration_file_action);
 	edit_menu->addAction(remove_config_action);
 	edit_menu->addSeparator();
-	//edit_menu->addAction(topics_action);
 	edit_menu->addAction(set_velocity_action);
 
 	// Create view menu
@@ -465,12 +461,6 @@ void MainWindow::removeRobotConfigFiles()
 		if(index != -1)
 			robot_config_list.removeAt(index);
 	}
-}
-
-void MainWindow::editTopics()
-{
-	/* @todo Create a dialog allowing the user to edit the topic names over
-		 which each node is publishing or subscribing to for a connected robot. */
 }
 
 void MainWindow::setMaxVelocity()
