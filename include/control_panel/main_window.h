@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * Copyright (c) 2011, 2012 SDSM&T CSR.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ QT_END_NAMESPACE
 
 /**
  * \class MainWindow
- * \brief Control Panel main window. This manages the menus and tabs.
+ * \brief SRS Control Panel main window. MainWindow manages the menus, main tab, and all robot tabs.
  */
 class MainWindow : public QMainWindow
 {
@@ -67,31 +67,43 @@ class MainWindow : public QMainWindow
 		/**
 		 * \brief Constructor. Initializes QtNode and sets up the menus and tab widget.
 		 *
-		 * \param argc Command line argument count to be passed into QtNode
-		 * \param argv Command line argument vector to be passed into QtNode
+		 * \param argc Command line argument count (to be passed into QtNode).
+		 * \param argv Command line argument vector (to be passed into QtNode).
 		 */
 		MainWindow(int argc, char **argv);
 
 		/**
-		 * \brief Reads the program's saved settings
+		 * \brief Uses QSettings to read the Control Panel's saved settings.
 		 */
 		void readSettings();
 
 		/**
-		 * \brief Writes the program's settings when the program is closing.
+		 * \brief Uses QSettings to write the Control Panel's settings just before exiting.
 		 */
 		void writeSettings();
 
 	protected:
+		/**
+		 * \brief Overloaded from QMainWindow.
+		 *
+		 * Checks if any robots are currently connected to the Control Panel.
+		 * If there are any robots connect, the user is warned about the connected
+		 * robots and is prompted to verify that they want to disconnect from the
+		 * robots and close the program.
+		 */
 		void closeEvent(QCloseEvent *event);
-		QMenu *createPopupMenu();
+
+		/**
+		 * \brief Overloaded from QMainWindow.
+		 *
+		 * Creates a popup menu when the user right clicks inside the window.
+		 */
 		void contextMenuEvent(QContextMenuEvent *event);
 
 	private slots:
 		void about();
 		void callRobotService();
 		void callService();
-		//void closeCurrentTab(); // SLOT for keyboard shortcut to close tab action
 		void closeTab(int index);
 		void editRobotConfigFile();
 		void removeRobotConfigFiles();
@@ -118,7 +130,7 @@ class MainWindow : public QMainWindow
 		void startDynamicReconfigure();
 
 	private:
-		void createMenuActions();
+		void createActions();
 		void createMenus();
 		void createTab();
 
@@ -175,9 +187,6 @@ class MainWindow : public QMainWindow
 		QAction *dynamic_reconfigure_action;
 		QAction *help_action;
 		QAction *about_action;
-
-		// Keyboard shortcut actions
-		//QAction *close_tab_action;
 
 		QActionGroup *robot_mode_actiongroup;
 		QActionGroup *robot_rc_actiongroup;

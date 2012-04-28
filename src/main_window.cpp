@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * Copyright (c) 2011, 2012 SDSM&T CSR.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,22 +40,22 @@
 
 MainWindow::MainWindow(int argc, char **argv)
 {
-	/* Initialize the control panel ROS node */
+	// Initialize the control panel ROS node
 	qt_node = new QtNode(argc, argv, "control_panel");
 	if(!qt_node->init())
-	{
 		exit(1); // Could not connect to the ROS master, so exit.
-	}
 
-	// Load tab connection status icons
+
+	// Connection status icons that are displayed on a robot's tab
 	robot_disconnected_icon.addFile(":/images/status_lights/status_light_grey.png");
 	robot_connecting_icon.addFile(":/images/status_lights/status_light_yellow.png");
 	robot_connected_icon.addFile(":/images/status_lights/status_light_green.png");
 
 
-	// Create the menu
-	createMenuActions();
+	// Create actions and menus
+	createActions();
 	createMenus();
+
 
 	// Create the Tab Widget
 	tab_widget = new QTabWidget(this);
@@ -64,12 +64,6 @@ MainWindow::MainWindow(int argc, char **argv)
 	// Create and insert the Main Tab
 	main_tab = new MainTab(robot_directory);
 	tab_widget->addTab(main_tab, "Main");
-
-	// Keyboard shortcut actions
-	/* This action doesn't work because robot_tab uses the w key */
-	//close_tab_action = new QAction(tab_widget);
-	//close_tab_action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
-	//connect(close_tab_action, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
 
 
 	// Connections
@@ -80,6 +74,7 @@ MainWindow::MainWindow(int argc, char **argv)
 	connect(tab_widget, SIGNAL(tabCloseRequested(int)),
 		this, SLOT(closeTab(int)));
 
+
 	// Main window settings
 	readSettings();
 	setCentralWidget(tab_widget);
@@ -89,11 +84,13 @@ MainWindow::MainWindow(int argc, char **argv)
 
 void MainWindow::readSettings()
 {
-	printf("Reading settings\n");
+	std::cout << "Reading Control Panel's settings" << std::endl;
 
 	QSettings settings;
 	if(settings.value("maximized", false).toBool())
 		showMaximized();
+
+	// Load saved robot config paths
 	robot_config_list = settings.value("robot_config_files").toStringList();
 	for(int i = 0; i < robot_config_list.count(); i++)
 		main_tab->loadRobot(robot_config_list.at(i));
@@ -101,7 +98,7 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
-	printf("Saving settings\n");
+	std::cout << "Saving Control Panel's settings" << std::endl;
 
 	QSettings settings;
 	settings.setValue("maximized", isMaximized());
@@ -140,8 +137,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	}
 
 
-	printf("Closing SRS Control Panel\n");
-	printf("Disconnecting from all robots\n");
+	std::cout << "Closing SRS Control Panel..." << std::endl;
+	std::cout << "Disconnecting from all robots" << std::endl;
+
 
 	// Disconnect from all connected robots
 	while(tab_widget->count() > 1)
@@ -157,44 +155,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 	writeSettings();
 
-	event->accept();
+	//event->accept();
 }
 
-/******************************************************************************
- * Function:    contextMenuEvent
- * Author:      Matt Richard
- * Parameters:  QContextMenuEvent *event
- * Returns:     void
- * Description: This is an overloaded function from QMainWindow. It creates
- *              the menu when the user right clicks inside the window.
- *****************************************************************************/
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
-	QMenu *menu = createPopupMenu();
+	QMenu *menu = new QMenu;
+	menu->addAction(show_menu_bar_action);
+	menu->addAction(full_screen_action);
 
 	menu->exec(event->globalPos());
-}
-
-/******************************************************************************
- * Function:
- * Author:
- * Parameters:
- * Returns:
- * Description: This is an overloaded function from QMainWindow. It populates
- *              a QMenu with the items to be displayed when the user right
- *              clicks inside the window.
- *****************************************************************************/
-QMenu *MainWindow::createPopupMenu()
-{
-	QMenu *popup_menu = new QMenu;
-
-	popup_menu->addAction(widget_in_window_action);
-	popup_menu->addAction(tab_in_window_action);
-	popup_menu->addSeparator();
-	popup_menu->addAction(show_menu_bar_action);
-	popup_menu->addAction(full_screen_action);
-
-	return popup_menu;
 }
 
 /******************************************************************************
@@ -205,7 +175,7 @@ QMenu *MainWindow::createPopupMenu()
  * Description: Creates the actions for each menu item and connects the
  *              menu actions' signals to appropriate slots.
  *****************************************************************************/
-void MainWindow::createMenuActions()
+void MainWindow::createActions()
 {
 	/**
 	** File Menu Actions

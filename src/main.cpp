@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 	std::cout << "Starting SRS Control Panel Application..." << std::endl;
 
 	QApplication app(argc, argv);
-	app.setOrganizationName("sdsmt-rias");
+	app.setOrganizationName("sdsmt-csr");
 	app.setApplicationName("srs-control-panel");
 
 	MainWindow main_window(argc, argv);
