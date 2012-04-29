@@ -203,7 +203,7 @@ void JointStateDisplay::updateJointStateDisplay(const QStringList &names,
         if(index != -1)
         {
             if(use_position)
-                ((QLabel *)position_labels->at(index))->setText(QString("%1").arg(pos[index], 6, 'f', 1) + QString(" m"));
+                ((QLabel *)position_labels->at(index))->setText(QString("%1").arg(pos[index], 6, 'f', 1) + QString(" rad"));
 
             if(use_velocity)
                 ((QLabel *)velocity_labels->at(index))->setText(QString("%1").arg(vel[index], 6, 'f', 1) + QString(" rad/s"));
