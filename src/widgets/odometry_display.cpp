@@ -42,15 +42,15 @@ OdometryDisplay::OdometryDisplay(QWidget *parent) : QWidget(parent)
     use_rpy = true;
     use_lin_vel = true;
     use_ang_vel = true;
-    use_heading_ind = true;
     use_attitude_ind = true;
+    use_heading_ind = true;
 
     createWidget();
 }
 
 OdometryDisplay::OdometryDisplay(const QString &name, bool show_pos, bool show_rpy,
-    bool show_lin_vel, bool show_ang_vel, bool show_heading,
-    bool show_attitude, QWidget *parent)
+    bool show_lin_vel, bool show_ang_vel, bool show_attitude,
+    bool show_heading, QWidget *parent)
     : QWidget(parent)
 {
     if(name == "")
@@ -62,8 +62,8 @@ OdometryDisplay::OdometryDisplay(const QString &name, bool show_pos, bool show_r
     use_rpy = show_rpy;
     use_lin_vel = show_lin_vel;
     use_ang_vel = show_ang_vel;
-    use_heading_ind = show_heading;
     use_attitude_ind = show_attitude;
+    use_heading_ind = show_heading;
 
     createWidget();
 }

@@ -62,8 +62,8 @@ class OdometryDisplay : public QWidget
         OdometryDisplay(QWidget *parent = 0);
         OdometryDisplay(const QString &name, bool show_pos = true,
             bool show_rpy = true, bool show_lin_vel = true,
-            bool show_ang_vel = true, bool show_heading = true,
-            bool show_attitude = true, QWidget *parent = 0);
+            bool show_ang_vel = true, bool show_attitude = true,
+            bool show_heading = true, QWidget *parent = 0);
         void zeroValues();
 
     public slots:

@@ -67,8 +67,8 @@ class DataPane : public QWidget
             bool lon = true, bool alt = false);
         ImuDisplay *addImuDisplay(const QString &name, bool roll = true,
             bool pitch = true, bool yaw = true, bool ang_vel = false,
-            bool lin_accel = false, bool heading_graphic = true,
-            bool attitude_graphic = true);
+            bool lin_accel = false, bool attitude_graphic = true,
+            bool heading_graphic = true);
         JointStateDisplay *addJointStateDisplay(const QString &widget_name,
             const QStringList &names, const QStringList &display_names,
             bool show_pos = true, bool show_vel = true, bool show_eff = false);

@@ -2,20 +2,50 @@
   <robotName>Armbot 2</robotName>
   <system>UGV</system>
   <driveSystem>2-Wheeled Differential Drive</driveSystem>
-  <imageFile>armbot.jpg</imageFile>
+  <imageFile>:/images/armbot.jpg</imageFile>
   <nameSpace>armbot2</nameSpace>
-
   <sensors>
     <imu>
       <name>Imu</name>
       <topicName>imu/data</topicName>
-      <roll />
-      <pitch />
-      <yaw />
-      <linearAcceleration />
+      <roll/>
+      <pitch/>
+      <yaw/>
+      <linearAcceleration/>
     </imu>
   </sensors>
-
+  <joints>
+    <topicName>joint_states</topicName>
+    <position/>
+    <velocity/>
+    <joint>
+      <name>shoulder_to_neck1</name>
+      <displayName>Head</displayName>
+    </joint>
+    <joint>
+      <name>base_to_right_wheel</name>
+      <displayName>Right Wheel</displayName>
+    </joint>
+    <joint>
+      <name>base_to_left_wheel</name>
+      <displayName>Left Wheel</displayName>
+    </joint>
+  </joints>
+  <processedData>
+    <map>
+      <name>GMapping</name>
+      <topicName>map</topicName>
+    </map>
+    <odometry>
+      <name>Raw Encoder</name>
+      <topicName>odom</topicName>
+      <position/>
+      <orientation/>
+      <linearVelocity/>
+      <angularVelocity/>
+      <hideAttitude/>
+    </odometry>
+  </processedData>
   <controls>
     <drive>
       <topicName>cmd_vel</topicName>

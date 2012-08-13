@@ -205,8 +205,8 @@ void DataPane::connectionStatusChanged(int new_status)
 
         // Reset graphical displays
         //battery_display->setBatteryLevel(0);
-        //heading_indicator->setYaw(0);
         //attitude_indicator->setAttitude(0, 0);
+        //heading_indicator->setYaw(0);
     }
     else
         printf("ERROR -- DataPane class received an unknown new status '%d'.\n", new_status);
@@ -232,11 +232,11 @@ GpsDisplay *DataPane::addGpsDisplay(const QString &name, bool lat, bool lon,
 }
 
 ImuDisplay *DataPane::addImuDisplay(const QString &name, bool roll,
-    bool pitch, bool yaw, bool ang_vel, bool lin_accel, bool heading_graphic,
-    bool attitude_graphic)
+    bool pitch, bool yaw, bool ang_vel, bool lin_accel, bool attitude_graphic,
+    bool heading_graphic)
 {
     imu_display = new ImuDisplay(name, roll, pitch, yaw, ang_vel, lin_accel,
-        heading_graphic, attitude_graphic);
+        attitude_graphic, heading_graphic);
 
     data_pane_layout->addWidget(imu_display);
 
@@ -260,11 +260,11 @@ JointStateDisplay *DataPane::addJointStateDisplay(const QString &widget_name,
 }
 
 OdometryDisplay *DataPane::addOdometryDisplay(const QString &name, bool pos,
-    bool rpy, bool lin_vel, bool ang_vel, bool heading_graphic,
-    bool attitude_graphic)
+    bool rpy, bool lin_vel, bool ang_vel, bool attitude_graphic,
+    bool heading_graphic)
 {
     odom_display = new OdometryDisplay(name, pos, rpy, lin_vel, ang_vel,
-        heading_graphic, attitude_graphic);
+        attitude_graphic, heading_graphic);
 
     data_pane_layout->addWidget(odom_display);
 

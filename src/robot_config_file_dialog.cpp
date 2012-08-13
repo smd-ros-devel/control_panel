@@ -907,7 +907,7 @@ void ProcessedDataTab::addProcessedData()
 
             // Set and add attitude indicator state
             child_item = new QTreeWidgetItem(QStringList(tr("Show Attitude Indicator")));
-            child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowAttitudeChecked()));\
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowAttitudeChecked()));
             item->addChild(child_item);
 
             // Set and add heading indicator state
