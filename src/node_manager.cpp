@@ -39,7 +39,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	camera_node(NULL), image_node(NULL), control_node(NULL), command_node(NULL),
 	diagnostic_node(NULL), disparity_image_node(NULL), gps_node(NULL), imu_node(NULL),
 	joint_state_node(NULL), joint_trajectory_node(NULL), laser_node(NULL),
-	map_node(NULL), odometry_node(NULL), range_node(NULL)
+	map_node(NULL), odometry_node(NULL), pose_node(NULL), range_node(NULL)
 {
 	connected = false;
 	control_node_enabled = false;
@@ -48,6 +48,7 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 	gps_node_list = new QList<GpsNode *>;
 	imu_node_list = new QList<ImuNode *>;
 	odom_node_list = new QList<OdometryNode *>;
+	pose_node_list = new QList<PoseNode *>;
 
 	// Create the node handle and set the local callback queue
 	nh_ptr = new ros::NodeHandle(robot_config->nameSpace.toStdString());
@@ -121,6 +122,8 @@ void NodeManager::run()
 		((ImuNode *)imu_node_list->at(i))->subscribe();
 	for(i = 0; i < odom_node_list->count(); i++)
 		((OdometryNode *)odom_node_list->at(i))->subscribe();
+	for(i = 0; i < pose_node_list->count(); i++)
+		((PoseNode *)pose_node_list->at(i))->subscribe();
 	if(joint_state_node)
 		joint_state_node->subscribe();
 	if(odometry_node)
@@ -302,6 +305,16 @@ OdometryNode *NodeManager::addOdometryNode(const std::string &topic)
 	odom_node_list->append(odometry_node);
 
 	return odometry_node;
+}
+
+PoseNode *NodeManager::addPoseNode(const std::string &topic, bool isStamped, bool hasCovariance)
+{
+	pose_node = new PoseNode(nh_ptr, isStamped, hasCovariance);
+	pose_node->setTopic(topic);
+
+	pose_node_list->append(pose_node);
+
+	return pose_node;
 }
 
 /*

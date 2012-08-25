@@ -12,6 +12,8 @@
       <pitch/>
       <yaw/>
       <linearAcceleration/>
+      <hideAttitude/>
+      <hideHeading/>
     </imu>
   </sensors>
   <joints>
@@ -44,7 +46,16 @@
       <linearVelocity/>
       <angularVelocity/>
       <hideAttitude/>
+      <hideHeading/>
     </odometry>
+    <pose>
+      <name>EKF Pose</name>
+      <topicName>robot_pose_ekf/odom_combined</topicName>
+      <position/>
+      <orientation/>
+      <isStamped/>
+      <hasCovariance/>
+    </pose>
   </processedData>
   <controls>
     <drive>

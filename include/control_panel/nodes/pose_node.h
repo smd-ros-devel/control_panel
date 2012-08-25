@@ -28,71 +28,53 @@
 
 
 /**
- * \file   globals.h
- * \date   July 2011
+ * \file   pose_node.h
+ * \date   Aug 12, 2011
  * \author Matt Richard
- * \brief  Global constants used by many classes.
  */
-#ifndef CONTROL_PANEL_GLOBALS_H
-#define CONTROL_PANEL_GLOBALS_H
+#ifndef CONTROL_PANEL_POSE_NODE_H
+#define CONTROL_PANEL_POSE_NODE_H
 
-#define PI 3.14159265358979323846
-
+#include <QObject>
+#include <QVector3D>
+#include <QQuaternion>
+#include "ros/ros.h"
+#include "geometry_msgs/Pose.h"
+#include "geometry_msgs/PoseStamped.h"
+#include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <string>
+#include "control_panel/globals.h"
 
-
-namespace Globals
+/**
+ * \class PoseNode
+ * \brief ROS node for receving a robot's pose data
+ */
+class PoseNode : public QObject
 {
+	Q_OBJECT
 
-const double TWO_PI       = (2.0 * PI);
-const double PI_OVER_TWO  = (PI / 2.0);
-const double PI_OVER_FOUR = (PI / 4.0);
+	public:
+		PoseNode(ros::NodeHandle *nh_ptr, bool isStamped = false, bool hasCovaraince = false);
+		void subscribe();
+		void unsubscribe();
+		void processPose(const geometry_msgs::Pose &msg);
+		void poseCallback(const geometry_msgs::PoseConstPtr &msg);
+		void poseStampedCallback(const geometry_msgs::PoseStampedConstPtr &msg);
+		void poseWithCovarianceStampedCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr &msg);
+		void setTopic(const std::string &topic) { topic_name = topic; }
+		std::string getTopic() const { return topic_name; }
 
-const double RAD_TO_DEG = (180.0 / PI);
-const double DEG_TO_RAG = (PI / 180.0);
+	signals:
+		void poseDataReceived(const QVector3D &position,
+			const QQuaternion &orientation, const QVector3D &linear_velocity,
+			const QVector3D &angular_velocity);
 
-const char DegreesSymbol = 176;
-
-
-// Common topic names
-const std::string DEFAULT_CAMERA_TOPIC     = "camera/image_raw";
-const std::string DEFAULT_CONTROL_TOPIC    = "cmd_vel";
-const std::string DEFAULT_DIAGNOSTIC_TOPIC = "diagnostics";
-const std::string DEFAULT_GPS_TOPIC        = "gps";
-const std::string DEFAULT_IMU_TOPIC        = "imu/data";
-const std::string DEFAULT_JOINT_TOPIC      = "joint_states";
-const std::string DEFAULT_JOYSTICK_TOPIC   = "joy";
-const std::string DEFAULT_LASER_TOPIC      = "scan";
-const std::string DEFAULT_MAP_TOPIC        = "map";
-const std::string DEFAULT_ODOMETRY_TOPIC   = "odom";
-const std::string DEFAULT_POSE_TOPIC       = "robot_pose_ekf/odom_combined";
-const std::string DEFAULT_RANGE_TOPIC      = "sonar";
-
-
-// Connection status with a robot
-enum ConnectionStatus
-{
-	Disconnected,
-	Connecting,
-	Connected
+	private:
+		std::string topic_name;
+		ros::NodeHandle *nh;
+		ros::Subscriber pose_sub;
+		bool isStamped;
+		bool hasCovariance;
 };
 
-
-enum RCMode
-{
-    Disabled,
-    Keyboard,
-    Joystick
-};
-
-// Status of a component received from the diagnostic node
-enum DiagnosticStatus
-{
-    Ok,
-    Warn,
-    Error
-};
-
-} // end namespace
-
-#endif // CONTROL_PANEL_GLOBALS_H
+#endif // CONTROL_PANEL_POSE_NODE_H

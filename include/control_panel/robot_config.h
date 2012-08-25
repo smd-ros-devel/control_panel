@@ -301,6 +301,39 @@ struct RobotOdometry
 };
 
 /**
+ * \struct RobotPose
+ * \brief  @todo Fill this out
+ */
+struct RobotPose
+{
+	public:
+		/* stored data */
+		QString name;
+		QString topicName;
+		bool position;
+		bool orientation;
+		bool hideAttitude;
+		bool hideHeading;
+		bool hideLabels;
+		bool isStamped;
+		bool hasCovariance;
+
+		/**
+		 * Constructor. Initializes structure members
+		 */
+		RobotPose()
+			: name("Unknown Pose"),
+			  topicName("unknown_pose"),
+			  position(false),
+			  orientation(false),
+			  hideAttitude(false),
+			  hideHeading(false),
+			  hideLabels(false),
+			  isStamped(false),
+			  hasCovariance(false) { }
+};
+
+/**
  * \struct RobotProcessedData
  * \brief  @todo Fill this out.
  */
@@ -312,6 +345,7 @@ struct RobotProcessedData
 		std::vector <struct RobotDisparityImage> disparity_images;
 		std::vector <struct RobotMap> maps;
 		std::vector <struct RobotOdometry> odometry;
+		std::vector <struct RobotPose> pose;
 
 		/**
 		 * \brief Sets all struct members to their defaults
@@ -322,6 +356,7 @@ struct RobotProcessedData
 			disparity_images.clear();
 			maps.clear();
 			odometry.clear();
+			pose.clear();
 		}
 };
 
@@ -561,6 +596,8 @@ struct RobotConfig : public QObject
 	QDomElement getMap(QDomDocument &, struct RobotMap &);
         void addOdometry(QDomElement);
 	QDomElement getOdometry(QDomDocument &, struct RobotOdometry &);
+        void addPose(QDomElement);
+	QDomElement getPose(QDomDocument &, struct RobotPose &);
         void addTemperature(QDomElement);
 	QDomElement getTemperature(QDomDocument &, struct RobotTemperature &);
         void addVoltage(QDomElement);

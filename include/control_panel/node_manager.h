@@ -54,6 +54,7 @@
 #include "nodes/laser_node.h"
 #include "nodes/map_node.h"
 #include "nodes/odometry_node.h"
+#include "nodes/pose_node.h"
 #include "nodes/range_node.h"
 #include "globals.h"
 #include "robot_config.h"
@@ -77,6 +78,7 @@ class NodeManager : public QThread
 		GpsNode *addGpsNode(const std::string &topic = Globals::DEFAULT_GPS_TOPIC);
 		ImuNode *addImuNode(const std::string &topic = Globals::DEFAULT_IMU_TOPIC);
 		OdometryNode *addOdometryNode(const std::string &topic = Globals::DEFAULT_ODOMETRY_TOPIC);
+		PoseNode *addPoseNode(const std::string &topic = Globals::DEFAULT_POSE_TOPIC, bool isStamped = false, bool hasCovariance = false);
 
 		// ROS Nodes
 		ImageNode *camera_node; // For raw images (e.g., camera/depth image feeds)
@@ -93,6 +95,7 @@ class NodeManager : public QThread
 		LaserNode *laser_node;
 		MapNode *map_node;
 		OdometryNode *odometry_node;
+		PoseNode *pose_node;
 		RangeNode *range_node;
 
 	public slots:
@@ -116,6 +119,7 @@ class NodeManager : public QThread
 		QList<ImuNode *> *imu_node_list;
 		QList<GpsNode *> *gps_node_list;
 		QList<OdometryNode *> *odom_node_list;
+		QList<PoseNode *> *pose_node_list;
 };
 
 #endif // CONTROL_PANEL_NODE_MANAGER_H

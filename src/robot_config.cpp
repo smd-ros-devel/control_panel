@@ -655,6 +655,8 @@ void RobotConfig::processProcessedData(QDomElement e)
             addMap(e);
         else if(e.tagName() == "odometry")
             addOdometry(e);
+        else if(e.tagName() == "pose")
+            addPose(e);
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
@@ -673,6 +675,8 @@ QDomElement RobotConfig::getProcessedData(QDomDocument &doc)
 		root.appendChild(getMap(doc, processedData.maps[i]));
 	for(unsigned int i = 0; i < processedData.odometry.size(); i++)
 		root.appendChild(getOdometry(doc, processedData.odometry[i]));
+	for(unsigned int i = 0; i < processedData.pose.size(); i++)
+		root.appendChild(getPose(doc, processedData.pose[i]));
 
 	return root;
 }
@@ -861,6 +865,94 @@ QDomElement RobotConfig::getOdometry(QDomDocument &doc, struct RobotOdometry &od
 	if(odometry.hideLabels)
 	{
 		e = doc.createElement("hideLabels");
+		root.appendChild(e);
+	}
+
+	return root;
+}
+
+void RobotConfig::addPose(QDomElement e)
+{
+    struct RobotPose new_pose;
+    QDomNode n = e.firstChild();
+    while(!n.isNull())
+    {
+        e = n.toElement();
+        if(e.tagName() == "name")
+            new_pose.name = e.text();
+        else if(e.tagName() == "topicName")
+            new_pose.topicName = e.text();
+        else if(e.tagName() == "position")
+            new_pose.position = true;
+        else if(e.tagName() == "orientation")
+            new_pose.orientation = true;
+        else if(e.tagName() == "hideAttitude")
+            new_pose.hideAttitude = true;
+        else if(e.tagName() == "hideHeading")
+            new_pose.hideHeading = true;
+        else if(e.tagName() == "hideLabels")
+            new_pose.hideLabels = true;
+        else if(e.tagName() == "isStamped")
+            new_pose.isStamped = true;
+        else if(e.tagName() == "hasCovariance")
+	{
+            new_pose.isStamped = true;
+            new_pose.hasCovariance = true;
+	}
+        else
+            std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
+        n = n.nextSibling();
+    }
+    processedData.pose.insert(processedData.pose.begin(), new_pose);
+}
+
+QDomElement RobotConfig::getPose(QDomDocument &doc, struct RobotPose &pose)
+{
+	QDomElement root = doc.createElement("pose");
+
+	QDomElement e = doc.createElement("name");
+	QDomText txt = doc.createTextNode(pose.name);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	e = doc.createElement("topicName");
+	txt = doc.createTextNode(pose.topicName);
+	e.appendChild(txt);
+	root.appendChild(e);
+
+	if(pose.position)
+	{
+		e = doc.createElement("position");
+		root.appendChild(e);
+	}
+	if(pose.orientation)
+	{
+		e = doc.createElement("orientation");
+		root.appendChild(e);
+	}
+	if(pose.hideAttitude)
+	{
+		e = doc.createElement("hideAttitude");
+		root.appendChild(e);
+	}
+	if(pose.hideHeading)
+	{
+		e = doc.createElement("hideHeading");
+		root.appendChild(e);
+	}
+	if(pose.hideLabels)
+	{
+		e = doc.createElement("hideLabels");
+		root.appendChild(e);
+	}
+	if(pose.isStamped || pose.hasCovariance)
+	{
+		e = doc.createElement("isStamped");
+		root.appendChild(e);
+	}
+	if(pose.hasCovariance)
+	{
+		e = doc.createElement("hasCovariance");
 		root.appendChild(e);
 	}
 

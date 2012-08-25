@@ -229,4 +229,49 @@ class OdometryDialog : public QDialog
         QDialogButtonBox *button_box;
 };
 
+/**
+ * \class PoseDialog
+ * \brief Dialog for adding/editing a pose component for a robot config file
+ */
+class PoseDialog : public QDialog
+{
+    Q_OBJECT
+
+    public:
+        PoseDialog(QWidget *parent = 0);
+        QString getName() const { return name_lineedit->text(); }
+        QString getTopicName() const { return topic_name_lineedit->text(); }
+        bool isPositionChecked() const { return pos_checkbox->isChecked(); }
+        bool isOrientationChecked() const { return ori_checkbox->isChecked(); }
+        bool isShowAttitudeChecked() const { return show_att_checkbox->isChecked(); }
+        bool isShowHeadingChecked() const { return show_heading_checkbox->isChecked(); }
+        bool isShowLabelsChecked() const { return show_labels_checkbox->isChecked(); }
+        bool isIsStampedChecked() const { return is_stamped_checkbox->isChecked(); }
+        bool isHasCovarianceChecked() const { return has_covariance_checkbox->isChecked(); }
+        void setName(const QString &name) { name_lineedit->setText(name); }
+        void setTopicName(const QString &name) { topic_name_lineedit->setText(name); }
+        void setPositionChecked(bool checked) { pos_checkbox->setChecked(checked); }
+        void setOrientationChecked(bool checked) { ori_checkbox->setChecked(checked); }
+        void setShowAttitudeChecked(bool checked) { show_att_checkbox->setChecked(checked); }
+        void setShowHeadingChecked(bool checked) { show_heading_checkbox->setChecked(checked); }
+        void setShowLabelsChecked(bool checked) { show_labels_checkbox->setChecked(checked); }
+        void setIsStampedChecked(bool checked) { if(!checked) has_covariance_checkbox->setChecked(checked); is_stamped_checkbox->setChecked(checked); }
+        void setHasCovarianceChecked(bool checked) { if(checked) is_stamped_checkbox->setChecked(checked); has_covariance_checkbox->setChecked(checked); }
+
+    private:
+        void createDialog();
+
+        QLineEdit *name_lineedit;
+        QLineEdit *topic_name_lineedit;
+        QCheckBox *pos_checkbox;
+        QCheckBox *ori_checkbox;
+        QCheckBox *show_att_checkbox;
+        QCheckBox *show_heading_checkbox;
+        QCheckBox *show_labels_checkbox;
+        QCheckBox *is_stamped_checkbox;
+        QCheckBox *has_covariance_checkbox;
+        QDialogButtonBox *button_box;
+};
+
 #endif // CONTROL_PANEL_COMPONENT_DIALOGS_H
+

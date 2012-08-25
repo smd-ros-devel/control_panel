@@ -461,6 +461,29 @@ void RobotTab::setupDataPane()
             processed_data_display, SLOT(showPosition(bool)));
     }
 
+    for(unsigned int i = 0; i < robot_config->processedData.pose.size(); i++)
+    {
+        PoseNode *pose = node_manager->addPoseNode(robot_config->processedData.pose[i].topicName.toStdString(), robot_config->processedData.pose[i].isStamped, robot_config->processedData.pose[i].hasCovariance );
+        connect(
+            pose,
+            SIGNAL(poseDataReceived(const QVector3D &, const QQuaternion &,
+                                        const QVector3D &, const QVector3D &)),
+            data_pane->addOdometryDisplay(robot_config->processedData.pose[i].name, robot_config->processedData.pose[i].position,
+                                          robot_config->processedData.pose[i].orientation, false,
+                                          false, !robot_config->processedData.pose[i].hideAttitude,
+                                          !robot_config->processedData.pose[i].hideHeading),
+            SLOT(updateOdometryDisplay(const QVector3D &, const QQuaternion &,
+                                       const QVector3D &, const QVector3D &))
+            );
+
+        /*if(robot_config->processedData.maps.size())
+            connect(pose, SIGNAL(poseDataReceived(const QVector3D &, const QQuaternion &, const QVector3D &, const QVector3D &)),
+                processed_data_display, SLOT(setPosition(const QVector3D &)));
+        
+        connect(node_manager, SIGNAL(mapSubscribed(bool)),
+            processed_data_display, SLOT(showPosition(bool)));*/
+    }
+
     // Create nodes and widgets for all imu sensors
     for(unsigned int i = 0; i < robot_config->sensors.imu.size(); i++)
     {

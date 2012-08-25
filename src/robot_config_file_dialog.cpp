@@ -694,6 +694,7 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
     processed_data_list << "Disparity Image (DisparityImage.msg)"
                         << "Map (Map.msg)"
                         << "Odometry (Odometry.msg)"
+                        << "Pose (Pose.msg)"
                         << "Processed Image (Image.msg)";
     processed_data_combobox = new QComboBox;
     processed_data_combobox->addItems(processed_data_list);
@@ -766,6 +767,49 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
         odometry_item->addChild(child_item);
 
         item_list.append(odometry_item);
+    }
+
+    /* Add pose from robot configuration file */
+    for(unsigned int i = 0; i < robot_processed_data->pose.size(); i++)
+    {
+        QTreeWidgetItem *pose_item = new QTreeWidgetItem(Pose);
+        pose_item->setText(0, tr("Pose"));
+        pose_item->setText(1, robot_processed_data->pose[i].name);
+
+        pose_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Name") << robot_processed_data->pose[i].name)));
+        pose_item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+            (QStringList() << tr("Topic Name") << robot_processed_data->pose[i].topicName)));
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Position")));
+        child_item->setCheckState(1, boolToCheckState(robot_processed_data->pose[i].position));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Orientation")));
+        child_item->setCheckState(1, boolToCheckState(robot_processed_data->pose[i].orientation));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Show AttitudeIndicator")));
+        child_item->setCheckState(1, boolToCheckState(!robot_processed_data->pose[i].hideAttitude));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
+        child_item->setCheckState(1, boolToCheckState(!robot_processed_data->pose[i].hideHeading));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
+        child_item->setCheckState(1, boolToCheckState(!robot_processed_data->pose[i].hideLabels));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Pose Is Stamped")));
+        child_item->setCheckState(1, boolToCheckState(robot_processed_data->pose[i].isStamped || robot_processed_data->pose[i].hasCovariance));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Pose Has Covariance")));
+        child_item->setCheckState(1, boolToCheckState(robot_processed_data->pose[i].hasCovariance));
+        pose_item->addChild(child_item);
+
+        item_list.append(pose_item);
     }
 
     /* Add maps from robot configuration file */
@@ -841,6 +885,8 @@ void ProcessedDataTab::addProcessedData()
         type_str = "Map";
     else if(add_type == Odometry)
         type_str = "Odometry";
+    else if(add_type == Pose)
+        type_str = "Pose";
     else if(add_type == ProcessedImage)
         type_str = "Processed Image";
     else
@@ -850,26 +896,7 @@ void ProcessedDataTab::addProcessedData()
         return;
     }
 
-    if(add_type != Odometry) // Odometry needs a different dialog than ComponentDialog
-    {
-        ComponentDialog component_dialog(this);
-        component_dialog.setWindowTitle(QString("Add %1").arg(type_str));
-
-        if(component_dialog.exec())
-        {
-            item = new QTreeWidgetItem(add_type);
-            item->setText(0, type_str);
-            item->setText(1, component_dialog.getName());
-
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Name") << component_dialog.getName())));
-            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
-                (QStringList() << tr("Topic Name") << component_dialog.getTopicName())));
-
-            processed_data_treewidget->addTopLevelItem(item);
-        }
-    }
-    else
+    if(add_type == Odometry) // Odometry needs a different dialog than ComponentDialog
     {
         OdometryDialog odom_dialog(this);
         odom_dialog.setWindowTitle(QString("Add %1").arg(type_str));
@@ -919,6 +946,79 @@ void ProcessedDataTab::addProcessedData()
             child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
             child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowLabelsChecked()));
             item->addChild(child_item);
+
+            processed_data_treewidget->addTopLevelItem(item);
+        }
+    }
+    else if(add_type == Pose) // Pose needs a different dialog than ComponentDialog
+    {
+        PoseDialog pose_dialog(this);
+        pose_dialog.setWindowTitle(QString("Add %1").arg(type_str));
+
+        if(pose_dialog.exec())
+        {
+            item = new QTreeWidgetItem(add_type);
+            item->setText(0, type_str);
+            item->setText(1, pose_dialog.getName());
+
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << pose_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << pose_dialog.getTopicName())));
+
+            // Set and add position state
+            child_item = new QTreeWidgetItem(QStringList(tr("Position")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isPositionChecked()));
+            item->addChild(child_item);
+
+            // Set and add orientation state
+            child_item = new QTreeWidgetItem(QStringList(tr("Orientation")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isOrientationChecked()));
+            item->addChild(child_item);
+
+            // Set and add attitude indicator state
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Attitude Indicator")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isShowAttitudeChecked()));
+            item->addChild(child_item);
+
+            // Set and add heading indicator state
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Heading Indicator")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isShowHeadingChecked()));
+            item->addChild(child_item);
+
+            // Set and add labels state
+            child_item = new QTreeWidgetItem(QStringList(tr("Show Labels")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isShowLabelsChecked()));
+            item->addChild(child_item);
+
+            // Set and add stamped state
+            child_item = new QTreeWidgetItem(QStringList(tr("Pose Is Stamped")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isIsStampedChecked() || pose_dialog.isHasCovarianceChecked()));
+            item->addChild(child_item);
+
+            // Set and add covariance state
+            child_item = new QTreeWidgetItem(QStringList(tr("Pose Has Covariance")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isHasCovarianceChecked()));
+            item->addChild(child_item);
+
+            processed_data_treewidget->addTopLevelItem(item);
+        }
+    }
+    else
+    {
+        ComponentDialog component_dialog(this);
+        component_dialog.setWindowTitle(QString("Add %1").arg(type_str));
+
+        if(component_dialog.exec())
+        {
+            item = new QTreeWidgetItem(add_type);
+            item->setText(0, type_str);
+            item->setText(1, component_dialog.getName());
+
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Name") << component_dialog.getName())));
+            item->addChild(new QTreeWidgetItem((QTreeWidget *)0,
+                (QStringList() << tr("Topic Name") << component_dialog.getTopicName())));
 
             processed_data_treewidget->addTopLevelItem(item);
         }
@@ -986,6 +1086,34 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
             top_item->child(8)->setCheckState(1, boolToCheckState(odom_dialog.isShowLabelsChecked()));
         }
     }
+    else if(top_item->type() == Pose)
+    {
+        PoseDialog pose_dialog(this);
+        pose_dialog.setWindowTitle(QString("Edit %1").arg(top_item->type()));
+        pose_dialog.setName(top_item->child(0)->text(1));
+        pose_dialog.setTopicName(top_item->child(1)->text(1));
+        pose_dialog.setPositionChecked(checkStateToBool(top_item->child(2)->checkState(1)));
+        pose_dialog.setOrientationChecked(checkStateToBool(top_item->child(3)->checkState(1)));
+        pose_dialog.setShowAttitudeChecked(checkStateToBool(top_item->child(4)->checkState(1)));
+        pose_dialog.setShowHeadingChecked(checkStateToBool(top_item->child(5)->checkState(1)));
+        pose_dialog.setShowLabelsChecked(checkStateToBool(top_item->child(6)->checkState(1)));
+        pose_dialog.setIsStampedChecked(checkStateToBool(top_item->child(7)->checkState(1)));
+        pose_dialog.setHasCovarianceChecked(checkStateToBool(top_item->child(8)->checkState(1)));
+
+        if(pose_dialog.exec())
+        {
+            top_item->setText(1, pose_dialog.getName());
+            top_item->child(0)->setText(1, pose_dialog.getName());
+            top_item->child(1)->setText(1, pose_dialog.getTopicName());
+            top_item->child(2)->setCheckState(1, boolToCheckState(pose_dialog.isPositionChecked()));
+            top_item->child(3)->setCheckState(1, boolToCheckState(pose_dialog.isOrientationChecked()));
+            top_item->child(4)->setCheckState(1, boolToCheckState(pose_dialog.isShowAttitudeChecked()));
+            top_item->child(5)->setCheckState(1, boolToCheckState(pose_dialog.isShowHeadingChecked()));
+            top_item->child(6)->setCheckState(1, boolToCheckState(pose_dialog.isShowLabelsChecked()));
+            top_item->child(7)->setCheckState(1, boolToCheckState(pose_dialog.isIsStampedChecked()));
+            top_item->child(8)->setCheckState(1, boolToCheckState(pose_dialog.isHasCovarianceChecked()));
+        }
+    }
     else
     {
         std::cerr << "Unknown processed data type '" << top_item->type()
@@ -1047,6 +1175,21 @@ void ProcessedDataTab::storeToConfig(struct RobotProcessedData *robot_processed_
             temp_odom.hideLabels = !checkStateToBool(item->child(8)->checkState(1));
 
             robot_processed_data->odometry.push_back(temp_odom);
+        }
+        else if(item->type() == Pose)
+        {
+            struct RobotPose temp_pose;
+            temp_pose.name = item->child(0)->text(1);
+            temp_pose.topicName = item->child(1)->text(1);
+            temp_pose.position = checkStateToBool(item->child(2)->checkState(1));
+            temp_pose.orientation = checkStateToBool(item->child(3)->checkState(1));
+            temp_pose.hideAttitude = !checkStateToBool(item->child(4)->checkState(1));
+            temp_pose.hideHeading = !checkStateToBool(item->child(5)->checkState(1));
+            temp_pose.hideLabels = !checkStateToBool(item->child(6)->checkState(1));
+            temp_pose.isStamped = checkStateToBool(item->child(7)->checkState(1)) || checkStateToBool(item->child(8)->checkState(1));
+            temp_pose.hasCovariance = checkStateToBool(item->child(8)->checkState(1));
+
+            robot_processed_data->pose.push_back(temp_pose);
         }
         else if(item->type() == ProcessedImage)
         {

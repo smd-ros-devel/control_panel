@@ -127,6 +127,7 @@ class ProcessedDataTab : public QWidget
 			DisparityImage = 1001,
 			Map,
 			Odometry,
+			Pose,
 			ProcessedImage
 		};
 
