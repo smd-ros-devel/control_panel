@@ -5,9 +5,13 @@
   <imageFile>:/images/armbot.jpg</imageFile>
   <nameSpace>armbot2</nameSpace>
   <sensors>
+    <laser>
+      <name>Sonar Scan</name>
+      <topicName>base_scan</topicName>
+    </laser>
     <imu>
-      <name>Imu</name>
-      <topicName>imu/data</topicName>
+      <name>Fused IMU</name>
+      <topicName>imu_fused</topicName>
       <roll/>
       <pitch/>
       <yaw/>

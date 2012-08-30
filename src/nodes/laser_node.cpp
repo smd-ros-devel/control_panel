@@ -60,7 +60,8 @@ void LaserNode::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
 	double x, y;
 
 	int robot_pos = msg->range_max * scale;
-	int height = robot_pos * (1.0 - cos(msg->angle_max));
+	//int height = robot_pos * (1.0 - cos(msg->angle_max)) + 10;
+	int height = robot_pos;
 
 	QImage buffer(2.0 * robot_pos, height, QImage::Format_RGB888);
 	buffer.fill(Qt::black);
