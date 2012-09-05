@@ -18,5 +18,6 @@
         <file>robots/smp2.xml</file>
         <file>robots/test_robot.xml</file>
         <!-- file>robots/turtlebot.xml</file -->
+        <file>robots/imu_comparison.xml</file>
     </qresource>
 </RCC>
