@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * Copyright (c) 2011, 2012 Matt Richard, Scott K Logan.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 /**
  * \file   laser_node.cpp
  * \date   Nov 16, 2011
- * \author Matt Richard
+ * \author Matt Richard, Scott K Logan
  */
 #include "control_panel/nodes/laser_node.h"
 
@@ -61,12 +61,13 @@ void LaserNode::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
 
 	int robot_pos = msg->range_max * scale;
 	//int height = robot_pos * (1.0 - cos(msg->angle_max)) + 10;
-	int height = robot_pos;
+	int height = robot_pos * 2.0;
 
 	QImage buffer(2.0 * robot_pos, height, QImage::Format_RGB888);
 	buffer.fill(Qt::black);
 
  	double curr_angle = msg->angle_min + Globals::PI_OVER_TWO;
+
 	// Convert from polar to x,y coordinates and create the image
 	for(unsigned int i = 0; i < msg->ranges.size(); i++)
 	{
@@ -81,6 +82,7 @@ void LaserNode::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
 			// draw the laser value on the image
 			buffer.setPixel(x * scale + (robot_pos - 1), (robot_pos - 1) - y * scale, white);
 		}
+
 		curr_angle += msg->angle_increment;
 	}
 

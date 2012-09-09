@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 SDSM&T RIAS.
+ * Copyright (c) 2011, 2012 Matt Richard, Scott K Logan.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,15 +69,7 @@ void ImuNode::imuCallback(const sensor_msgs::ImuConstPtr &msg)
 		return;
 	}
 
-	emit imuDataReceived(
-		QQuaternion(msg->orientation.w,
-			msg->orientation.x,
-			msg->orientation.y,
-			msg->orientation.z),
-		QVector3D(msg->angular_velocity.x,
-			msg->angular_velocity.y,
-			msg->angular_velocity.z),
-		QVector3D(msg->linear_acceleration.x,
-			msg->linear_acceleration.y,
-			msg->linear_acceleration.z));
+	emit imuDataReceived(QQuaternion(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z),
+		QVector3D(msg->angular_velocity.x, msg->angular_velocity.y, msg->angular_velocity.z),
+		QVector3D(msg->linear_acceleration.x, msg->linear_acceleration.y, msg->linear_acceleration.z));
 }
