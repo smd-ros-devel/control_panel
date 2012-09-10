@@ -284,6 +284,7 @@ struct RobotOdometry
 		bool hideAttitude;
 		bool hideHeading;
 		bool hideLabels;
+		bool updateMap;
 
 		/**
 		 * Constructor. Initializes structure members
@@ -297,7 +298,8 @@ struct RobotOdometry
 			  angularVelocity(false),
 			  hideAttitude(false),
 			  hideHeading(false),
-			  hideLabels(false) { }
+			  hideLabels(false),
+			  updateMap(false) { }
 };
 
 /**
@@ -317,6 +319,7 @@ struct RobotPose
 		bool hideLabels;
 		bool isStamped;
 		bool hasCovariance;
+		bool updateMap;
 
 		/**
 		 * Constructor. Initializes structure members
@@ -330,7 +333,8 @@ struct RobotPose
 			  hideHeading(false),
 			  hideLabels(false),
 			  isStamped(false),
-			  hasCovariance(false) { }
+			  hasCovariance(false),
+			  updateMap(false) { }
 };
 
 /**

@@ -204,6 +204,7 @@ class OdometryDialog : public QDialog
         bool isShowAttitudeChecked() const { return show_att_checkbox->isChecked(); }
         bool isShowHeadingChecked() const { return show_heading_checkbox->isChecked(); }
         bool isShowLabelsChecked() const { return show_labels_checkbox->isChecked(); }
+        bool isUpdateMapChecked() const { return update_map_checkbox->isChecked(); }
         void setName(const QString &name) { name_lineedit->setText(name); }
         void setTopicName(const QString &name) { topic_name_lineedit->setText(name); }
         void setPositionChecked(bool checked) { pos_checkbox->setChecked(checked); }
@@ -213,6 +214,7 @@ class OdometryDialog : public QDialog
         void setShowAttitudeChecked(bool checked) { show_att_checkbox->setChecked(checked); }
         void setShowHeadingChecked(bool checked) { show_heading_checkbox->setChecked(checked); }
         void setShowLabelsChecked(bool checked) { show_labels_checkbox->setChecked(checked); }
+        void setUpdateMapChecked(bool checked) { update_map_checkbox->setChecked(checked); }
 
     private:
         void createDialog();
@@ -226,6 +228,7 @@ class OdometryDialog : public QDialog
         QCheckBox *show_att_checkbox;
         QCheckBox *show_heading_checkbox;
         QCheckBox *show_labels_checkbox;
+        QCheckBox *update_map_checkbox;
         QDialogButtonBox *button_box;
 };
 
@@ -248,6 +251,7 @@ class PoseDialog : public QDialog
         bool isShowLabelsChecked() const { return show_labels_checkbox->isChecked(); }
         bool isIsStampedChecked() const { return is_stamped_checkbox->isChecked(); }
         bool isHasCovarianceChecked() const { return has_covariance_checkbox->isChecked(); }
+        bool isUpdateMapChecked() const { return update_map_checkbox->isChecked(); }
         void setName(const QString &name) { name_lineedit->setText(name); }
         void setTopicName(const QString &name) { topic_name_lineedit->setText(name); }
         void setPositionChecked(bool checked) { pos_checkbox->setChecked(checked); }
@@ -257,6 +261,7 @@ class PoseDialog : public QDialog
         void setShowLabelsChecked(bool checked) { show_labels_checkbox->setChecked(checked); }
         void setIsStampedChecked(bool checked) { if(!checked) has_covariance_checkbox->setChecked(checked); is_stamped_checkbox->setChecked(checked); }
         void setHasCovarianceChecked(bool checked) { if(checked) is_stamped_checkbox->setChecked(checked); has_covariance_checkbox->setChecked(checked); }
+        void setUpdateMapChecked(bool checked) { update_map_checkbox->setChecked(checked); }
 
     private:
         void createDialog();
@@ -270,6 +275,7 @@ class PoseDialog : public QDialog
         QCheckBox *show_labels_checkbox;
         QCheckBox *is_stamped_checkbox;
         QCheckBox *has_covariance_checkbox;
+        QCheckBox *update_map_checkbox;
         QDialogButtonBox *button_box;
 };
 

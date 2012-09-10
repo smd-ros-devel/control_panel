@@ -277,6 +277,9 @@ void OdometryDialog::createDialog()
     show_labels_checkbox = new QCheckBox(tr("Show Labels"));
     show_labels_checkbox->setChecked(true);
 
+    update_map_checkbox = new QCheckBox(tr("Update Map"));
+    update_map_checkbox->setChecked(true);
+
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
                                       QDialogButtonBox::Ok);
     connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
@@ -297,6 +300,7 @@ void OdometryDialog::createDialog()
     display_vlayout->addWidget(show_att_checkbox);
     display_vlayout->addWidget(show_heading_checkbox);
     display_vlayout->addWidget(show_labels_checkbox);
+    display_vlayout->addWidget(update_map_checkbox);
 
     QGroupBox *display_group = new QGroupBox(tr("Display Configuration"));
     display_group->setLayout(display_vlayout);
@@ -315,7 +319,7 @@ void OdometryDialog::createDialog()
     setWindowTitle("Add/Edit Odometry");
 }
 
-/////////////////////////// Odometry Dialog ///////////////////////////
+/////////////////////////// Pose Dialog ///////////////////////////
 PoseDialog::PoseDialog(QWidget *parent) : QDialog(parent)
 {
     this->createDialog();
@@ -350,6 +354,9 @@ void PoseDialog::createDialog()
     has_covariance_checkbox = new QCheckBox(tr("Pose Has Covariance"));
     has_covariance_checkbox->setChecked(true);
 
+    update_map_checkbox = new QCheckBox(tr("UpdateMap"));
+    update_map_checkbox->setChecked(true);
+
     button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |
                                       QDialogButtonBox::Ok);
     connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
@@ -370,6 +377,7 @@ void PoseDialog::createDialog()
     display_vlayout->addWidget(show_att_checkbox);
     display_vlayout->addWidget(show_heading_checkbox);
     display_vlayout->addWidget(show_labels_checkbox);
+    display_vlayout->addWidget(update_map_checkbox);
 
     QGroupBox *display_group = new QGroupBox(tr("Display Configuration"));
     display_group->setLayout(display_vlayout);

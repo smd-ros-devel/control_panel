@@ -453,12 +453,14 @@ void RobotTab::setupDataPane()
                                        const QVector3D &, const QVector3D &))
             );
 
-        if(robot_config->processedData.maps.size())
+        if(robot_config->processedData.maps.size() && robot_config->processedData.odometry[i].updateMap)
+        {
             connect(odom, SIGNAL(odometryDataReceived(const QVector3D &, const QQuaternion &, const QVector3D &, const QVector3D &)),
                 processed_data_display, SLOT(setPosition(const QVector3D &)));
         
-        connect(node_manager, SIGNAL(mapSubscribed(bool)),
-            processed_data_display, SLOT(showPosition(bool)));
+            connect(node_manager, SIGNAL(mapSubscribed(bool)),
+                processed_data_display, SLOT(showPosition(bool)));
+        }
     }
 
     for(unsigned int i = 0; i < robot_config->processedData.pose.size(); i++)
@@ -476,12 +478,14 @@ void RobotTab::setupDataPane()
                                        const QVector3D &, const QVector3D &))
             );
 
-        /*if(robot_config->processedData.maps.size())
+        if(robot_config->processedData.maps.size() && robot_config->processedData.pose[i].updateMap)
+        {
             connect(pose, SIGNAL(poseDataReceived(const QVector3D &, const QQuaternion &, const QVector3D &, const QVector3D &)),
                 processed_data_display, SLOT(setPosition(const QVector3D &)));
         
-        connect(node_manager, SIGNAL(mapSubscribed(bool)),
-            processed_data_display, SLOT(showPosition(bool)));*/
+            connect(node_manager, SIGNAL(mapSubscribed(bool)),
+                processed_data_display, SLOT(showPosition(bool)));
+        }
     }
 
     // Create nodes and widgets for all imu sensors

@@ -54,7 +54,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 	text_item = new QGraphicsTextItem(tr("Loading..."));
 	text_item->setFont(font);
 	text_item->setDefaultTextColor(Qt::white);
-	text_item->setVisible(false);
+	text_item->setVisible(true);
 
 	/* Position of a robot on the display map */
 	robot_pos_item = new QGraphicsEllipseItem(QRectF(0, 0, 6, 6));
@@ -142,7 +142,8 @@ void ImageViewer::showGrid(bool show)
 void ImageViewer::showOdometry(bool show)
 {
 	show_odom = show;
-	robot_pos_item->setVisible(show);
+	if( !show )
+		robot_pos_item->hide( );
 	robot_pos_item->setPos(
 		(scene->width() - robot_pos_item->boundingRect().width()) / 2.0,
 		(scene->height() - robot_pos_item->boundingRect().height()) / 2.0);
@@ -153,15 +154,16 @@ void ImageViewer::setRobotPosition(double x_pos, double y_pos)
 	if(show_odom)
 	{
 		// Find the center of the image compared to the center of the circle item (the robots position)
-		double centerx = (image_item->boundingRect().width() -
-			robot_pos_item->boundingRect().width()) / 2.0;
-		double centery = (image_item->boundingRect().height() -
-			robot_pos_item->boundingRect().height()) / 2.0;
+		//double centerx = (image_item->boundingRect().width() -
+		//	robot_pos_item->boundingRect().width()) / 2.0;
+		//double centery = (image_item->boundingRect().height() -
+		//	robot_pos_item->boundingRect().height()) / 2.0;
 
 		// Offset the circle item to indicate the robots position
 		//robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
 		robot_pos_item->setPos(map_origin.x() + (x_pos / 0.05),
 			image_item->boundingRect().height() - (map_origin.y() + (y_pos / 0.05)));
+		robot_pos_item->show( );
 	}
 }
 

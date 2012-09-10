@@ -766,6 +766,10 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
         child_item->setCheckState(1, boolToCheckState(!robot_processed_data->odometry[i].hideLabels));
         odometry_item->addChild(child_item);
 
+        child_item = new QTreeWidgetItem(QStringList(tr("Update Map")));
+        child_item->setCheckState(1, boolToCheckState(robot_processed_data->odometry[i].updateMap));
+        odometry_item->addChild(child_item);
+
         item_list.append(odometry_item);
     }
 
@@ -807,6 +811,10 @@ ProcessedDataTab::ProcessedDataTab(struct RobotProcessedData *robot_processed_da
 
         child_item = new QTreeWidgetItem(QStringList(tr("Pose Has Covariance")));
         child_item->setCheckState(1, boolToCheckState(robot_processed_data->pose[i].hasCovariance));
+        pose_item->addChild(child_item);
+
+        child_item = new QTreeWidgetItem(QStringList(tr("Update Map")));
+        child_item->setCheckState(1, boolToCheckState(robot_processed_data->pose[i].updateMap));
         pose_item->addChild(child_item);
 
         item_list.append(pose_item);
@@ -947,6 +955,11 @@ void ProcessedDataTab::addProcessedData()
             child_item->setCheckState(1, boolToCheckState(odom_dialog.isShowLabelsChecked()));
             item->addChild(child_item);
 
+            // Set and add update map state
+            child_item = new QTreeWidgetItem(QStringList(tr("Update Map")));
+            child_item->setCheckState(1, boolToCheckState(odom_dialog.isUpdateMapChecked()));
+            item->addChild(child_item);
+
             processed_data_treewidget->addTopLevelItem(item);
         }
     }
@@ -999,6 +1012,11 @@ void ProcessedDataTab::addProcessedData()
             // Set and add covariance state
             child_item = new QTreeWidgetItem(QStringList(tr("Pose Has Covariance")));
             child_item->setCheckState(1, boolToCheckState(pose_dialog.isHasCovarianceChecked()));
+            item->addChild(child_item);
+
+            // Set and add update map state
+            child_item = new QTreeWidgetItem(QStringList(tr("Update Map")));
+            child_item->setCheckState(1, boolToCheckState(pose_dialog.isUpdateMapChecked()));
             item->addChild(child_item);
 
             processed_data_treewidget->addTopLevelItem(item);
@@ -1071,6 +1089,7 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
         odom_dialog.setShowAttitudeChecked(checkStateToBool(top_item->child(6)->checkState(1)));
         odom_dialog.setShowHeadingChecked(checkStateToBool(top_item->child(7)->checkState(1)));
         odom_dialog.setShowLabelsChecked(checkStateToBool(top_item->child(8)->checkState(1)));
+        odom_dialog.setUpdateMapChecked(checkStateToBool(top_item->child(9)->checkState(1)));
 
         if(odom_dialog.exec())
         {
@@ -1084,6 +1103,7 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
             top_item->child(6)->setCheckState(1, boolToCheckState(odom_dialog.isShowAttitudeChecked()));
             top_item->child(7)->setCheckState(1, boolToCheckState(odom_dialog.isShowHeadingChecked()));
             top_item->child(8)->setCheckState(1, boolToCheckState(odom_dialog.isShowLabelsChecked()));
+            top_item->child(9)->setCheckState(1, boolToCheckState(odom_dialog.isUpdateMapChecked()));
         }
     }
     else if(top_item->type() == Pose)
@@ -1099,6 +1119,7 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
         pose_dialog.setShowLabelsChecked(checkStateToBool(top_item->child(6)->checkState(1)));
         pose_dialog.setIsStampedChecked(checkStateToBool(top_item->child(7)->checkState(1)));
         pose_dialog.setHasCovarianceChecked(checkStateToBool(top_item->child(8)->checkState(1)));
+        pose_dialog.setUpdateMapChecked(checkStateToBool(top_item->child(9)->checkState(1)));
 
         if(pose_dialog.exec())
         {
@@ -1112,6 +1133,7 @@ void ProcessedDataTab::editProcessedData(QTreeWidgetItem *item)
             top_item->child(6)->setCheckState(1, boolToCheckState(pose_dialog.isShowLabelsChecked()));
             top_item->child(7)->setCheckState(1, boolToCheckState(pose_dialog.isIsStampedChecked()));
             top_item->child(8)->setCheckState(1, boolToCheckState(pose_dialog.isHasCovarianceChecked()));
+            top_item->child(9)->setCheckState(1, boolToCheckState(pose_dialog.isUpdateMapChecked()));
         }
     }
     else
@@ -1173,6 +1195,7 @@ void ProcessedDataTab::storeToConfig(struct RobotProcessedData *robot_processed_
             temp_odom.hideAttitude = !checkStateToBool(item->child(6)->checkState(1));
             temp_odom.hideHeading = !checkStateToBool(item->child(7)->checkState(1));
             temp_odom.hideLabels = !checkStateToBool(item->child(8)->checkState(1));
+            temp_odom.updateMap = checkStateToBool(item->child(9)->checkState(1));
 
             robot_processed_data->odometry.push_back(temp_odom);
         }
@@ -1188,6 +1211,7 @@ void ProcessedDataTab::storeToConfig(struct RobotProcessedData *robot_processed_
             temp_pose.hideLabels = !checkStateToBool(item->child(6)->checkState(1));
             temp_pose.isStamped = checkStateToBool(item->child(7)->checkState(1)) || checkStateToBool(item->child(8)->checkState(1));
             temp_pose.hasCovariance = checkStateToBool(item->child(8)->checkState(1));
+            temp_pose.updateMap = checkStateToBool(item->child(9)->checkState(1));
 
             robot_processed_data->pose.push_back(temp_pose);
         }

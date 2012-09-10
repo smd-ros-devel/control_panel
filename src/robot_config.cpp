@@ -811,6 +811,8 @@ void RobotConfig::addOdometry(QDomElement e)
             new_odometry.hideHeading = true;
         else if(e.tagName() == "hideLabels")
             new_odometry.hideLabels = true;
+        else if(e.tagName() == "updateMap")
+            new_odometry.updateMap = true;
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
@@ -867,6 +869,11 @@ QDomElement RobotConfig::getOdometry(QDomDocument &doc, struct RobotOdometry &od
 		e = doc.createElement("hideLabels");
 		root.appendChild(e);
 	}
+	if(odometry.updateMap)
+	{
+		e = doc.createElement("updateMap");
+		root.appendChild(e);
+	}
 
 	return root;
 }
@@ -899,6 +906,8 @@ void RobotConfig::addPose(QDomElement e)
             new_pose.isStamped = true;
             new_pose.hasCovariance = true;
 	}
+        else if(e.tagName() == "updateMap")
+            new_pose.updateMap = true;
         else
             std::cerr << "WARNING: Unknown processed data tag " << e.tagName().toStdString() << std::endl;
         n = n.nextSibling();
@@ -953,6 +962,11 @@ QDomElement RobotConfig::getPose(QDomDocument &doc, struct RobotPose &pose)
 	if(pose.hasCovariance)
 	{
 		e = doc.createElement("hasCovariance");
+		root.appendChild(e);
+	}
+	if(pose.updateMap)
+	{
+		e = doc.createElement("updateMap");
 		root.appendChild(e);
 	}
 

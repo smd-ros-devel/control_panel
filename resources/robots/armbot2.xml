@@ -59,6 +59,7 @@
       <orientation/>
       <isStamped/>
       <hasCovariance/>
+      <updateMap/>
     </pose>
   </processedData>
   <controls>
