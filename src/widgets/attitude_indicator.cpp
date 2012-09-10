@@ -43,8 +43,9 @@ AttitudeIndicator::AttitudeIndicator(QWidget *parent)
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 	setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-	setBackgroundRole(QPalette::Window);
-	setAutoFillBackground(true);
+	setStyleSheet("background-color: transparent;");
+	//setBackgroundRole(QPalette::Window);
+	//setAutoFillBackground(true);
 
 	// Create graphics items
 	crosshair_item = new QGraphicsPixmapItem(QPixmap(

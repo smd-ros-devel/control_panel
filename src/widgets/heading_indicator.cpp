@@ -66,8 +66,7 @@ HeadingIndicator::HeadingIndicator(QWidget *parent) : QGraphicsView(parent)
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 	setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-	setBackgroundRole(QPalette::Window);
-	setAutoFillBackground(true);
+	setStyleSheet("background-color: transparent;");
 	setScene(scene);
 
 	// Initialize heading indicator

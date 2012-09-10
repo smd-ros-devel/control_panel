@@ -353,7 +353,7 @@ void NodeManager::joystickAxisChanged(int axis, double value)
 		// joints
 		else if((axis == 12 || axis == 13) && joint_trajectory_node)
 		{
-			value = ( value - 1 ) / -2.0;
+			value = ( value - 1 ) / 2.0;
 			if(axis == 13)
 				l_shoulder = value;
 			else

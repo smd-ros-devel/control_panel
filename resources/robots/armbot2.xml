@@ -11,7 +11,7 @@
     </laser>
     <imu>
       <name>Fused IMU</name>
-      <topicName>imu_fused</topicName>
+      <topicName>imu/fused</topicName>
       <roll/>
       <pitch/>
       <yaw/>
@@ -25,16 +25,16 @@
     <position/>
     <velocity/>
     <joint>
-      <name>shoulder_to_neck1</name>
-      <displayName>Head</displayName>
+      <name>base_to_left_wheel</name>
+      <displayName>Left Wheel</displayName>
     </joint>
     <joint>
       <name>base_to_right_wheel</name>
       <displayName>Right Wheel</displayName>
     </joint>
     <joint>
-      <name>base_to_left_wheel</name>
-      <displayName>Left Wheel</displayName>
+      <name>shoulder_to_neck1</name>
+      <displayName>Head</displayName>
     </joint>
   </joints>
   <processedData>
