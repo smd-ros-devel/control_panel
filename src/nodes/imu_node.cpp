@@ -43,7 +43,8 @@ ImuNode::ImuNode(ros::NodeHandle *nh_ptr)
 
 void ImuNode::subscribe()
 {
-	imu_sub = nh->subscribe(topic_name, 1, &ImuNode::imuCallback, this);
+	imu_sub = nh->subscribe(topic_name, 1, &ImuNode::imuCallback, this,
+		ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void ImuNode::unsubscribe()

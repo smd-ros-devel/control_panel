@@ -44,17 +44,18 @@ PoseNode::PoseNode(ros::NodeHandle *nh_ptr, bool _isStamped, bool _hasCovariance
 	nh = nh_ptr;
 }
 
+//template<class T>
 void PoseNode::subscribe()
 {
 	if(hasCovariance)
-		pose_sub = nh->subscribe(topic_name, 1,
-			&PoseNode::poseWithCovarianceStampedCallback, this);
+		pose_sub = nh->subscribe(topic_name, 1, &PoseNode::poseWithCovarianceStampedCallback,
+			this, ros::TransportHints().unreliable().tcpNoDelay());
 	else if(isStamped)
-		pose_sub = nh->subscribe(topic_name, 1,
-			&PoseNode::poseStampedCallback, this);
+		pose_sub = nh->subscribe(topic_name, 1, &PoseNode::poseStampedCallback,
+			this, ros::TransportHints().unreliable().tcpNoDelay());
 	else
-		pose_sub = nh->subscribe(topic_name, 1,
-			&PoseNode::poseCallback, this);
+		pose_sub = nh->subscribe(topic_name, 1, &PoseNode::poseCallback,
+			this, ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void PoseNode::unsubscribe()

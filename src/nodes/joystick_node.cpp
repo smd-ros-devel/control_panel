@@ -44,8 +44,8 @@ void JoystickNode::joyCallback(const sensor_msgs::JoyConstPtr &msg)
 {
 	unsigned int i;
 
-    static std::vector<double> axes(msg->axes.size(), 0);
-    static std::vector<bool> buttons(msg->buttons.size(), false);
+	static std::vector<double> axes(msg->axes.size(), 0);
+	static std::vector<bool> buttons(msg->buttons.size(), false);
 
 	if((unsigned)axes.size() != msg->axes.size())
         axes.resize(msg->axes.size(), 0);
@@ -75,10 +75,11 @@ void JoystickNode::joyCallback(const sensor_msgs::JoyConstPtr &msg)
 
 void JoystickNode::subscribe()
 {
-    joy_sub = nh->subscribe(joy_topic_name, 1, &JoystickNode::joyCallback, this);
+	joy_sub = nh->subscribe(joy_topic_name, 1, &JoystickNode::joyCallback, this,
+		ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void JoystickNode::unsubscribe()
 {
-    joy_sub.shutdown();
+	joy_sub.shutdown();
 }

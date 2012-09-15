@@ -42,7 +42,8 @@ JointStateNode::JointStateNode(ros::NodeHandle *nh_ptr)
 
 void JointStateNode::subscribe()
 {
-	joint_sub = nh->subscribe(topic_name, 1, &JointStateNode::jointCallback, this);
+	joint_sub = nh->subscribe(topic_name, 1, &JointStateNode::jointCallback, this,
+		ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void JointStateNode::unsubscribe()

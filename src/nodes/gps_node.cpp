@@ -44,7 +44,8 @@ GpsNode::GpsNode(ros::NodeHandle *nh_ptr)
 
 void GpsNode::subscribe()
 {
-	gps_sub = nh->subscribe(topic_name, 1, &GpsNode::gpsCallback, this);
+	gps_sub = nh->subscribe(topic_name, 1, &GpsNode::gpsCallback, this,
+		ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void GpsNode::unsubscribe()

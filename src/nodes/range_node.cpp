@@ -43,7 +43,8 @@ RangeNode::RangeNode(ros::NodeHandle *nh_ptr)
 
 void RangeNode::subscribe()
 {
-	range_sub = nh->subscribe(topic_name, 1, &RangeNode::rangeCallback, this);
+	range_sub = nh->subscribe(topic_name, 1, &RangeNode::rangeCallback, this,
+		ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void RangeNode::rangeCallback(const sensor_msgs::RangeConstPtr &msg)

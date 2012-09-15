@@ -46,7 +46,8 @@ LaserNode::LaserNode(ros::NodeHandle *nh_ptr)
 
 void LaserNode::subscribe()
 {
-	laser_sub = nh->subscribe(topic_name, 1, &LaserNode::laserCallback, this);
+	laser_sub = nh->subscribe(topic_name, 1, &LaserNode::laserCallback, this,
+		ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void LaserNode::unsubscribe()

@@ -48,7 +48,7 @@ DiagnosticNode::DiagnosticNode(ros::NodeHandle *nh_ptr)
 void DiagnosticNode::subscribe()
 {
 	diagnostic_sub = nh->subscribe(topic_name, 1,
-		&DiagnosticNode::diagnosticCallback, this);
+		&DiagnosticNode::diagnosticCallback, this, ros::TransportHints().unreliable().tcpNoDelay());
 	std::cout << "Diagnostics: Subscribed to " << topic_name << std::endl;
 }
 

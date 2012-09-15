@@ -43,8 +43,8 @@ OdometryNode::OdometryNode(ros::NodeHandle *nh_ptr)
 
 void OdometryNode::subscribe()
 {
-	odometry_sub = nh->subscribe(topic_name, 1,
-		&OdometryNode::odometryCallback, this);
+	odometry_sub = nh->subscribe(topic_name, 1, &OdometryNode::odometryCallback,
+		this, ros::TransportHints().unreliable().tcpNoDelay());
 }
 
 void OdometryNode::unsubscribe()
