@@ -61,7 +61,7 @@ bool QtNode::init()
     }
 
     ROS_INFO("Initializing ROS node");
-    ros::init(arg_count, arg_vec, node_name);
+    ros::init(arg_count, arg_vec, node_name, ros::init_options::NoSigintHandler);
 
     // Verify we have connection with the master
     if(!ros::master::check())
