@@ -30,11 +30,15 @@
 /**
  * \file   main.cpp
  * \date   June 2011
- * \author Matt Richard
+ * \author Matt Richard, Scott K Logan
  * \brief  Shared Robotics Systems (SRS) Control Panel execution point.
  */
 #include <QApplication>
 #include "control_panel/main_window.h"
+
+#ifndef Win32
+# include <signal.h>
+#endif
 
 
 int main(int argc, char **argv)
@@ -45,8 +49,13 @@ int main(int argc, char **argv)
 	app.setOrganizationName("sdsmt-csr");
 	app.setApplicationName("srs-control-panel");
 
-	MainWindow main_window(argc, argv);
-	main_window.show();
+#ifndef Win32
+	signal(SIGINT, app.exit);
+	signal(SIGTERM, app.exit);
+#endif
+
+	MainWindow mw;
+	mw.show();
 
 	return app.exec();
 }
