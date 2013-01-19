@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	signal(SIGTERM, app.exit);
 #endif
 
-	MainWindow mw;
+	MainWindow mw(argc, argv);
 	mw.show();
 
 	return app.exec();
