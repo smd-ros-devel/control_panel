@@ -43,13 +43,13 @@ VelocityScaleDialog::VelocityScaleDialog(QWidget *parent) : QDialog(parent)
 	// Create spinbox for setting linear velocity
 	lin_vel_spinbox = new QDoubleSpinBox;
 	lin_vel_spinbox->setDecimals(2);
-	lin_vel_spinbox->setRange(0.0, 1.0);
+	lin_vel_spinbox->setMinimum(0.0);
 	lin_vel_spinbox->setSingleStep(0.1);
 
 	// Create spinbox for setting angular velocity
 	ang_vel_spinbox = new QDoubleSpinBox;
 	ang_vel_spinbox->setDecimals(2);
-	ang_vel_spinbox->setRange(0.0, 1.0);
+	ang_vel_spinbox->setMinimum(0.0);
 	ang_vel_spinbox->setSingleStep(0.1);
 
 	QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Cancel |

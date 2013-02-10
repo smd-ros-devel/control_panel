@@ -66,22 +66,11 @@ void ControlNode::publish()
 
 void ControlNode::setScale(double lin, double ang)
 {
-	// Set linear scale, clamping the value if necessary
-	if(lin > 1.0)
-		lin_scale = 1.0;
-	else if(lin < 0.0)
-		lin_scale = 0.0;
-	else
-		lin_scale = lin;
+	// Set linear scale
+	lin_scale = lin;
 
-	// Set angular scale, clamping the value if necessary
-	if(ang > 1.0)
-		ang_scale = 1.0;
-	else if(ang < 0.0)
-		ang_scale = 0.0;
-	else
-		ang_scale = ang;
-
+	// Set angular scale
+	ang_scale = ang;
 }
 
 void ControlNode::unadvertise()
