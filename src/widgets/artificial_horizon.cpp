@@ -61,7 +61,7 @@ ArtificialHorizon::ArtificialHorizon()
 QRectF ArtificialHorizon::boundingRect() const
 {
 	// Calculate bounding rectangle
-	return QRectF(center_x - offset, center_y - offset - pitch,
+	return QRectF(center_x - offset, center_y - offset + pitch,
 		scene_width, scene_height);
 }
 
@@ -82,9 +82,9 @@ void ArtificialHorizon::updateArtificialHorizon(int roll_angle,
 	pitch = pitch_angle;
 
 	// Translate pixmap (pitch)
-	setPos(x(), -1.0 * center_y + offset + pitch);
+	setPos(x(), -1.0 * center_y + offset - pitch);
 
 	// Update transformation point and rotate pixmap
-	setTransformOriginPoint(center_x, center_y - pitch);
-	setRotation(roll);
+	setTransformOriginPoint(center_x, center_y + pitch);
+	setRotation(-roll);
 }
