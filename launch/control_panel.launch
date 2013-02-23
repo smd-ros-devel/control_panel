@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="control_panel_v4_1" type="control_panel"
+  <node pkg="control_panel" type="control_panel"
    name="control_panel" output="screen"/>
 
 </launch>
