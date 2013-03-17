@@ -85,8 +85,6 @@ NodeManager::NodeManager(struct RobotConfig *new_robot_config) :
 		joint_state_node = new JointStateNode(nh_ptr);
 	if(!robot_config->sensors.lasers.empty())
 		laser_node = new LaserNode(nh_ptr);
-	if(!robot_config->sensors.range.empty())
-		range_node = new RangeNode(nh_ptr);
 	/* TODO: Hack */
 	if(!strncmp(robot_config->robotName.toStdString().c_str(), "Armbot", 6))
 	{
@@ -317,18 +315,16 @@ PoseNode *NodeManager::addPoseNode(const std::string &topic, bool isStamped, boo
 	return pose_node;
 }
 
-/*
-RangeNode *NodeManager::addRangeNode()
+RangeNode *NodeManager::addRangeNode(const std::string &topic)
 {
     range_node = new RangeNode(nh_ptr);
+    range_node->setTopic(topic);
 
     // @todo
     // Store pointer.
 
     return range_node;
 }
-*/
-
 
 void NodeManager::joystickAxisChanged(int axis, double value)
 {
