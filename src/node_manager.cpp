@@ -366,28 +366,56 @@ void NodeManager::joystickButtonChanged(int button, bool state)
 	if(connected && state)
 	{
 		// Joystick mapping here
-		if(button == 14)
+		if(button == 4)
+		{
+			// Flip Forward Message
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "Flip Forward")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
+		}
+		else if(button == 5)
+		{
+			// Flip Right Message
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "Flip Right")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
+		}
+		else if(button == 6)
+		{
+			// Flip Backward Message
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "Flip Backward")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
+		}
+		else if(button == 7)
+		{
+			// Flip Left Message
+			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
+				if(robot_config->commands.custom[i].name == "Flip Left")
+				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
+		}
+		else if(button == 14)
 		{
 			// Takeoff Message
 			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
 				if(robot_config->commands.custom[i].name == "takeoff")
 				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
-		if(button == 13)
+		else if(button == 13)
 		{
 			// Land Message
 			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
 				if(robot_config->commands.custom[i].name == "land")
 				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
-		if(button == 12)
+		else if(button == 12)
 		{
 			// Reset Message
 			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
 				if(robot_config->commands.custom[i].name == "Reset")
 				    command_node->callEmpty(robot_config->commands.custom[i].topicName);
 		}
-		if(button == 15)
+		else if(button == 15)
 		{
 			// Land Message
 			for(unsigned int i = 0; i < robot_config->commands.custom.size(); i++)
