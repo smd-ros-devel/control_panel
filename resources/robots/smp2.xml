@@ -1,29 +1,104 @@
 <robot>
   <robotName>SMP 2</robotName>
   <system>UGV</system>
-  <driveSystem>Differential Drive</driveSystem>
-  <imageFile>smp.jpg</imageFile>
+  <driveSystem>4 Wheel Skid Steer</driveSystem>
+  <imageFile>:/images/smp.jpg</imageFile>
   <nameSpace>smp2</nameSpace>
-
   <sensors>
     <camera>
-      <name>Color Video</name>
-      <topicName>rgb/image_color</topicName>
+      <name>Depth Image</name>
+      <topicName>camera/depth/image_raw</topicName>
+    </camera>
+    <camera>
+      <name>IR Video</name>
+      <topicName>camera/ir/image_raw</topicName>
     </camera>
     <camera>
       <name>Greyscale Video</name>
-      <topicName>rgb/image_mono</topicName>
+      <topicName>camera/rgb/image_mono</topicName>
     </camera>
     <camera>
-      <name>Depth Image</name>
-      <topicName>depth/image_raw</topicName>
+      <name>Color Video</name>
+      <topicName>camera/rgb/image_color</topicName>
     </camera>
     <laser>
       <name>LiDAR Scan</name>
       <topicName>scan</topicName>
     </laser>
+    <imu>
+      <name>IMU</name>
+      <topicName>imu/data</topicName>
+      <roll/>
+      <pitch/>
+      <yaw/>
+      <angularVelocity/>
+      <linearAcceleration/>
+      <hideHeading/>
+    </imu>
   </sensors>
-
+  <joints>
+    <topicName>joint_states_agg</topicName>
+    <position/>
+    <velocity/>
+    <joint>
+      <name>wheel_front_right_joint</name>
+      <displayName>Front Right Wheel</displayName>
+    </joint>
+    <joint>
+      <name>wheel_front_left_joint</name>
+      <displayName>Front Left Wheel</displayName>
+    </joint>
+    <joint>
+      <name>wheel_back_right_joint</name>
+      <displayName>Rear Right Wheel</displayName>
+    </joint>
+    <joint>
+      <name>wheel_back_left_joint</name>
+      <displayName>Rear Left Wheel</displayName>
+    </joint>
+  </joints>
+  <processedData>
+    <image>
+      <name>Rectified Depth Image</name>
+      <topicName>camera/depth/image_rect</topicName>
+    </image>
+    <image>
+      <name>Rectified IR Video</name>
+      <topicName>camera/ir/image_rect</topicName>
+    </image>
+    <image>
+      <name>Rectified Greyscale Video</name>
+      <topicName>camera/rgb/image_rect</topicName>
+    </image>
+    <image>
+      <name>Rectified Color Video</name>
+      <topicName>camera/rgb/image_rect_color</topicName>
+    </image>
+    <map>
+      <name>Map</name>
+      <topicName>map</topicName>
+    </map>
+    <pose>
+      <name>Combined Odometry</name>
+      <topicName>robot_pose_ekf/odom_combined</topicName>
+      <position/>
+      <orientation/>
+      <hideAttitude/>
+      <isStamped/>
+      <hasCovariance/>
+      <updateMap/>
+    </pose>
+  </processedData>
+  <commands>
+    <custom>
+      <name>IMU Reset</name>
+      <topicName>tss_usb_node/reset</topicName>
+    </custom>
+    <custom>
+      <name>IMU Tare</name>
+      <topicName>tss_usb_node/tare</topicName>
+    </custom>
+  </commands>
   <controls>
     <drive>
       <topicName>cmd_vel</topicName>
