@@ -229,7 +229,7 @@ void NodeManager::changeRawDataSource(const std::string &source)
 
 void NodeManager::changeProcessedDataSource(const std::string &source)
 {
-	if(odometry_node | pose_subscribed)
+	if(odometry_node | pose_node)
 		emit mapSubscribed(false);
 
 	if(map_node)
@@ -256,7 +256,7 @@ void NodeManager::changeProcessedDataSource(const std::string &source)
 			map_node->setTopic(robot_config->processedData.maps[i].topicName.toStdString());
 			map_node->subscribe();
 
-			if(odometry_node | pose_subscribed)
+			if(odometry_node | pose_node)
 				emit mapSubscribed(true);
 
 			return;
