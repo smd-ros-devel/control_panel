@@ -94,7 +94,7 @@ class ImageViewer : public QGraphicsView
 		 */
 		void setImagePixmap(const QPixmap &pixmap, int interval = -1);
 
-		void setMapPixmap(const QPixmap &pixmap, double origin_x, double origin_y, int interval = -1);
+		void setMapPixmap(const QPixmap &pixmap, double origin_x, double origin_y, float resolution);
 
 		/**
 		 * \brief Sets the view state of the image pixmap.
@@ -176,6 +176,7 @@ class ImageViewer : public QGraphicsView
 		bool show_odom;
 		bool grid_visible;
 		int grid_interval;
+		float resolution;
 		QPen grid_pen;
 		float scale_factor;
 

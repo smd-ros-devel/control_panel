@@ -217,7 +217,7 @@ void DisplayPane::setMap(const QImage &new_image, double origin_x,
 {
 	if(!image_off)
 		image_viewer->setMapPixmap(QPixmap::fromImage(new_image),
-			abs(origin_x) / resolution, abs(origin_y) / resolution, (int)(1.0 / resolution));
+			abs(origin_x) / resolution, abs(origin_y) / resolution, resolution);
 }
 
 /******************************************************************************

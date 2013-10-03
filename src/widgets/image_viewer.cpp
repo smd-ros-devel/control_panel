@@ -40,6 +40,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QGraphicsView(parent)
 {
 	grid_visible = false;
 	grid_interval = 20;
+	resolution = 0.5;
 	grid_pen.setColor(Qt::blue);
 	grid_pen.setWidth(1);
 	scale_factor = 1.0;
@@ -89,7 +90,10 @@ void ImageViewer::setGridLineInterval(int pixels)
 void ImageViewer::setImagePixmap(const QPixmap &pixmap, int interval)
 {
 	if(interval > 0)
+	{
 		grid_interval = interval;
+		resolution = 1.0 / interval;
+	}
 
 	image_pixmap = pixmap;
 	image_item->setPixmap(image_pixmap);
@@ -101,11 +105,17 @@ void ImageViewer::setImagePixmap(const QPixmap &pixmap, int interval)
 		centerOn(image_item);
 }
 
-void ImageViewer::setMapPixmap(const QPixmap &pixmap, double origin_x, double origin_y, int interval)
+void ImageViewer::setMapPixmap(const QPixmap &pixmap, double origin_x, double origin_y, float _resolution)
 {
 	map_origin = QPointF(origin_x, origin_y);
 
-	setImagePixmap(pixmap, interval);
+	if(_resolution > 0.0)
+	{
+		grid_interval = 1.0 / resolution;
+		resolution = _resolution;
+	}
+
+	setImagePixmap(pixmap);
 }
 
 void ImageViewer::setImageVisible(bool visible)
@@ -161,8 +171,8 @@ void ImageViewer::setRobotPosition(double x_pos, double y_pos)
 
 		// Offset the circle item to indicate the robots position
 		//robot_pos_item->setPos(centerx + (x_pos / 0.05), centery - (y_pos / 0.05));
-		robot_pos_item->setPos(map_origin.x() + (x_pos / 0.05),
-			image_item->boundingRect().height() - (map_origin.y() + (y_pos / 0.05)));
+		robot_pos_item->setPos(map_origin.x() + (x_pos / resolution) - 3,
+			image_item->boundingRect().height() - (map_origin.y() + (y_pos / resolution)) - 3);
 		robot_pos_item->show( );
 	}
 }
